@@ -1,0 +1,963 @@
+<!-- FINAL RING DETAIL TABLE -->
+<script
+  type="text/x-template"
+  id="final-ring-detail-table"
+>
+
+    <div class="pc-final_ring_info pc-flex pc-flex-col pc-gap-y-10 pc-w-full pc-mt-30">
+        <div class="pc-accordion-div accordion-non-active">
+            <div class="pc-accordion pc-text-04043F pc-select-none pc-w-full pc-p-20 pc-flex pc-justify-between" @click="openDetail($event,'diamond')">
+                YOUR DIAMOND DETAILS
+                <svg class="pc-custom-svg-size" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M0 0h24v24H0V0z" style="fill: none;"></path>
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+                </svg>
+            </div>
+            <div class="table panel">
+                <div class="pc-diamond_details_info">
+                    <div class="pc-diamond-detail-table-div">
+                        <div class="pc-detail-column detail-column-1 pc-flex pc-flex-wrap pc-w-full pc-gap-x-20 pc-p-0">
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[diamond.lab]]                                  
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.certificateNumber ? 'N/A' : diamond.certificateNumber]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-2 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Price")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[diamond.currencySymbol]][[!diamond.finalPriceAud ? 'N/A' : parseFloat(diamond.finalPriceAud).toFixed(0) ]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-3 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Shape")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.shape ? 'N/A' : $t(diamond.shape) ]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-4 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Fluorescence")]] 
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.flourIntensity ? 'N/A' : diamond.flourIntensity]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-5 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Carat Weight")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.caratWeight ? 'N/A' : `${parseFloat(diamond.caratWeight)} Ct.` ]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-6 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Measurements")]] (mm)
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[parseFloat(diamond.width)]] * [[parseFloat(diamond.length)]] * [[parseFloat(diamond.depth)]]                
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-7 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Color")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.color ? 'N/A' : diamond.color ]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-8 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Table(%)")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.tablePerc ? 'N/A' : `${ diamond.tablePerc }`]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-9 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Clarity")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.clarity ? 'N/A' : diamond.clarity ]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-10 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Depth(%)")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.deptPerc ? 'N/A' : `${ diamond.deptPerc }`]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-11 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Cut")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.cut ? 'N/A' : diamond.cut]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-12 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Ratio")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.ratio ? 'N/A' : parseFloat(diamond.ratio).toFixed(2)]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-13 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Polish")]]
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.polish ? 'N/A' : diamond.polish]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-14 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Girdle")]]
+                                </span>
+                                
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.girdleMax && !diamond.girdleMin ? 'N/A - N/A' : `${diamond.girdleMin} - ${diamond.girdleMax}`]]
+                                </span>
+                            </div>
+
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-15 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Symmetry")]] 
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.symmetry ? 'N/A' : diamond.symmetry]]
+                                </span>
+                            </div>
+                            <div class="pc-table-detail pc-gap-x-5 detail-column-row-16 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                    [[$t("Girdle Thick")]] 
+                                </span>
+                                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                                    [[!diamond.girdleMin ? 'N/A' : diamond.girdleMin]]
+                                </span>
+                            </div>      
+                            <div class="pc-scan-QR pc-p-20 pc-flex pc-flex-col pc-w-full">
+                                <span class="pc-w-full detail-row-1 pc-text-04043F">
+                                [[$t("Scan To get Diamond Info")]] 
+                                </span>
+                                <span v-if="!changeInMetalLoading" class="pc-w-full detail-row-2 pc-text-04043F">
+                                    <img :src="newQRCode" alt="QRCode"/>
+                                </span>
+                                <span v-else class="pc-w-90px pc-h-90px skeleton-box pc-rounded-16">
+                                </span>
+                            </div>         
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div> 
+        
+
+        <div class="pc-accordion-div accordion-non-active">
+            <div class="pc-accordion pc-text-04043F pc-select-none pc-w-full pc-p-20 pc-flex pc-justify-between" @click="openDetail($event,'setting')">
+                YOUR SETTING DETAILS
+                <svg class="pc-custom-svg-size" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M0 0h24v24H0V0z" style="fill: none;"></path>
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+                </svg>
+            </div>
+            <div class="table panel">
+                <div class="diamond-detail-table-div pc-new-layout-detail-page">
+                <div class="pc-detail-column detail-column-1">
+                    <div class="pc-setting-detail-table-div pc-detail-column detail-column-1 pc-flex pc-flex-wrap pc-w-full pc-p-0">
+                        <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-full pc-py-10 pc-px-20">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                SKU                             
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F" v-if="!changeInMetalLoading">
+                                [[diamond.hasOwnProperty('diamondType') ? `${skuDetails}` : '']]  
+                            </span>
+                            <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span>
+                        </div>
+                        <div v-for="(value, key, index) in settingDetails" :key="index" class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-full pc-py-10 pc-px-20" :class="`detail-column-row-${index} column-row class-${key}`" v-show="!!key && !(key.includes('Product_Video')) && value && key != 'Engagement_Ring_Metal_Type' && key !='Engagement_Ring_Carat_Weight' && key != 'This_Ring_Can_Be_Set_With' && key != 'Matching_Id' && key != 'Shipping_Day' && key != 'Approx._Ring_Weight'">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                [[$t(key.split('_').join(' '))]]
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F" v-if="!changeInMetalLoading">
+                                [[value]]
+                            </span>
+                            <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span>
+                        </div>                
+                        <!-- <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-full pc-py-10 pc-px-20">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                Sizes Available                                
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F">
+                                [[settingSizesList[1]]] to [[settingSizesList[settingSizesList.length-1]]] 
+                            </span>
+                        </div> -->
+                        <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-full pc-py-10 pc-px-20">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                Metal                             
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F" v-if="!changeInMetalLoading">
+                                [[selectedMetal]] 
+                            </span>
+                            <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span>
+                        </div>
+                        <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-full pc-py-10 pc-px-20">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                Diamond Shape                             
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F">
+                                [[diamond.shape]]
+                            </span>
+                        </div>
+
+                        <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-flex-col pc-py-10 pc-px-20" :class="`detail-column-row-${Object.keys(settingDetails).length}`">
+                            <span class="pc-w-full detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                                [[$t("Scan To get Setting Info")]] 
+                            </span>
+                            <span class="pc-w-full detail-row-2 pc-text-04043F pc-p-10" v-if="!changeInMetalLoading">
+                                <img :src="newQRCode" alt="QRCode"/> 
+                            </span>
+                            <span class="skeleton-box pc-w-90px pc-h-90px" v-show="changeInMetalLoading"></span>
+                        </div>           
+                    </div>            
+                </div>
+            </div>
+        </div>
+
+        <transition name="final-ring-detail-fade" mode="out-in">    
+            
+            <!-- <div v-if="1!=1" class="tps_tab_info_div tps-setting-detail-table" :class="{'active-tab' : currentDetailTab == 'setting'}">
+                <div class="diamond-detail-table-div">
+                    <div class="pc-detail-column detail-column-1">
+                        <template v-for="(value, key, index) in settingDetails" :key="index" v-if="value && key != 'Engagement_Ring_Metal_Type' && key !='Engagement_Ring_Carat_Weight' && key != 'This_Ring_Can_Be_Set_With'">
+                            <div :class="`detail-column-row-${index + 1}`">
+                                <span class="detail-row-1">
+                                    [[$t(key.split('_').join(' '))]]
+                                </span>
+                                <span class="detail-row-2">
+                                    [[value.value]]                    
+                                </span>
+                            </div>
+                        </template>    
+
+                        <div :class="`detail-column-row-${Object.keys(settingDetails).length + 1}`">
+                            <span class="detail-row-1">
+                                [[$t("Metal")]]
+                            </span>
+                            <span class="detail-row-2">
+                                [[selectedMetal]]
+                            </span>
+                        </div>
+
+                        <div :class="`detail-column-row-${Object.keys(settingDetails).length + 2}`">
+                            <span class="detail-row-1">
+                                [[$t("Diamond Shape")]]
+                            </span>
+                            <span class="detail-row-2">
+                                [[diamond.shape]]
+                            </span>
+                        </div>
+
+                        <div :class="`detail-column-row-${Object.keys(settingDetails).length + 3}`">
+                            <span class="detail-row-1">
+                                [[$t("SKU")]]
+                            </span>
+                            <span class="detail-row-2">
+                                [[diamond.hasOwnProperty('diamondType') ? `DIA_${diamond.diamondType.toUpperCase()}_${diamond.diamondId}_SETTING_${settingId}` : '']]
+                            </span>
+                        </div>
+
+                        <div :class="`detail-column-row-${Object.keys(settingDetails).length + 4}`">
+                            <span class="detail-row-1">
+                                [[$t("Scan To get Ring Info")]] 
+                            </span>
+                            <span class="detail-row-2">
+                                <img :src="newQRCode" alt="QRCode" class="tps_QR_image"/>
+                            </span>
+                        </div>        
+                    </div>            
+                </div>
+            </div> -->
+            <!-- setting detail -->
+        </transition>
+    </div>
+</script>
+<!-- FINAL RING DETAIL TABLE -->
+
+<!-- FINAL RING META DATA -->
+<script
+  type="text/x-template"
+  id="final-ring-meta-data"
+>
+    <div ref="scrollContainer" class="pc-final-ring-grid pc-details-meta-data-div pc-w-full pc-flex pc-flex-col pc-gap-y-10 pc-pl-10" v-if="!redirectionPossible">
+        <h1 class="pc-setting-details_title pc-text-04043F pc-transform-none" v-if="!changeInMetalLoading">
+            [[getPageTitle]]
+        </h1> 
+        <span class="skeleton-box pc-h-150 pc-w-full" v-show="changeInMetalLoading"></span> 
+        <div class="pc-w-full pc-box  ">
+            <div class="pc-flex pc-flex-col pc-w-full pc-pb-20 pc-border-tlr-0 pc-gap-y-10">
+                <div class="pc-flex pc-w-full">
+                    <span class="pc-setting-header pc-text-04043F pc-w-4/10">[[$t("Ring Metal")]] </span> : 
+                    <span class="dia-setting-detail pc-text-04043F pc-w-6/10 pc-flex pc-text-nowrap">
+                        <span class="dia-setting-detail pc-px-5 pc-text-04043F pc-w-6/10 pc-text-nowrap"  v-if="!changeInMetalLoading">[[settingMetal]]</span>
+                        <span class="pc-setting-header pc-setting-change-icon pc-text-04043F pc-bold pc-w-1/2 pc-select-none pc-underline pc-text-align-end pc-pointer"  v-if="!changeInMetalLoading" @click="getDetailPage">[[$t("Change Metal")]]</span>
+                        <span title="Change Metal" class="pc-setting-header pc-mobile-setting-change-icon pc-text-04043F pc-bold pc-w-1/2 pc-select-none pc-underline pc-text-align-end pc-pointer"  v-if="!changeInMetalLoading" @click="getDetailPage">
+                            <svg v-if="!showMetalChange" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </span> 
+                        <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span> 
+                    </span>
+                </div>
+                <div class="pc-flex pc-w-full">
+                    <span class="pc-setting-header pc-text-04043F pc-w-4/10">[[$t("Ring Size")]] </span> : 
+                    <span class="dia-setting-detail  pc-text-04043F pc-w-6/10 pc-flex pc-text-nowrap">
+                        <span v-if="!!finalSettingSize && finalSettingSize.toLowerCase() != 'select ring size' && !changeInMetalLoading" class="pc-w-1/2 final-setting-size pc-px-5">[[ finalSettingSize]]</span> 
+                        <span v-if="finalSettingSize.toLowerCase() == 'select ring size'" class="pc-w-1/2 final-setting-size pc-px-5 ">Select ring size!</span> 
+                        <!-- <span class="pc-text-red pc-fs-14" v-if="tooltipText == 'Select Ring Size'">*Select Ring Size</span> -->
+                        <!-- <span class="pc-setting-header pc-text-04043F pc-bold pc-w-1/2 pc-select-none pc-underline" @click="showRingSizes = !showRingSizes" v-if="!changeInMetalLoading">[[$t("Change Size")]]</span> -->
+                         <span class="pc-setting-header pc-setting-change-icon  pc-text-04043F pc-bold pc-w-1/2 pc-select-none pc-underline pc-text-align-end pc-pointer" @click="getDetailPage" v-if="!changeInMetalLoading">[[ finalSettingSize != "select ring size" ? "Change Size": "Set Size"]]</span> 
+                         <span :title="finalSettingSize != 'select ring size' ? 'Change Size': 'Set Size'" class="pc-setting-header pc-mobile-setting-change-icon  pc-text-04043F pc-bold pc-w-1/2 pc-select-none pc-underline pc-text-align-end pc-pointer" @click="getDetailPage" v-if="!changeInMetalLoading">
+                            <svg v-if="!showRingSizes" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </span> 
+                        <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span>
+                    </span>
+                </div>
+                <div class="pc-flex pc-w-full">
+                    <span class="pc-setting-header pc-text-04043F pc-w-4/10">[[$t("Setting Price")]] </span> : 
+                    <span class="pc-product-change pc-flex pc-w-6/10" v-if="!changeInMetalLoading">
+                        <span class="dia-setting-detail pc-px-5 pc-text-04043F pc-text-nowrap">[[` ${setting.currency}${Math.round(adjustPriceByRingSize(settingSize,setting.price)).toFixed(0)}`]]</span>
+                    </span>
+                    <span class="skeleton-box pc-h-30px pc-w-6/10" v-show="changeInMetalLoading"></span>
+                </div>
+                <div class="pc-w-full">
+                    <div class="pc-flex pc-w-full">
+                        <span class="pc-setting-header pc-text-04043F pc-w-4/10">[[$t("Diamond Price")]] </span> : 
+                        <span  v-if="diamond.diamondType == 'lab'" class="pc-product-change pc-flex pc-gap-x-10">
+                          <div>
+                              <span class="dia-setting-detail pc-px-5 pc-text-04043F pc-text-nowrap">[[` ${diamond.currencySymbol}${parseFloat(diamond.finalPriceAud * 0.70).toFixed(0)}`]]</span>
+                              <s id="ComparePrice-template--24390716031340__main" class="product-single__price product-single__price--compare">
+                                [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${(parseFloat(diamond.finalPriceAud).toFixed(2))}` ]]
+                              </s>
+                          </div> 
+                            <div class="pc-flex pc-flex-col pc-gap-y-5 pc-items-center">
+                                <span style="width:100px;" class="pc-applied-coupon-badge"><b>FIRST30</b></span>
+                            </div>
+                        </span>
+                        <span v-else class="pc-product-change pc-flex pc-gap-x-10">
+                          <div>
+                              <span class="dia-setting-detail pc-px-5 pc-text-04043F pc-text-nowrap">[[` ${diamond.currencySymbol}${parseFloat(diamond.finalPriceAud).toFixed(0)}`]]</span>
+                          </div> 
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <hr class="pc-m-0">
+            <div class="pc-w-full pc-py-10">
+                <h2 class="pc-flex">
+                    <span class="pc-w-4/10 pc-flex pc-flex-col">
+                        <span class="pc-filter-heading pc-w-4/10 pc-text-04043F pc-text-nowrap">[[$t("Total Price")]] </span>
+                        {% comment %} <span class="pc-summary-text pc-w-full pc-text-04043F pc-lh-20 pc-fs-14 pc-text-nowrap pc-font-tt-commons">(Tax will be apply at checkout)</span> {% endcomment %}
+                    </span>
+                    <span class="pc-w-6/10 pc-flex pc-gap-x-10">
+                    <span class="pc-total-price pc-text-04043F"  v-if="diamond.diamondType == 'lab'">: 
+                            [[` ${diamond.currencySymbol}${((Math.round(diamond.finalPriceAud * 0.70)) + (Math.round(adjustPriceByRingSize(settingSize,setting.price)))).toFixed(0)}`]]
+                        </span>
+                    <span class="pc-total-price pc-text-04043F" v-else>: 
+                            [[` ${diamond.currencySymbol}${((Math.round(diamond.finalPriceAud)) + (Math.round(adjustPriceByRingSize(settingSize,setting.price)))).toFixed(0)}`]]
+                        </span>
+                        <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span>
+                </span>    
+                </h2>
+            </div>
+            <div class="field form-group" style="margin-bottom:0 !important; ">
+                <input type="text" id="EngravingText" class="field__input form-control" v-model="engravingText" maxlength="6" 
+                    placeholder="Enter Engraving (Max 6)">
+                <label class="field__label" for="EngravingText">Engraving Text...</label>
+            </div>            
+        </div>
+        <!-- <div v-if="!changeInMetalLoading">
+            <klarna-placement
+                data-key="credit-promotion-badge"
+                data-locale="en-US"
+                :data-purchase-amount="(Math.round(diamond.finalPrice) + Math.round(setting.price)) * 100">
+            </klarna-placement>  
+        </div>   -->
+        <!-- <span class="skeleton-box pc-h-30px pc-w-full" v-show="changeInMetalLoading"></span> -->
+        <div class="pc-final-setting_metal_swatches pc-metals-section" v-if="showMetalChange">
+            <div class="pc-setting-option-div pc-filter_result_section pc-flex pc-flex-col pc-gap-y-10">
+                <div class="pc-setting-detail-filter pc-flex pc-gap-x-20">
+                    <div class="pc-flex pc-gap-x-10 pc-w-full">
+                    <div class="svg-container">
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.6" y="3.53564" width="5" height="5" transform="rotate(-45 0 3.53564)" fill="#04043F"/>
+                        </svg>
+                    </div>
+                    <p class="pc-setting-header  pc-flex pc-w-full"><span class="pc-w-1\/2">[[$t("Can be built with metal : ")]]</span> <span class="" v-if="!changeInMetalLoading">[[settingMetal]]</span><span v-else class="skeleton-box pc-h-30px pc-w-150px"></span></p>
+                    </div>
+                    <div class="svg-container  pc-pointer" @click="showMetalChange = !showMetalChange">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </div>
+                </div>
+                <ul class="pc-m-0 pc-list-none pc-setting-style-section pc-flex pc-justify-center pc-w-full pc-gap-x-5" v-if="settingMetalList.length">
+                    <template v-for="(metalJson, index) in settingMetalList" :key="index">
+                        <li :class="[{'selected' : settingMetal == metalJson},{'pc-w-full':settingMetalList.length > 3},`pc-metal-${ metalJson.replaceAll(' ', '-')?.toLowerCase() }`]" class="pc-h-full pc-setting-metal pc-flex pc-flex-col pc-items-center pc-relative">
+                            <input :id="metalJson" class="pc-visibility-hidden pc-absolute" type="radio" name="select-metal" :metal-type="metalJson?.toLowerCase()" :value="metalJson?.toLowerCase()" @change="!changeInMetalLoading ? ($emit('update:setting-metal', metalJson), $emit('update-metal',metalJson)) : ''">
+                            <label :for="metalJson" class="pc-select-none pc-flex pc-flex-col pc-metal-label">
+                                <div :class="[settingMetal == metalJson ? 'selection-border-2' : 'pc-border-transparent','pc-'+metalJson?.toLowerCase().replaceAll(' ','-')]" class="pc-metal-svg pc-border-1/2 pc-border-2 pc-border-solid" ></div>
+                                <span class="pc-select-none form-check-label pc-metal-name pc-text-04043F pc-flex pc-flex-col pc-items-center pc-justify-center" :for="metalJson">[[metalJson.split(" ")[0].toUpperCase()]]
+                                    <span v-if="!!metalJson.split(' ').slice(1).join(' ')">[[metalJson.split(' ').slice(1).join(' ')]]</span>
+                                </span>
+                            </label>
+                        </li>
+                    </template>
+                </ul>  
+            </div>          
+        </div>     
+        <transition name="pc-form">       
+            <div class="pc-my-10 pc-flex pc-gap-x-20 pc-items-center pc-justify-between" v-if="showRingSizes">
+                <div class="pc-flex pc-gap-x-20 pc-items-center">
+                    <div class="pc-ring_size_changer">
+                        <div class="pc-flex pc-gap-x-10 pc-items-center">
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.6" y="3.53564" width="5" height="5" transform="rotate(-45 0 3.53564)" fill="#04043F"/>
+                            </svg>
+                            <p class="pc-setting-header pc-text-04043F">[[$t("Ring Size")]]* :</p>
+
+                        </div>
+                    </div>
+                    <div class="pc-ring_size_spacer">
+                        <div class="pc-dropdown">
+                            <button class="pc-dropbtn pc-text-04043F pc-bg-transparent pc-flex pc-justify-between pc-items-center pc-text-nowrap" @click="openDropDown">
+                                [[settingSize]]
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+                                </svg>
+
+                            </button>
+                            <div id="pc-myDropdown" class="pc-dropdown-content" :class="isDDOpen ? 'pc-block' : 'pc-none'">
+                                <template v-for="(settingSize, index) in settingSizeList" :index="index">
+                                    <div class="pc-font-16 pc-font-400 pc-text-04043F pc-pointer pc-px-10 pc-font-tt-commons" @click="!changeInMetalLoading ? (isDDOpen = !isDDOpen, $emit('setFinalSize', settingSize), $emit('update:setting-size', settingSize)) : ''">[[settingSize]]</div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                <div class="svg-container  pc-pointer" @click="showRingSizes = !showRingSizes">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </div>           
+            </div> 
+        </transition>
+        <div class="pc-w-full pc-flex pc-justify-center pc-align-center">
+            <div class="pc-w-full" :class="{'pc-btn_extend' : buttonClicked}">
+                <button class="btn btn--full product-form__cart-submit product-form__cart-submit--outline btn-theme " :class="{ 'pr-8 pl-4': buttonClicked}" @click="!changeInMetalLoading ? addToCart($event) : ''">
+                        <span>[[ $t(buttonText) ]]</span>
+                </button> 
+                <div class="tps_details_btn_group">
+                    <div class="pc-tooltip-message pc-tt-commons pc-fs-16 pc-text-white pc-bg-04043F" v-show="showTooltip">[[tooltipText]]</div>
+                    <!-- <tooltip-comp :show-tooltip="showTooltip" v-show="showTooltip" :wishlist-text="tooltipText" :tooltip-class="tooltipClass"></tooltip-comp>           -->
+                </div> 
+            </div>    
+        </div>
+        <div class="">
+            {% comment %} <div class="pc-share-btns pc-py-10 pc-flex pc-justify-around pc-px-20">                 
+
+                
+                <div class="pc-email pc-w-1/2">
+                    <button class="pc-text-04043F pc-flex pc-gap-x-10 pc-w-full pc-items-end  pc-justify-center pc-p-0" @click="!changeInMetalLoading ? openFormPopup($event,'drop_a_hint') : ''">
+                        <span class="svg-container">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#04043F" xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_181_1948)">
+                                <path d="M21.696 2.98804H2.304C1.032 2.98804 0 4.02004 0 5.28004V18.72C0 19.992 1.032 21.024 2.304 21.024H21.708C22.98 21.024 24.012 19.992 24.012 18.72V5.28004C24 4.02004 22.968 2.98804 21.696 2.98804ZM1.608 5.28004C1.608 4.89604 1.92 4.59604 2.292 4.59604H21.696C22.08 4.59604 22.38 4.90804 22.38 5.28004V18.72C22.38 19.104 22.068 19.404 21.696 19.404H2.304C1.92 19.404 1.62 19.092 1.62 18.72V5.28004H1.608Z" fill="#04043F"/>
+                                <path d="M4.10386 10.188L11.5679 15.168C11.6999 15.252 11.8559 15.3 12.0119 15.3C12.1679 15.3 12.3239 15.252 12.4559 15.168L19.9199 10.188C20.2679 9.93598 20.3639 9.46798 20.1359 9.10798C19.8959 8.73598 19.4039 8.61598 19.0199 8.85598L11.9999 13.536L4.97986 8.85598C4.96786 8.84398 4.95586 8.84398 4.94386 8.83198C4.57186 8.59198 4.06786 8.71198 3.82786 9.08398C3.62386 9.45598 3.73186 9.95998 4.10386 10.188Z" fill="#04043F"/>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_181_1948">
+                                <rect width="24" height="24" fill="white"/>
+                                </clipPath>
+                                </defs>
+                            </svg>
+                        </span>
+                        Send hint
+                    </button>  
+                </div> 
+                                                
+                <div class="pc-relative pc-share-btn-div pc-w-1/2">
+                    <button class="pc-text-04043F pc-flex pc-gap-x-10 pc-w-full pc-justify-center pc-items-end pc-p-0 pc-select-none" @click="!changeInMetalLoading ? showSocialIconSection() : ''">
+                        <span class="svg-container">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#04043F" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.9873 22.5469C14.6915 22.5469 12.824 20.6794 12.824 18.3836C12.824 16.0879 14.6915 14.2204 16.9873 14.2204C19.283 14.2204 21.1505 16.0879 21.1505 18.3836C21.1505 20.6794 19.283 22.5469 16.9873 22.5469ZM16.9873 15.8857C15.6098 15.8857 14.4894 17.0062 14.4894 18.3836C14.4894 19.7611 15.6098 20.8816 16.9873 20.8816C18.3647 20.8816 19.4852 19.761 19.4852 18.3836C19.4852 17.0062 18.3647 15.8857 16.9873 15.8857ZM7.01284 16.4408C4.71711 16.4408 2.84961 14.5733 2.84961 12.2775C2.84961 9.9818 4.71711 8.11432 7.01284 8.11432C9.30861 8.11432 11.1761 9.98182 11.1761 12.2775C11.1761 14.5733 9.30861 16.4408 7.01284 16.4408ZM7.01284 9.7796C5.63539 9.7796 4.51491 10.9001 4.51491 12.2775C4.51491 13.655 5.63541 14.7755 7.01284 14.7755C8.39028 14.7755 9.51081 13.655 9.51081 12.2775C9.51081 10.9001 8.39028 9.7796 7.01284 9.7796ZM16.9873 9.7796C14.6915 9.7796 12.824 7.9121 12.824 5.61637C12.824 3.32065 14.6915 1.45312 16.9873 1.45312C19.283 1.45312 21.1505 3.32063 21.1505 5.61637C21.1505 7.91213 19.283 9.7796 16.9873 9.7796ZM16.9873 3.11841C15.6098 3.11841 14.4894 4.23891 14.4894 5.61635C14.4894 6.9938 15.6098 8.1143 16.9873 8.1143C18.3647 8.1143 19.4852 6.9938 19.4852 5.61635C19.4852 4.23891 18.3647 3.11841 16.9873 3.11841Z" fill="#04043F"/>
+                                <path d="M13.7647 17.4242L9.3353 14.6486L10.2194 13.2371L14.6488 16.0125L13.7647 17.4242ZM13.8539 7.29932L14.6832 8.74349L10.1506 11.3464L9.32129 9.90221L13.8539 7.29932Z" fill="#04043F"/>
+                            </svg>
+                        </span>
+                        Share
+                    </button> 
+                    <transition name="pc-form">
+                        <social-icon-comp v-if="showSocialIconDiv" @open-email="openFormPopup" :item-title="getPageTitle" :item-url="getPageUrl" @open-tooltip="handleBtnTooltip('show','copy','hjkghjg')" component="final-ring"/>
+                    </transition>                
+                </div>
+            </div>  {% endcomment %}
+            <hr>  
+            {% comment %} <div class="pc-w-full pc-flex pc-gap-x-30 pc-flex-nowrap pc-items-center">
+                <img :src="coupon_ring_img" class="pc-w-1/4" />
+                <div class="pc-w-3/4 pc-flex pc-flex-col pc-items-start pc-gap-y-10">
+                    <span class="pc-coupon-text pc-text-04043F">
+                        Spend $3000 and get free diamond studs
+                    </span>
+                    <span class="pc-coupon-code pc-border-dashed pc-flex pc-px-20 pc-py-10 pc-text-04043F pc-w-auto pc-pointer pc-border-1" @click="!changeInMetalLoading ? copyCoupon('STUDS3000') : ''">
+                        Coupon : STUDS3000
+                    </span>
+                </div>
+            </div>        {% endcomment %}
+            <div class="pc-w-full pc-flex pc-gap-x-30 pc-flex-nowrap pc-items-center">
+                <img src="https://cdn.shopify.com/s/files/1/0900/1870/9868/files/free-studs-banner.png?v=1742892459https://cdn.shopify.com/s/files/1/0900/1870/9868/files/free-studs-banner.png?v=1742892459" class="pc-w-full" />
+            </div>
+            <hr> 
+            <div class="pc-flex pc-flex-col pc-shipping-detail pc-w-8/10">                
+                
+                <span class="pc-shipping-div  pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.29815 14.5643L2.29292 2.29325L14.5639 2.29286V14.5643H8.42857H8.27857V14.7143V15.8571V16.0071H8.42857H17.5714H17.7214V15.8571V14.7143V14.5643H17.5714H16.0071V2.14325C16.0071 1.43392 15.4274 0.85 14.7139 0.85H2.14325C1.43392 0.85 0.85 1.42978 0.85 2.14325V14.7139C0.85 15.4251 1.43393 16.0071 2.14821 16.0071H3.85714H4.00714V15.8571V14.7143V14.5643H3.85714H2.29815Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M22.1428 14.7142L22.1433 14.5642L21.9928 14.5637V14.7142V15.8571V16.0071H22.1428H23.8517C24.5774 16.0071 25.1499 15.4344 25.1499 14.7168V10.1402C25.1499 9.68895 24.985 9.09662 24.7548 8.71299L21.9109 3.9731C21.6185 3.4858 20.9989 3.13564 20.4311 3.13564H15.2856H15.1356V3.28564V4.4285V4.5785H15.2856H20.4311C20.4498 4.5785 20.5009 4.59189 20.5637 4.6274C20.6266 4.66293 20.6642 4.69966 20.6736 4.71544L23.5176 9.45533C23.5629 9.53081 23.6112 9.65296 23.6483 9.78685C23.6854 9.92072 23.7071 10.0509 23.7071 10.1402V14.5679C23.6725 14.568 23.6329 14.568 23.5893 14.5679C23.4287 14.5679 23.2146 14.5674 23.0003 14.5669L22.4111 14.5651L22.217 14.5645L22.1626 14.5643L22.1482 14.5642L22.1446 14.5642L22.1436 14.5642L22.1434 14.5642H22.1434L22.1428 14.7142Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M24 10.15H24.15V10V9.2V9.05H24H19.237C19.2369 8.98933 19.2368 8.91244 19.2368 8.82382C19.2368 8.59826 19.2373 8.29743 19.2379 7.9965C19.2385 7.69559 19.2392 7.39467 19.2399 7.16898L19.2405 6.94384C19.3123 6.94422 19.4066 6.94459 19.5165 6.94497C19.7723 6.94584 20.1133 6.94669 20.4542 6.94743L21.3918 6.94928L21.7007 6.94981L21.7873 6.94995L21.8101 6.94999L21.816 6.95L21.8174 6.95L21.8178 6.95L21.8179 6.95L21.8182 6.8L21.8179 6.95L21.9682 6.95024V6.8V6V5.85H21.8182H19.0859C18.7581 5.85 18.4549 5.94571 18.2299 6.10932C18.0048 6.27302 17.85 6.51226 17.85 6.79238V9.20762C17.85 9.48669 18.0033 9.72599 18.2285 9.89008C18.4534 10.054 18.7574 10.15 19.0884 10.15H24Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M6.14279 18.2926C7.80359 18.2926 9.14993 16.9463 9.14993 15.2855C9.14993 13.6247 7.80359 12.2783 6.14279 12.2783C4.48199 12.2783 3.13564 13.6247 3.13564 15.2855C3.13564 16.9463 4.48199 18.2926 6.14279 18.2926ZM7.70707 15.2855C7.70707 16.1494 7.00672 16.8498 6.14279 16.8498C5.27886 16.8498 4.5785 16.1494 4.5785 15.2855C4.5785 14.4216 5.27886 13.7212 6.14279 13.7212C7.00672 13.7212 7.70707 14.4216 7.70707 15.2855Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M19.8571 18.2926C21.5179 18.2926 22.8643 16.9463 22.8643 15.2855C22.8643 13.6247 21.5179 12.2783 19.8571 12.2783C18.1963 12.2783 16.85 13.6247 16.85 15.2855C16.85 16.9463 18.1963 18.2926 19.8571 18.2926ZM21.4214 15.2855C21.4214 16.1494 20.7211 16.8498 19.8571 16.8498C18.9932 16.8498 18.2929 16.1494 18.2929 15.2855C18.2929 14.4216 18.9932 13.7212 19.8571 13.7212C20.7211 13.7212 21.4214 14.4216 21.4214 15.2855Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                    </svg>
+                    <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/shipping/" target="_blank">Free Insured Shipping by <span class="pc-shipping-date">[[getDiamondShippingDays]]</span></a>
+                </span>   
+                <span class="pc-shipping-div  pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.957 4.77015L23.9552 4.75853C23.9495 4.74348 23.9372 4.73382 23.9306 4.7194C23.904 4.65971 23.869 4.60405 23.8267 4.5541C23.8069 4.53202 23.7857 4.51128 23.7632 4.492C23.7227 4.45569 23.6781 4.42427 23.6302 4.3984C23.6044 4.38357 23.5777 4.37038 23.5503 4.35891C23.534 4.35254 23.5209 4.34127 23.504 4.33602L12.2099 0.835478C12.073 0.793122 11.9263 0.793122 11.7894 0.835478L0.495247 4.33602C0.478729 4.34113 0.465953 4.35219 0.450071 4.35842C0.421838 4.37008 0.394435 4.38362 0.368047 4.39896C0.320701 4.42464 0.276563 4.45575 0.236541 4.49165C0.213985 4.51106 0.192761 4.53195 0.173012 4.55417C0.130795 4.60403 0.0959074 4.65956 0.0693882 4.71912C0.0627529 4.73361 0.0502588 4.74341 0.0446118 4.75853L0.042706 4.77022C0.015002 4.84524 0.000554737 4.92445 0 5.00434V18.0364C0.00154207 18.4635 0.133683 18.8802 0.378972 19.2313C0.624262 19.5824 0.971161 19.8515 1.37386 20.003L11.2569 23.6785C11.7363 23.8563 12.2644 23.8563 12.7438 23.6785L22.6261 20.003C23.0289 19.8516 23.3759 19.5825 23.6212 19.2314C23.8665 18.8802 23.9986 18.4635 24 18.0364V5.00434C23.9994 4.9244 23.9848 4.84517 23.957 4.77015ZM12 2.23744L21.1213 5.06448L17.6394 6.35968L8.74588 3.24609L12 2.23744ZM11.2941 22.1967L1.87016 18.692C1.73584 18.6416 1.62011 18.5519 1.53827 18.4348C1.45642 18.3177 1.41231 18.1788 1.41176 18.0364V6.0148L11.2941 9.69037V22.1967ZM2.87866 5.06448L6.49595 3.9434L15.5828 7.12448L12 8.45699L2.87866 5.06448ZM22.5882 18.0364C22.5877 18.1788 22.5436 18.3177 22.4618 18.4347C22.3799 18.5517 22.2642 18.6413 22.1298 18.6917L12.7059 22.197V9.69009L16.9412 8.11485V10.6052C16.9412 10.7909 17.0155 10.969 17.1479 11.1003C17.2803 11.2315 17.4598 11.3053 17.6471 11.3053C17.8343 11.3053 18.0138 11.2315 18.1462 11.1003C18.2786 10.969 18.3529 10.7909 18.3529 10.6052V7.58991L22.5882 6.01466V18.0364Z" fill="#04043F"/>
+                    </svg>
+
+                    <div class="pc-shipping-text pc-text-04043F">
+                        {% comment %} <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/return-policy" target="_blank">30 Days Free Return & Exchange</a>
+                        <span class="pc-font-16"> • </span> {% endcomment %}
+                        <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/ring-resizing-services" target="_blank">Free 90 days resizing</a>
+                        <span class="pc-font-16"> • </span>
+                        <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/lifetime-manufacturing-warranty" target="_blank">Lifetime warranty.
+                    </div>
+                </span>  
+                <span class="pc-shipping-div  pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.6916 15.0623L18.0977 13.1163C17.4615 12.6515 16.6747 12.4413 15.8915 12.5268C15.1083 12.6123 14.3854 12.9874 13.8645 13.5785C13.2408 14.1328 13.0254 14.2448 12.8129 14.1194C10.7641 12.9669 9.07036 11.275 7.91555 9.22752C7.87413 9.15361 7.85607 9.06889 7.86374 8.98451C7.87142 8.90013 7.90447 8.82006 7.95855 8.75484L8.81212 7.73034C9.25594 7.20103 9.50722 6.5369 9.52494 5.84637C9.54266 5.15584 9.32578 4.47969 8.9097 3.92831L6.96405 1.334C5.78083 -0.000101019 4.24912 -0.365597 2.89606 0.382869C0.925475 1.45724 -0.438714 4.76635 0.130131 7.00759C0.825651 13.041 8.76379 21.8644 16.1254 21.9931C19.6605 22.1841 24.3835 18.3932 20.6916 15.0623ZM19.9999 18.9294C16.3247 22.5377 10.4257 19.35 6.49607 15.5303C3.10458 12.1384 1.95539 8.8871 1.57702 6.70079C1.17391 4.86158 2.36335 1.67947 4.34977 1.47812C4.63269 1.50065 4.90793 1.58127 5.15828 1.71497C5.40863 1.84867 5.62872 2.03256 5.8048 2.25515L7.7255 4.81658C7.94071 5.1017 8.05291 5.45136 8.04379 5.80847C8.03466 6.16558 7.90476 6.50905 7.67527 6.78282L6.82167 7.80699C6.57627 8.10348 6.42627 8.46726 6.39138 8.85054C6.35649 9.23383 6.43833 9.61871 6.62617 9.95464C7.9094 12.2299 9.78973 14.1115 12.0642 15.3962C13.5294 16.1812 14.4037 14.9975 15.2435 14.3511C15.5175 14.1219 15.8609 13.9921 16.218 13.9829C16.5751 13.9737 16.9248 14.0857 17.2102 14.3005L19.8041 16.2461C20.0064 16.4003 20.1736 16.5958 20.2947 16.8194C20.4158 17.0431 20.4879 17.29 20.5065 17.5436C20.525 17.7973 20.4894 18.052 20.4021 18.2909C20.3147 18.5298 20.1777 18.7474 19.9999 18.9294ZM12.5375 1.71092C12.5375 1.61372 12.5566 1.51747 12.5938 1.42767C12.631 1.33786 12.6855 1.25627 12.7542 1.18754C12.823 1.11881 12.9046 1.06429 12.9944 1.02711C13.0842 0.989924 13.1804 0.970798 13.2776 0.970824C15.3396 0.973125 17.3166 1.79328 18.7746 3.25135C20.2327 4.70941 21.0528 6.68632 21.0551 8.74833C21.0551 8.94462 20.9772 9.13287 20.8384 9.27166C20.6996 9.41046 20.5113 9.48843 20.315 9.48843C20.1188 9.48843 19.9305 9.41046 19.7917 9.27166C19.6529 9.13287 19.575 8.94462 19.575 8.74833C19.573 7.07877 18.909 5.47814 17.7284 4.29757C16.5478 3.11701 14.9472 2.45293 13.2776 2.45101C13.1804 2.45104 13.0842 2.43191 12.9944 2.39473C12.9046 2.35755 12.823 2.30303 12.7542 2.2343C12.6855 2.16557 12.631 2.08398 12.5938 1.99417C12.5566 1.90437 12.5375 1.80812 12.5375 1.71092ZM12.5375 5.36008C12.5375 5.26288 12.5566 5.16663 12.5938 5.07683C12.631 4.98702 12.6855 4.90543 12.7542 4.8367C12.823 4.76797 12.9046 4.71345 12.9944 4.67627C13.0842 4.63908 13.1804 4.61996 13.2776 4.61998C14.3722 4.62116 15.4217 5.05646 16.1958 5.8304C16.9699 6.60434 17.4053 7.65372 17.4067 8.74833C17.404 8.94281 17.3248 9.12838 17.1863 9.26494C17.0478 9.40149 16.8611 9.47804 16.6666 9.47804C16.4721 9.47804 16.2854 9.40149 16.1469 9.26494C16.0084 9.12838 15.9293 8.94281 15.9265 8.74833C15.9257 8.04614 15.6463 7.37297 15.1497 6.87652C14.6531 6.38006 13.9798 6.10087 13.2776 6.10021C13.1804 6.10024 13.0842 6.08111 12.9944 6.04392C12.9046 6.00674 12.823 5.95222 12.7542 5.88349C12.6855 5.81475 12.631 5.73315 12.5938 5.64334C12.5566 5.55354 12.5375 5.45728 12.5375 5.36008ZM13.2779 8.00489C13.4697 8.01154 13.6515 8.09243 13.7848 8.23049C13.9182 8.36856 13.9928 8.55303 13.9928 8.74499C13.9928 8.93695 13.9182 9.12142 13.7848 9.25949C13.6515 9.39755 13.4697 9.47844 13.2779 9.48509C13.086 9.47844 12.9042 9.39755 12.7709 9.25949C12.6375 9.12142 12.563 8.93695 12.563 8.74499C12.563 8.55303 12.6375 8.36856 12.7709 8.23049C12.9042 8.09243 13.086 8.01154 13.2779 8.00489Z" fill="#04043F"/>
+                    </svg>
+                    <a href="tel:+61415900145" class="pc-shipping-text pc-text-04043F pc-underline pc-bold" target="_blank">+ 61 415 900 145</a>
+                </span>  
+                <span class="pc-shipping-div  pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.4286 1.70026H19.7143V0.850131C19.7143 0.624662 19.624 0.408428 19.4632 0.248997C19.3025 0.089567 19.0845 0 18.8571 0C18.6298 0 18.4118 0.089567 18.2511 0.248997C18.0903 0.408428 18 0.624662 18 0.850131V1.70026H6V0.850131C6 0.624662 5.90969 0.408428 5.74895 0.248997C5.5882 0.089567 5.37019 0 5.14286 0C4.91553 0 4.69751 0.089567 4.53677 0.248997C4.37602 0.408428 4.28571 0.624662 4.28571 0.850131V1.70026H2.57143C1.88944 1.70026 1.23539 1.96896 0.753154 2.44725C0.270918 2.92555 0 3.57425 0 4.25065V21.2533C0 21.9297 0.270918 22.5784 0.753154 23.0567C1.23539 23.535 1.88944 23.8037 2.57143 23.8037H21.4286C22.1106 23.8037 22.7646 23.535 23.2468 23.0567C23.7291 22.5784 24 21.9297 24 21.2533V4.25065C24 3.57425 23.7291 2.92555 23.2468 2.44725C22.7646 1.96896 22.1106 1.70026 21.4286 1.70026ZM22.2857 21.2533C22.2857 21.4787 22.1954 21.695 22.0347 21.8544C21.8739 22.0138 21.6559 22.1034 21.4286 22.1034H2.57143C2.3441 22.1034 2.12608 22.0138 1.96534 21.8544C1.80459 21.695 1.71429 21.4787 1.71429 21.2533V8.50131H22.2857V21.2533ZM22.2857 6.80105H1.71429V4.25065C1.71429 4.02518 1.80459 3.80895 1.96534 3.64952C2.12608 3.49009 2.3441 3.40052 2.57143 3.40052H4.28571V4.25065C4.28571 4.47612 4.37602 4.69236 4.53677 4.85179C4.69751 5.01122 4.91553 5.10078 5.14286 5.10078C5.37019 5.10078 5.5882 5.01122 5.74895 4.85179C5.90969 4.69236 6 4.47612 6 4.25065V3.40052H18V4.25065C18 4.47612 18.0903 4.69236 18.2511 4.85179C18.4118 5.01122 18.6298 5.10078 18.8571 5.10078C19.0845 5.10078 19.3025 5.01122 19.4632 4.85179C19.624 4.69236 19.7143 4.47612 19.7143 4.25065V3.40052H21.4286C21.6559 3.40052 21.8739 3.49009 22.0347 3.64952C22.1954 3.80895 22.2857 4.02518 22.2857 4.25065V6.80105ZM17.1429 12.752C17.1429 12.5265 17.2332 12.3103 17.3939 12.1508C17.5547 11.9914 17.7727 11.9018 18 11.9018H19.7143C19.9416 11.9018 20.1596 11.9914 20.3204 12.1508C20.4811 12.3103 20.5714 12.5265 20.5714 12.752C20.5714 12.9774 20.4811 13.1937 20.3204 13.3531C20.1596 13.5125 19.9416 13.6021 19.7143 13.6021H18C17.7727 13.6021 17.5547 13.5125 17.3939 13.3531C17.2332 13.1937 17.1429 12.9774 17.1429 12.752ZM10.2857 12.752C10.2857 12.5265 10.376 12.3103 10.5368 12.1508C10.6975 11.9914 10.9155 11.9018 11.1429 11.9018H12.8571C13.0845 11.9018 13.3025 11.9914 13.4632 12.1508C13.624 12.3103 13.7143 12.5265 13.7143 12.752C13.7143 12.9774 13.624 13.1937 13.4632 13.3531C13.3025 13.5125 13.0845 13.6021 12.8571 13.6021H11.1429C10.9155 13.6021 10.6975 13.5125 10.5368 13.3531C10.376 13.1937 10.2857 12.9774 10.2857 12.752ZM17.1429 17.8527C17.1429 17.6273 17.2332 17.411 17.3939 17.2516C17.5547 17.0922 17.7727 17.0026 18 17.0026H19.7143C19.9416 17.0026 20.1596 17.0922 20.3204 17.2516C20.4811 17.411 20.5714 17.6273 20.5714 17.8527C20.5714 18.0782 20.4811 18.2944 20.3204 18.4539C20.1596 18.6133 19.9416 18.7029 19.7143 18.7029H18C17.7727 18.7029 17.5547 18.6133 17.3939 18.4539C17.2332 18.2944 17.1429 18.0782 17.1429 17.8527ZM10.2857 17.8527C10.2857 17.6273 10.376 17.411 10.5368 17.2516C10.6975 17.0922 10.9155 17.0026 11.1429 17.0026H12.8571C13.0845 17.0026 13.3025 17.0922 13.4632 17.2516C13.624 17.411 13.7143 17.6273 13.7143 17.8527C13.7143 18.0782 13.624 18.2944 13.4632 18.4539C13.3025 18.6133 13.0845 18.7029 12.8571 18.7029H11.1429C10.9155 18.7029 10.6975 18.6133 10.5368 18.4539C10.376 18.2944 10.2857 18.0782 10.2857 17.8527ZM3.42857 12.752C3.42857 12.5265 3.51888 12.3103 3.67962 12.1508C3.84037 11.9914 4.05839 11.9018 4.28571 11.9018H6C6.22733 11.9018 6.44535 11.9914 6.60609 12.1508C6.76684 12.3103 6.85714 12.5265 6.85714 12.752C6.85714 12.9774 6.76684 13.1937 6.60609 13.3531C6.44535 13.5125 6.22733 13.6021 6 13.6021H4.28571C4.05839 13.6021 3.84037 13.5125 3.67962 13.3531C3.51888 13.1937 3.42857 12.9774 3.42857 12.752ZM3.42857 17.8527C3.42857 17.6273 3.51888 17.411 3.67962 17.2516C3.84037 17.0922 4.05839 17.0026 4.28571 17.0026H6C6.22733 17.0026 6.44535 17.0922 6.60609 17.2516C6.76684 17.411 6.85714 17.6273 6.85714 17.8527C6.85714 18.0782 6.76684 18.2944 6.60609 18.4539C6.44535 18.6133 6.22733 18.7029 6 18.7029H4.28571C4.05839 18.7029 3.84037 18.6133 3.67962 18.4539C3.51888 18.2944 3.42857 18.0782 3.42857 17.8527Z" fill="#04043F"/>
+                    </svg>
+                    <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/book-virtual-appointment" target="_blank">Book an Appointment</a>
+                </span>                    
+            </div>                           
+        </div>
+    </div>
+    <div v-if="waitLoader">
+        <div class="pc-fixed pc-h-100-vh pc-w-full pc-z-1 pc-backdrop-blur pc-top-0 pc-left-0 pc-bg-backdrop-black">
+            <wait-loader :is-loading="waitLoader" :message="loaderMessage" />
+        </div>
+    </div>
+    <teleport to="#popup-container">       
+        <diamond-hint-popup-comp type="final" :openPopup="openHintPopup" :popup-placeholder-image="getPopupPlaceholderImage" :popup-title="getPopupTitle" :popup-image="getPopupImage" :diamond-data="diamond" :setting-data="setting" @close-hint-popup="openHintPopup = false" @image-error="setNewImage"></diamond-hint-popup-comp>
+        <diamond-confirmation-popup :confirm="" :cancel="" :replace-diamond = "replaceDiamond" :replace-setting = "replaceSetting" :diamond="diamond" :setting="setting" :setting-size="settingSize" @close-popup="closeConfirmationPopup" :open-conf-popup="openConfPopup" :wait-loading="waitLoader" @update-wait-loader="updateWaitLoader"/>
+        <diamond-email-popup-comp :openPopup="openEmailPopup" :popup-placeholder-image="getPopupPlaceholderImage" :popup-title="getPopupTitle" :popup-image="getPopupImage" :diamond-data="diamond" @close-email-popup="openEmailPopup = false" @image-error="setNewImage" :form-type="'setting'"></diamond-email-popup-comp>
+    </teleport>
+</script>
+<!-- END FINAL RING META DATA -->
+
+<!-- FINAL RING PAGE GALLERY -->
+<script type="text/x-template" id="final-ring-media-gallery">
+  <div class="pc-w-full pc-details-media-gallery-div pc-flex pc-items-center pc-justify-center pc-flex-col pc-pr-10 pc-gap-y-20">
+      <div  class="pc-settings-image-container pc-border-1-f2f2f2">
+          <div class="pc-setting-shown-carat pc-summary-text pc-w-full pc-text-04043F pc-text-center pc-absolute pc-bottom-10 pc-lh-20 pc-font-tt-commons" v-if="mediaGallery[gallery.pos].name == 'setting' && !changeInMetalLoading">Setting shown with a 1.25ct.</div>
+          <div class="pc-details-inner-media-div  pc-flex " v-if="!changeInMetalLoading">
+              <span class="pc-loader" v-if="showLoader"></span>
+              <img :src="mediaGallery[gallery.pos].full" @error="$emit('imageError', $event.target, placeholderShape)" width="100" height="100" class="pc-slide-img" @load="showLoader = false"/>
+          </div>
+          <span class="skeleton-box pc-mh-500 pc-w-full" v-show="changeInMetalLoading"></span>
+      </div>
+      <div class="pc-w-full pc-flex pc-items-center pc-justify-center">
+          <div class="pc-down-slider-div pc-flex pc-w-100 pc-justify-center pc-gap-x-10  pc-items-center" v-if="!changeInMetalLoading">
+              <template v-for="(item, index) in mediaGallery" :key="index">
+                  <div class="final-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center pc-select-none pc-h-full" @click="setMainMedia($event, index, mediaGallery)">
+                      <img :src="item.full" class="down-sliders " @error="$emit('imageError', $event.target, placeholderShape)" width="80" height="80"/>
+                  </div>
+              </template>
+          </div>
+          <div class="pc-down-slider pc-flex pc-w-full pc-justify-center  pc-items-center" v-show="changeInMetalLoading">
+              <span class="skeleton-box pc-wh-80px"></span>
+              <span class="skeleton-box pc-wh-80px"></span>
+              <span class="skeleton-box pc-wh-80px"></span>
+          </div>
+      </div>
+
+  </div>
+</script>
+<!-- END FINAL RING PAGE GALLERY -->
+
+<!-- DIAMOND EMAIL POPUP -->
+<script type="text/x-template" id="diamond-email-popup">
+      <transition name="pc-form">
+      <div class="diamond-email-popup-div pc-popup_parent" v-if="openPopup" :class="{'pc-active-form' : openPopup}">
+          <div class="pc-details_page_form_popup pc-p-20">
+              <div class="pc-w-full pc-flex pc-justify-end">
+                  <div class="pc-close pc-flex pc-justify-end" @click="closePopup">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">
+                          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                      </svg>
+                  </div>
+              </div>
+              <div class="header-div" :class="{'pc-none' : showThankyouDiv}">
+                  <span class="pc-email-img"><img src="test.png"></span>
+                  <span class="pc-email-header">Have Questions</span>
+                  <span class="pc-email-description">We are ready to help you.</span>
+              </div>
+
+              <div class="pc-form-div pc-flex pc-flex-col" :class="{'pc-hide-form' : hideEmailForm}">
+                  <div class="pc-form-image-block" v-if="false">
+                      <div class="pc-email-img">
+                          <img :src="popupImage" @error="$emit('imageError', $event.target, popupPlaceholderImage)"/>
+                      </div>
+                      <div class="pc-email-img-title">
+                          [[popupTitle]]
+                      </div>
+                  </div>
+                  <div class="email-us-form pc-w-full" :class="{'pc-none' : showThankyouDiv}">
+                      <form @submit.prevent="submitForm" class="pc-flex pc-flex-col pc-gap-y-20">
+                          <div class="pc-flex pc-flex-col pc-justify-start">
+                              <label class="pc-text-04043F pc-font-tt-commons" for="pc-user-name">Name *</label>
+                              <input type="text" name="email-name" v-model.trim="email.name" placeholder="Your Name"/>
+                              <div class="error-div" v-if="emailError.name">This field is required</div>
+                          </div>
+
+                          <div class="pc-flex pc-flex-col pc-justify-start">
+                              <label class="pc-text-04043F pc-font-tt-commons" for="pc-user-email">Email Address *</label>
+                              <input type="text" name="email-id" v-model.trim="email.email" placeholder="Your Email"/>
+                              <div class="error-div" v-if="emailError.email">This field is required</div>
+                              <div class="error-div" v-if="emailError.emailValid">Enter valid email</div>
+                          </div>
+
+                          <div class="pc-flex pc-flex-col pc-justify-start">
+                              <label class="pc-text-04043F pc-font-tt-commons" for="pc-user-phone">Phone Number</label>
+                              <input type="text" name="email-phone" v-model.trim="email.phone" placeholder="Your Telephone Number (Optional)"/>
+                              <div class="error-div" v-if="emailError.phoneValid">Enter valid telephone number</div>
+                          </div>
+
+                          <div class="pc-flex pc-flex-col pc-justify-start">
+                              <label class="pc-text-04043F pc-font-tt-commons" for="pc-user-msg">What can we help with you? *</label>
+                              <textarea name="email-msg" v-model.trim="email.msg" placeholder="What can we help with you?"></textarea>
+                          </div>
+
+                          <div class="pc-flex pc-gap-x-10 pc-items-center">
+                              <input type="checkbox" name="send-updates" v-model="email.updates" class="pc-h-15 pc-flex pc-w-auto" />
+                              <span class="pc-text-04043F pc-font-tt-commons">Send me updates on new styles and special offers.</span>
+                          </div>
+                          <button name="submit-email" class="button_style pc-bg-transparent pc-text-04043F pc-font-tt-commons" >[[btnText]]</button>
+                          <span class="pc-email-us-captcha-txt pc-text-04043F pc-font-tt-commons">
+                              This site is protected by reCAPTCHA and Google Privacy Policy and Terms Of Service apply.
+                          </span>
+                      </form>
+                  </div>
+                  <div :class="showThankyouDiv ? 'pc-block' : 'pc-none'">
+                  <h2 class="thankyou-heading">Thank you for contacting us.</h2>
+                  <p>We have received your inquiry and will respond to you within 24 hours. For urgent inquiries please call us on the telephone number below.</p>
+                  <p>0412 566 988</p>
+              </div>
+              </div>
+              <!-- <div class="close-popup" @click="closePopup">close</div> -->
+          </div>
+      </div>
+  </transition>
+</script>
+<!-- END DIAMOND EMAIL POPUP -->
+
+<!-- DIAMOND HINT POPUP -->
+<script type="text/x-template" id="diamond-hint-popup">
+      <transition name="pc-form">
+      <div class="diamond-hint-popup-div pc-popup_parent" v-if="openPopup" :class="{'pc-active-form' : openPopup}">
+          <div class="pc-details_page_form_popup">
+
+              <div class="pc-w-full pc-flex pc-gap-x-20">
+                  <div class="diamond-meta-data-big-screen-view header-div pc-bg-rgba-248-240-229-6 pc-w-full pc-m-0">
+                      <div class="pc-gap-y-20 pc-flex pc-flex-col pc-m-0 pc-p-10">
+                          <div class="pc-w-full pc-flex pc-flex-col pc-items-center hint-logo">
+                              <img :src="shortLogo" />
+                              <img :src="detailLogo" />
+                          </div>
+                          <p class="pc-hint-description pc-font-tt-commons pc-text-04043F">Dear, It Seems that you've been imagining about this</p>
+                          <div class="pc-hint-image pc-w-full pc-flex pc-justify-center pc-py-20 pc-gap-x-10" :class="type=='final' ? 'pc-h-300' : ''">
+                              <div class="pc-flex pc-relative">
+                                  <img :src="image" @error="setShapeImage"/>
+                                  <img v-if="!!secondImage" :src="secondImage" @error="setShapeImage" class="pc-absolute pc-w-85px pc-left-0"/>
+                              </div>
+                          </div>
+                          <p class="pc-font-tt-commons pc-text-04043F pc-bold">[[diamondLabel]]</p>
+                      </div>
+                  </div>
+                  <div class="pc-flex pc-flex-col pc-gap-y-10 pc-w-full pc-p-10">
+                      <div class="pc-flex pc-w-full pc-justify-end" @click="closePopup">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">
+                              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                          </svg>
+                      </div>
+                      <div class="diamond-meta-data-tablet-view pc-flex pc-flex-col pc-items-center">
+                          <div class="pc-w-full pc-flex pc-flex-col pc-items-center hint-logo">
+                              <img :src="shortLogo" />
+                          </div>
+                      </div>
+                      <p class="pc-hint-header pc-font-LinetoLight pc-font-20 pc-weight-700 pc-text-04043F  pc-text-center" v-if="!emailSent">Send A Hint</p>
+                      <div class="diamond-meta-data-tablet-view pc-flex pc-flex-col pc-items-center">
+                          <p class="pc-hint-description pc-font-tt-commons pc-text-04043F pc-text-center">Dear, It Seems that you've been imagining about this</p>
+                          <span class="pc-hint-image pc-w-full pc-flex pc-justify-center pc-py-20">
+                              <img :src="diamondData.diamondImage" />
+                          </span>
+                          <p class="pc-font-tt-commons pc-text-04043F pc-text-center">[[diamondData.caratWeight]] Carat [[diamondData.shape]]</p>
+                      </div>
+                      <div class="pc-send-hint-form pc-flex pc-flex-col" v-show="!emailSent">
+                          <input type="text" :value="diamondLabel" placeholder="Product Name" class="pc-product-name pc-py-0 pc-h-0 pc-visibility-hidden"/>
+                          <!-- <input type="url" :value="diamondData.diamondImage" placeholder="Product Image" class="pc-product-image pc-py-0 pc-h-0 pc-visibility-hidden"/> -->
+                          <input type="url" :value="urlOfProduct" placeholder="Product Url" class="pc-product-url pc-py-0 pc-h-0 pc-visibility-hidden"/>
+                          <div class="pc-form pc-flex pc-flex-col pc-gap-y-10">
+                              <div>
+                                  <input type="text" value="" placeholder="Receiver Name" class="pc-receiver-name" @input="errorList['receiver_name'] && popOutField('receiver_name')"/>
+                                  <!-- <p class="pc-text-red pc-fs-14 pc-lh-20" :class="{'pc-visibility-hidden':!errorList.includes('receiver_name')}">Please Enter reciever name</p> -->
+                                  <p class="pc-text-red pc-fs-14 pc-lh-20 pc-px-10" v-if="errorList['receiver_name']">Please Enter reciever name</p>
+                              </div>
+                              <div>
+                                  <input type="email" value="" placeholder="Receiver Email" class="pc-receiver-email" @input="errorList['receiver_email'] && popOutField('receiver_email')"/>
+                                  <!-- <p class="pc-text-red pc-fs-14 pc-lh-20" :class="{'pc-visibility-hidden':!errorList.includes('receiver_email')}">Please Enter reciever email</p> -->
+                                  <p class="pc-text-red pc-fs-14 pc-lh-20 pc-px-10" v-if="errorList['receiver_email']">Please Enter a valid reciever email</p>
+                              </div>
+                              <div>
+                                  <input type="text" value="" placeholder="Your Name" class="pc-sender-name" @input="errorList['your_name'] && popOutField('your_name')"/>
+                                  <!-- <p class="pc-text-red pc-fs-14 pc-lh-20" :class="{'pc-visibility-hidden':!errorList.includes('your_name')}">Please Enter your name</p> -->
+                                  <p class="pc-text-red pc-fs-14 pc-lh-20 pc-px-10" v-if="errorList['your_name']">Please Enter your name</p>
+                              </div>
+                              <div>
+                                  <input type="email" value="" placeholder="Your Email" class="pc-sender-email" @input="errorList['your_email'] && popOutField('your_email')"/>
+                                  <!-- <p class="pc-text-red pc-fs-14 pc-lh-20" :class="{'pc-visibility-hidden':!errorList.includes('your_email')}">Please Enter your email</p> -->
+                                  <p class="pc-text-red pc-fs-14 pc-lh-20 pc-px-10" v-if="errorList['your_email']">Please Enter your valid email</p>
+                              </div>
+                              <textarea rows="4" placeholder="Custom Message (Optional)" class="pc-custom-message"></textarea>
+                              <div class="pc-flex pc-w-full pc-justify-center">
+                                  <button class="pc-send-btn pc-bg-04043F pc-flex pc-items-center pc-gap-x-10 pc-pointer" @click="submitForm">Submit
+                                      <img src="https://www.preciouscarbon.com/wp-content/plugins/pc-rb/assets/images/loading.gif" class="pc-hint-submit-loading" >
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                      <div v-show="emailSent" class="thank-you-message pc-h-full pc-items-center pc-flex-col pc-gap-y-20 pc-justify-center">
+                          <div class="pc-check-svg pc-text-center">
+                              <img :src="checkSrc" />
+                          </div>
+                          <div class="pc-text-04043F pc-weight-900 pc-font-LinetoLight pc-message pc-text-center pc-fs-34"></div>
+                      </div>
+                      <!-- <?php echo do_shortcode('[contact-form-7 id="6ba4c21" title="send hint" ajax="true"]'); ?> -->
+                  </div>
+
+              </div>
+
+
+              <!-- <div class="pc-absolute pc-top-0 pc-right-0" @click="closePopup" v-if="openPopup">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                  </svg>
+              </div> -->
+          </div>
+      </div>
+  </transition>
+</script>
+<!-- END DIAMOND HINT POPUP -->
+
+<!-- DIAMOND IMAGE REQUEST POPUP -->
+<script
+  type="text/x-template"
+  id="request-diamond-img-popup"
+>
+    <!-- <transition name="pc-form">
+    <div class="diamond-request-img-popup-div tps_popup_parent" v-if="openPopup" :class="{'tps-active-form' : openPopup}">
+        <div class="tps_details_page_form_popup">
+            <div class="header-div">                
+                <span class="tps-img-request-img"><img src="test.png"></span>
+                <span class="tps-img-request-header">[[$t("Request Diamond Image")]]</span>
+                <span class="tps-img-request-description">[[$t("Request for your favorite diamond image")]]</span>
+            </div>
+
+            <div class="tps-form-div">
+                <div class="tps-form-image-block">
+                    <div class="tps-img-request-img">
+                        <img :src="popupImage" @error="$emit('imageError', $event.target, popupPlaceholderImage)"/>
+                    </div>
+                    <div class="tps-img-request-img-title">
+                        [[popupTitle]]
+                    </div>
+                </div>
+                <div class="request-diamond-form">
+                    <form @submit.prevent="submitForm">
+                        <div>                            
+                            <input type="text" name="email-name" v-model.trim="diamond.name" :placeholder="$t('Your Name')"/>
+                            <div class="error-div" v-if="diamondError.name">[[$t("This field is required")]]</div>
+                        </div>
+                    
+                        <div>                            
+                            <input type="text" name="email-id" v-model.trim="diamond.email" :placeholder="$t('Your Email')"/>
+                            <div class="error-div" v-if="diamondError.email">[[$t("This field is required")]]</div>
+                            <div class="error-div" v-if="diamondError.emailValid">[[$t("Enter valid email")]]</div>
+                        </div>
+
+                        <div>                            
+                            <input type="text" name="email-phone" v-model.trim="diamond.phone" :placeholder="$t('Your Telephone Number')"/>
+                            <div class="error-div" v-if="diamondError.phone">[[$t("This field is required")]]</div>
+                            <div class="error-div" v-if="diamondError.phoneValid">[[$t("Enter valid phone number")]]</div>
+                        </div>
+
+                        <div>                            
+                            <textarea name="email-msg" v-model.trim="diamond.msg" :placeholder="`${$t('Message')}...`"></textarea>
+                        </div>
+
+                        <div class="tps-request-img-confirm">
+                            <span class="tps-email-us-checkbox">
+                                <input type="checkbox" v-model="diamond.acceptTerms"/>
+                                <span class="tps-request-img-msg">
+                                    [[$t("Accept Privacy Policy")]]. [[$t("View our")]] <a href="javascript:void(0)">[[$t("privacy policy")]]</a>.
+                                </span>
+                            </span>
+                            <div class="error-div" v-if="diamondError.acceptTerms">[[$t("Please accept privacy policy")]]</div>
+                        </div>
+                        <span class="tps-success-msg" v-if="diamond.success">[[$t("Thank you")]]</span>
+                        <input type="submit" name="submit-email" :value="$t('submit')" class="button_style" />
+                    </form>
+                </div>                
+            </div>
+            <div class="close-popup" @click="closePopup">close</div>
+        </div>
+    </div>
+</transition> -->
+</script>
+<!-- END DIAMOND IMAGE REQUEST POPUP -->
+
+<!-- DIAMOND Confirmation POPUP -->
+<script type="text/x-template" id="diamond-confirmation-popup">
+      <transition name="pc-form">
+      <div class="diamond-confirmation-popup-div pc-popup_parent" v-if="openConfPopup" :class="{'pc-active-form' : openConfPopup}">
+          <!-- <div v-if="waitLoading">
+              <div class="pc-absolute pc-h-97-vh pc-w-full pc-z-1 pc-backdrop-blur">
+                  <wait-loader :is-loading="waitLoading" message="Your Product is added. You are redirecting to Cart page." />
+              </div>
+          </div> -->
+          <div class="pc-details_page_form_popup pc-p-20">
+              <div class="pc-w-full pc-flex pc-justify-end">
+                  <div class="pc-close pc-flex pc-justify-end" @click="$emit('closePopup')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-x-lg" viewBox="0 0 16 16">
+                          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                      </svg>
+                  </div>
+              </div>
+              <div class="header-div" :class="{'pc-none' : showThankyouDiv}">
+                  <span class="pc-email-img"><img src="test.png"></span>
+                  <span class="pc-email-header">Confirmation</span>
+                  <div class="pc-email-description pc-flex pc-font-tt-commons pc-fs-18 pc-text-04043F pc-bold">
+                  <span v-if="!!replaceDiamond && diamondData.isLooseDiamond">Same category product already exists in the cart do you want to replace?</span>
+                          <span v-if="!!replaceDiamond && !replaceSetting && !diamondData?.isLooseDiamond "> Do you want to replace this Diamond?</span>
+                      <span v-if="!!replaceDiamond && !!replaceSetting">Do you want to replace this Diamond and Setting?</span>
+                      <span v-if="!!replaceSetting && !replaceDiamond">Do you want to replace this Setting?</span>
+                  </div>
+
+                  <div class="pc-data-showing pc-flex pc-flex-col pc-gap-y-10 pc-mt-10">
+                      <div class="pc-show-setting pc-w-full pc-flex pc-items-center pc-p-10 pc-border-04043F pc-border-1 pc-border-solid pc-gap-x-10 pc-justify-between" v-if="!!replaceSetting">
+                          <img :src="settingData.main_image" class="pc-w-150px pc-m-0"/>
+                          <div class="pc-setting-data pc-flex pc-flex-col pc-items-start">
+                              <div class="pc-product-name pc-fs-18 pc-text-04043F pc-bold pc-font-tt-commons pc-lh-normal">[[settingData.name]]</div>
+                              <div class="pc-fs-16 pc-product-metadata pc-text-04043F pc-font-tt-commons">SKU : [[settingData.sku]]</div>
+                          </div>
+                          <div class="pc-fs-18 pc-text-04043F pc-bold pc-font-tt-commons">[[settingData.currency]][[settingData.price]]</div>
+                      </div>
+                      <div class="pc-show-diamond pc-w-full pc-flex pc-items-center pc-p-10 pc-border-04043F pc-border-1 pc-border-solid pc-gap-x-10 pc-justify-between" v-if="!!replaceDiamond">
+                          <img :src="diamondData.diamondImage" class="pc-w-150px pc-m-0" @error="setDiamondImage($event,diamondData.shape)"/>
+                          <div class="pc-diamond-data pc-flex pc-flex-col pc-items-start">
+                              <div class="pc-product-name pc-fs-18 pc-text-04043F pc-bold pc-font-tt-commons pc-lh-normal">[[diamondDataName]]</div>
+                              <div class="pc-fs-16 pc-product-metadata pc-text-04043F pc-font-tt-commons pc-flex">
+                                  <span v-if="!!diamondData.cut && diamondData.cut.toLowerCase() != 'na'">[[diamondData.cut]]-</span>
+                                  <span v-if="!!diamondData.color && diamondData.color.toLowerCase() != 'na'">[[diamondData.color]]-</span>
+                                  <span v-if="!!diamondData.clarity && diamondData.clarity.toLowerCase() != 'na'">[[diamondData.clarity]]-</span>
+                                  <span v-if="!!diamondData.diamondType && diamondData.diamondType.toLowerCase() != 'na'">[[diamondData.diamondType]]</span>
+                              </div>
+                              <div class="pc-fs-16 pc-product-metadata pc-text-04043F pc-font-tt-commons">SKU : [[diamondDataSKU]]</div>
+                              <div class="pc-fs-16 pc-product-metadata pc-text-04043F pc-font-tt-commons">[[diamondData.lab]]</div>
+                          </div>
+                          <div class="pc-fs-18 pc-text-04043F pc-bold pc-font-tt-commons">[[diamondData.currencySymbol]][[diamondData.finalPrice]]</div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="pc-form-div pc-flex pc-gap-x-10" :class="{'pc-hide-form' : hideEmailForm}">
+                  <button name="confirm" class="pc-flex pc-p-5 hover-border button_style pc-bg-green pc-border-0 pc-text-white pc-font-tt-commons pc-rounded-8" @click="confirmReplacing">Yes</button>
+                  <button name="confirm" class="pc-flex pc-p-5 hover-border button_style pc-bg-red pc-border-0 pc-text-white pc-font-tt-commons pc-rounded-8" @click="$emit('closePopup')">No, Cancel</button>
+                  <!-- <div class="email-us-form pc-w-full" :class="{'pc-none' : showThankyouDiv}">
+                          <button name="submit-email" class="button_style pc-bg-transparent pc-text-04043F pc-font-tt-commons" >[[btnText]]</button>
+
+                  </div>  -->
+                  <div :class="showThankyouDiv ? 'pc-block' : 'pc-none'">
+                  <h2 class="thankyou-heading">Thank you for contacting us.</h2>
+                  <p>We have received your inquiry and will respond to you within 24 hours. For urgent inquiries please call us on the telephone number below.</p>
+                  <p>0412 566 988</p>
+              </div>
+              </div>
+              <!-- <div class="close-popup" @click="closePopup">close</div> -->
+          </div>
+      </div>
+  </transition>
+</script>
+<!-- END DIAMOND EMAIL POPUP -->
+
+<script type="text/x-template" id="wait-loader">
+  <div class="pc-h-full pc-flex pc-items-center pc-justify-center pc-flex-col" v-if="isLoading">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto;" width="100px" height="100px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+              <circle cx="50" cy="50" r="0" fill="none" stroke="#68688c" stroke-width="5">
+                  <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;38" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="0s"></animate>
+                  <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="0;75" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="0s"></animate>
+              </circle>
+              <circle cx="50" cy="50" r="0" fill="none" stroke="#04043F" stroke-width="5">
+                  <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;38" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-0.5s"></animate>
+                  <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="0;75" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-0.5s"></animate>
+              </circle>
+              <!-- [ldio] generated by https://loading.io/ --></svg>
+      <div class="pc-fs-24 pc-text-white pc-bg-04043F pc-px-10 pc-rounded-8">[[message]]</div>
+  </div>
+</script>

@@ -1,0 +1,1271 @@
+<!-- WISHLIST POPUP -->
+<script type="text/x-template" id="detail-wishlist-popup">
+    <transition name="pc-form">
+    <div v-if="openPopup" class="pc-wishlist_popup pc-active-form">
+        <div class="pc-wishlist_popup_container pc-gap-y-20 pc-flex pc-flex-col">
+            <div class="pc-wishlist_popup_icon">
+                <span class="pc-wishlist_heart" v-if="status">Heart-image</span>
+                <span class="pc-wishlist_wrong" v-else>Rong-image</span>
+            </div>
+            <div>
+                <span class="pc-shape_title pc-font-tt-commons">[[`"${itemName}"`]]</span>
+                <span class="pc-shape_price pc-shape_message pc-font-tt-commons pc-transform-none">[[wishlistPopupContent]]</span>
+            </div>
+            <div>
+                <div class="pc-flex pc-flex-col pc-gap-y-20 pc-wishlist-buttons">                   
+                    <a v-if="status" :href="wishlistContent.wishlist_url" class="pc-font-tt-commons pc-m-0 pc-pointer pc-view-wishlist pc-flex pc-justify-center pc-gap-x-6 pc-items-center pc-p-5" target="_blank"> 
+                        <span class="pc-flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-heart pc-wishlist-svg" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path>
+                            </svg>
+                        </span> 
+                        [[$t("View Wishlist")]]
+                    </a>
+                
+                    <button @click="closeWishlistPopup" class="pc-pointer pc-font-tt-commons pc-close-btn pc-flex pc-justify-center pc-gap-x-6 pc-items-center pc-p-5">
+                        <span class="pc-flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </span>
+                        [[$t("Close")]]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</transition>
+</script>
+<!-- WISHLIST POPUP -->
+
+<!-- RECENTLY VIEW ITEMS -->
+<script type="text/x-template" id="recently-view">
+    <!-- <div class="tps-recent-view-parent" style="display:none" v-if="recentDiamonds.length">
+        <h5>Recently View</h5>
+        <div class="tps-diamonds-list" v-if="!isMobileDevice">
+            <template v-for="(diamond, index) in recentDiamonds" :key="index">
+                <div class="tps-recent-diamond-div" v-if="diamond.diamondId != currentDiamondId" @click="setUrlParam($event, diamond.diamondId, diamond.diamondType)">
+                    <div class="tps-diamond-img">
+                        <img :src="diamond.diamondImage" @error="$emit('imageError', $event.target, diamond.shape)"/>
+                    </div>
+                    <div class="tps-diamond-name">
+                        [[ getTitle(diamond) ]] 
+                    </div>
+                    <div class="tps_details_subtitle">
+                        <ul>                
+                            <li v-if="diamond.color != '' && diamond.color != 'NA' "      title="Color"> [[diamond.color]]</li>
+                            <li v-if="diamond.clarity != '' && diamond.clarity != 'NA' "  title="Clarity">[[diamond.clarity]]</li>
+                            <li v-if="diamond.cut != '' && diamond.cut != 'NA' "          title="Cut"> [[diamond.cut]]</li>
+                            <li v-if="diamond.polish != '' && diamond.polish != 'NA' "    title="Polish"> [[diamond.polish?.toLowerCase() == "very good" ? "V Good" : diamond.polish]]</li>
+                            <li v-if="diamond.symmetry != '' && diamond.symmetry != 'NA' "              :title="Symmetry"> [[diamond.symmetry?.toLowerCase() == "very good" ? "V Good"           : diamond.symmetry]]</li>
+                            <li v-if="diamond.flourIntensity != '' && diamond.flourIntensity != 'NA' "  :title="Fluroscence"> [[diamond.flourIntensity?.toLowerCase() == "very strong" ? "V Strong" : diamond.flourIntensity]]</li>
+                        </ul>
+                    </div>
+                    <div class="tps-diamond-price">
+                        [[diamond.currencySymbol]][[parseFloat(diamond.finalPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })]]
+                    </div>
+                </div>
+            </template>    
+        </div>
+
+        <div class="tps-diamonds-list mobile" v-if="isMobileDevice">
+            <span @click="moveSlide('prev')">prev</span>
+            <template v-for="(diamond, index) in recentDiamonds" :key="index">
+                <div class="tps-recent-diamond-div" v-if="diamond.diamondId != currentDiamondId && currentSlideIndex == index" @click="setUrlParam($event, diamond.diamondId, diamond.diamondType)">
+                    <div class="tps-diamond-img">
+                        <img :src="diamond.diamondImage" @error="$emit('imageError', $event.target, diamond.shape)"/>
+                    </div>
+                    <div class="tps-diamond-name">
+                        [[!diamond.caratWeight ? '' : `${parseFloat(diamond.caratWeight)}-Carat`]] [[!diamond.shape ? '' : `${diamond.shape} Shape`]] Diamond
+                    </div>
+                    <div class="tps_details_subtitle">
+                        <ul>                
+                            <li v-if="diamond.color != '' && diamond.color != 'NA' "      title="Color"> [[diamond.color]]</li>
+                            <li v-if="diamond.clarity != '' && diamond.clarity != 'NA' "  title="Clarity">[[diamond.clarity]]</li>
+                            <li v-if="diamond.cut != '' && diamond.cut != 'NA' "          title="Cut"> [[diamond.cut]]</li>
+                            <li v-if="diamond.polish != '' && diamond.polish != 'NA' "    title="Polish"> [[diamond.polish?.toLowerCase() == "very good" ? "V Good" : diamond.polish]]</li>
+                            <li v-if="diamond.symmetry != '' && diamond.symmetry != 'NA' "              title="Symmetry"> [[diamond.symmetry?.toLowerCase() == "very good" ? "V Good"           : diamond.symmetry]]</li>
+                            <li v-if="diamond.flourIntensity != '' && diamond.flourIntensity != 'NA' "  title="Fluroscence"> [[diamond.flourIntensity?.toLowerCase() == "very strong" ? "V Strong" : diamond.flourIntensity]]</li>
+                        </ul>
+                    </div>
+                    <div class="tps-diamond-price">
+                        [[diamond.currencySymbol]][[parseFloat(diamond.finalPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })]]
+                    </div>
+                </div>
+            </template>     
+            <span @click="moveSlide('next')">next</span>
+        </div>
+    </div> -->
+    <div class="pc-recent-view-parent pc-border-1" v-if="recentDiamonds.length">
+        <div class="pc-recently-viewed-header pc-text-04043F pc-font-LinetoBook pc-p-20">RECENTLY VIEWED</div>
+        <div class="pc-diamond-list min-tablet list-group-wrapper pc-p-10">
+            <ul class="pc-m-0  pc-new-grid pc-grid pc-w-full pc-gap-20 pc-list-none choose-diamond" id="infinite-list">
+                <template v-if="!!this.isLabGrownPopupModal">
+                    {% render 'lab-grown-popup-modal' %}
+                </template>
+                <div v-for="(item, index) in recentDiamonds" :key="index" class="pc-grid pc-justify-center">
+                    <div
+                        class="product-card js-product-card product-card--style1 info-true pc-pointer"
+                        @click="setUrlParam($event, item.diamondId, item.diamondType)"
+                        :class="`pc-diamond-${item.diamondId}`"
+                      > 
+                        <template v-if="item.diamondType == 'lab'">
+                            {% comment %} {% render 'lab-grown-popup-btn' %} {% endcomment %}
+                            {% render 'discount-label' %}
+                        </template>
+                        <div class="product-card__image-wr">
+                          <a
+                            class="product-card__image js image-content__image-wrapper square"
+                            style="padding-top: 100%"
+                            data-image-id="59748662215020"
+                          >
+                            <img
+                              :srcset="item.diamondImage"
+                              :src="item.diamondImage"
+                              @error="$emit('imageError', $event.target, item, 'grid')"
+                              sizes="309px"
+                              :alt="parseFloat(item.caratWeight)+ ' Carat ' + item.shape"
+                              class="scale-in first-image lazyautosizes ls-is-cached lazyloaded"
+                              id="pc-cover"
+                              data-sizes="auto"
+                              data-aspectratio="1.0"
+                              loading="lazy"
+                              width="852"
+                              height="852"
+                            />
+                          </a>
+                        </div>
+                        <div class="product-card__info">
+                          <div
+                            class="mb-1 product-card__type d-inline-block"
+                            >
+                                <ul
+                                    class="pc-flex pc-m-0 pc-p-0 pc-list-none pc-gap-x-5 pc-justify-center"
+                                  >
+                                    <li
+                                      v-if="item.color != '' && (!item.color?.toLowerCase()?.includes('n/a') && !item.color?.toLowerCase()?.includes('na')) "
+                                      :title="$t('Color')"
+                                      class="pc-flex pc-items-center pc-gap-x-5"
+                                    >
+                                      [[item.color]]
+                                    </li>
+                                    <li
+                                      v-if="item.clarity != '' && (!item.clarity?.toLowerCase()?.includes('n/a') && !item.clarity?.toLowerCase()?.includes('na')) "
+                                      :title="$t('Clarity')"
+                                      class="pc-flex pc-items-center pc-gap-x-5"
+                                    >
+                                      [[item.clarity]]
+                                    </li>
+                                    <li
+                                      v-if="item.cut != '' && (!item.cut?.toLowerCase()?.includes('n/a') && !item.cut?.toLowerCase()?.includes('na')) "
+                                      :title="$t('Cut')"
+                                      class="pc-flex pc-items-center pc-gap-x-5"
+                                    >
+                                      [[item.cut]]
+                                    </li>
+                            
+                                  </ul>
+                                  </div
+                          >
+                          <div
+                            class="d-block product-card__name text-uppercase"
+                            >
+                                <span v-if="!!item.caratWeight">[[parseFloat(item.caratWeight)]]-Carat</span> <span v-if="!!item.shape">[[item.shape]] </span>
+                            <span v-if="item.diamondType==='white'" class="pc-text-04043F"
+                              >Natural Diamond</span
+                            >
+                            <span v-else-if="item.diamondType==='lab'" class="pc-text-04043F"
+                              >Lab Grown Diamond</span
+                            >
+                            </
+                          >
+                      
+                          <div
+                            style=""
+                            class="jdgm-widget jdgm-preview-badge py-1 small"
+                            data-id="14673456890220"
+                            data-auto-install="false"
+                          ></div>
+                      
+                          <div class="pc-font-18 product-card__price">
+                            <span class="visually-hidden">Regular price</span>
+                            AUD[[parseFloat(item.finalPriceAud).toFixed(0).toLocaleString('en-US',
+                              { minimumFractionDigits: 2 })]]
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </ul>
+        </div>
+        <div class="pc-diamond-list mobile tablet-to-mobile pc-bg-rgba-248-240-229-6 pc-relative list-group-wrapper">
+            <span class="pc-prev-arrow pc-absolute pc-p-10 pc-bg-04043F pc-flex pc-items-center pc-justify-center" @click="moveSlide('prev')" v-show="recentDiamonds.length > 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                </svg>
+            </span>
+            <ul class="pc-tablet-recent-setting pc-m-0 pc-mt-20 pc-new-grid pc-grid pc-w-full pc-gap-20 pc-list-none pc-gap-20 pc-justify-center pc-pt-10" id="infinite-list">
+                <div v-for="(item, index) in recentDiamonds" :key="index" class="pc-grid pc-justify-center">
+                    <li class="pc-relative pc-flex pc-flex-col pc-dia-grid-item pc-gap-y-10" @click="setUrlParam($event, item.diamondId, item.diamondType)" :class="`setting-detail-${item.id}`">
+                        <span class="pc-dia-image pc-relative pc-flex pc-items-center">
+                            <img :src="item.diamondImage" @error="$emit('imageError', $event.target, item.shape)" />
+                            <!-- <div class="pc-info-icon pc-absolute pc-top-5 pc-right-5">
+                                <svg width="24" height="24" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                                </svg>
+                            </div>  -->
+                        </span>
+                        <div class="pc-card-detail pc-flex pc-flex-col">
+                            <span class="pc-dia-name pc-flex pc-flex-col pc-text-04043F">
+                                <span class="pc-flex pc-gap-x-3">
+                                    <span v-if="!!item.caratWeight">[[parseFloat(item.caratWeight)]]-Carat</span> <span v-if="!!item.shape">[[item.shape]] Shape</span>
+                                </span>
+                                <span v-if="item.diamondType==='white'" class="pc-text-04043F">Natural Diamond</span>
+                                <span v-else-if="item.diamondType==='lab'" class="pc-text-04043F">Lab Grown Diamond</span>
+                            </span>
+                            <div class="pc_details_subtitle pc-left-1 pc-flex pc-justify-center pc-items-center">
+                                <ul class="pc-flex pc-m-0 pc-p-0 pc-list-none pc-gap-x-5 pc-justify-center">
+                                    <li v-if="item.color != '' && (!item.color?.toLowerCase().includes('n/a') && !item.color?.toLowerCase().includes('na')) " :title="$t('Color')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.color]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.clarity != '' && (!item.clarity?.toLowerCase().includes('n/a') && !item.clarity?.toLowerCase().includes('na')) " :title="$t('Clarity')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.clarity]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.cut != '' && (!item.cut?.toLowerCase().includes('n/a') && !item.cut?.toLowerCase().includes('na')) " :title="$t('Cut')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.cut]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.flourIntensity != '' && (!item.flourIntensity?.toLowerCase().includes('n/a') && !item.flourIntensity?.toLowerCase().includes('na')) " :title="$t('Fluroscence')">
+                                        [[item.flourIntensity?.toLowerCase() == "very strong" ? "V Strong" : item.flourIntensity]]
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pc-grid-metadata">
+                                <!-- <span :class="{'selected' : diamondsForCompare.includes(item.diamondId)}">
+                                    <input type="checkbox" name="check-compare-diamond" div-type="add-to-compare" class="pc-diamond-grid-input" v-model="diamondsForCompare" :value="item.diamondId" @change="sendDiamondsForCompare($event, item)"/>
+                                </span> -->
+                                <span class="pc-dia-price">
+                                    AUD[[parseFloat(item.finalPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })]]
+                                </span>
+                            </div>
+
+                        </div>
+                    </li>
+                </div>
+            </ul>
+            <ul class="pc-mobile-recent-setting pc-m-0 pc-mt-20 pc-new-grid pc-grid pc-w-full pc-gap-20 pc-list-none pc-gap-20 pc-justify-center pc-pt-10" id="infinite-list">
+                <div v-for="(item, index) in recentDiamonds" :key="index" class="pc-justify-center" :class="currentSlideIndex == index ? 'pc-grid' : 'pc-none'" v-for="(item, index) in recentDiamonds" :key="index">
+                    <li class="pc-relative pc-flex pc-flex-col pc-dia-grid-item pc-gap-y-10" @click="setUrlParam($event, item.diamondId, item.diamondType)" :class="`setting-detail-${item.id}`">
+                        <span class="pc-dia-image pc-relative pc-flex pc-items-center">
+                            <img :src="item.diamondImage" @error="$emit('imageError', $event.target, item.shape)" />
+                            <!-- <div class="pc-info-icon pc-absolute pc-top-5 pc-right-5">
+                                <svg width="24" height="24" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                                </svg>
+                            </div>  -->
+                        </span>
+                        <div class="pc-card-detail pc-flex pc-flex-col">
+                            <span class="pc-dia-name pc-flex pc-flex-col pc-text-04043F">
+                                <span class="pc-flex pc-gap-x-3">
+                                    <span v-if="!!item.caratWeight">[[parseFloat(item.caratWeight)]]-Carat</span> <span v-if="!!item.shape">[[item.shape]] Shape</span>
+                                </span>
+                                <span v-if="item.diamondType==='white'" class="pc-text-04043F">Natural Diamond</span>
+                                <span v-else-if="item.diamondType==='lab'" class="pc-text-04043F">Lab Grown Diamond</span>
+                            </span>
+                            <div class="pc_details_subtitle pc-left-1 pc-flex pc-justify-center pc-items-center">
+                                <ul class="pc-flex pc-m-0 pc-p-0 pc-list-none pc-gap-x-5 pc-justify-center">
+                                    <li v-if="item.color != '' && (!item.color?.toLowerCase().includes('n/a') && !item.color?.toLowerCase().includes('na')) " :title="$t('Color')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.color]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.clarity != '' && (!item.clarity?.toLowerCase().includes('n/a') && !item.clarity?.toLowerCase().includes('na')) " :title="$t('Clarity')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.clarity]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.cut != '' && (!item.cut?.toLowerCase().includes('n/a') && !item.cut?.toLowerCase().includes('na')) " :title="$t('Cut')" class="pc-flex pc-items-center pc-gap-x-5">
+                                        [[item.cut]]
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F" />
+                                        </svg>
+                                    </li>
+                                    <li v-if="item.flourIntensity != '' && (!item.flourIntensity?.toLowerCase().includes('n/a') && !item.flourIntensity?.toLowerCase().includes('na')) " :title="$t('Fluroscence')">
+                                        [[item.flourIntensity?.toLowerCase() == "very strong" ? "V Strong" : item.flourIntensity]]
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pc-grid-metadata">
+                                <!-- <span :class="{'selected' : diamondsForCompare.includes(item.diamondId)}">
+                                    <input type="checkbox" name="check-compare-diamond" div-type="add-to-compare" class="pc-diamond-grid-input" v-model="diamondsForCompare" :value="item.diamondId" @change="sendDiamondsForCompare($event, item)"/>
+                                </span> -->
+                                <span class="pc-dia-price">
+                                    AUD[[parseFloat(item.finalPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })]]
+                                </span>
+                            </div>
+
+                        </div>
+                    </li>
+                </div>
+            </ul>
+            <span class="pc-next-arrow pc-absolute pc-p-10 pc-bg-04043F pc-flex pc-items-center pc-justify-center" @click="moveSlide('next')" v-show="recentDiamonds.length > 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                </svg>
+            </span>
+        </div>
+    </div>
+</script>
+<!-- RECENTLY VIEW ITEMS -->
+
+<!-- DIAMOND DETAIL TABLE -->
+<script type="text/x-template" id="diamond-detail-table">
+    <div class="pc-diamond-detail-table-div">
+        <div class="pc-detail-column detail-column-1 pc-flex pc-flex-wrap pc-w-full pc-gap-x-20">
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-1 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[diamond.lab]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,1)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 1 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Each diamond that is graded by a laboratory is given a sort-of serial number, that is specific to that diamond in particular. It is often inscribed microscopically on the girdle of the stone and is identical to the certificate number on the grading report.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[!diamond.certificateNumber ? 'N/A' : diamond.certificateNumber]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-2 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                [[$t("Price")]]
+                <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,2)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 2 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">It notes the profile shape of the diamond.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[diamond.currencySymbol]][[!diamond.finalPriceAud ? 'N/A' : parseFloat($t(diamond.finalPriceAud)).toFixed(0) ]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-3 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                [[$t("Shape")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,3)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 3 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">It notes the profile shape of the diamond.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[!diamond.shape ? 'N/A' : $t(diamond.shape) ]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-4 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Fluorescence")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,4)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 4 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Most commonly found in natural diamonds, fluorescence indicates how strongly the diamond glows under UV light. It rarely causes any visible indication of being present under normal lighting.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.flourIntensity ? 'N/A' : diamond.flourIntensity]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-5 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Carat Weight")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,5)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 5 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Carat refers to the actual measured weight of the diamond.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[!diamond.caratWeight ? 'N/A' : `${parseFloat(diamond.caratWeight)} Ct.` ]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-6 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Measurements")]] (mm)
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,6)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 6 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Noted in millimeters, the first number is the length, then the width, and finally the depth measurements of the diamond.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[parseFloat(diamond.width)]] * [[parseFloat(diamond.length)]] * [[parseFloat(diamond.depth)]]                
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-7 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Color")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,7)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 7 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Another grading scale that notates the amount of color present in the diamond. D starts the range out and is completely colorless, and progressively there is an increase of visible color to the stone.</div>
+                        </div>
+                    </div>                    
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[!diamond.color ? 'N/A' : diamond.color ]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-8 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Table(%)")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,8)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 8 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Taking multiple measurements into consideration, this is the percentage of the table size of the crown (top) of the diamond.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.tablePerc ? 'N/A' : `${ diamond.tablePerc }`]]
+                </span>
+            </div>
+
+
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-9 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Clarity")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,9)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 9 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">This grade corresponds to how many inclusions are present and how visible they are. Flawless (FL) is just that- flawless! As the grades go down, there will progressively be more noticeable inclusions. However, staying VS1 and above will guarantee there are no visible inclusions at normal viewing distance.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                [[!diamond.clarity ? 'N/A' : diamond.clarity ]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-10 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Depth(%)")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,10)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 10 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">This is the percentage of the depth of the diamond relative to the other measurements. This is useful to keep in mind to find a balanced and brilliantly cut diamond!</div>
+                        </div>
+                    </div>
+                    <div v-if="isTooltipVisible === 13" class="tooltip">
+                        <div class="tooltip-content">
+                            <!-- <div class="tooltip-header">Report Number</div>
+                            <div class="tooltip-divider"></div> -->
+                            <div class="tooltip-content-text">
+                                <p>
+                                </p>
+                            </div>
+                            <!-- <div class="tooltip-divider"></div>
+                            <div class="tooltip-footer">Read More >></div> -->
+                        </div>
+                        
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.deptPerc ? 'N/A' : `${ diamond.deptPerc }`]]
+                </span>
+            </div>
+
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-11 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Cut")]] 
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,11)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 11 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">Cut (for round brilliant shapes only) is a grade set by multiple points, and the diamond is graded for overall quality. A high cut grade will ensure a brilliant, well-balanced appearance.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.cut ? 'N/A' : diamond.cut]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-12 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Ratio")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,12)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 12 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">This measurement indicates how wide the diamond is in comparison to the length. Round brilliants will often be close to 1.0, and other shapes like ovals, emeralds, and marquises have a larger variance between the length and width, thus a larger number will be noted.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.ratio ? 'N/A' : parseFloat(diamond.ratio).toFixed(2)]]
+                </span>
+            </div>
+
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-13 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Polish")]] 
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,13)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 13 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">The polish grade notates how well polished the facets are, keeping this Very Good (VG) and above means the facets are optimally polished to offer the most brilliance and light return.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.polish ? 'N/A' : diamond.polish]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-14 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Girdle")]]
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,14)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 14 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">The girdle separates the crown (top) of the diamond, and the pavilion (lower half).</div>
+                        </div>
+                    </div>
+                </span>
+                
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.girdleMax && !diamond.girdleMin ? 'N/A - N/A' : `${diamond.girdleMin} - ${diamond.girdleMax}`]]
+                </span>
+            </div>
+
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-15 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Symmetry")]] 
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,15)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 15 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">This grade is set by how well the facets are placed on the diamond, ensuring they are aligned and in the optimal angles to ensure light can refract internally and not be lost due to improper facet alignment.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.symmetry ? 'N/A' : diamond.symmetry]]
+                </span>
+            </div>
+            <div class="pc-table-detail pc-gap-x-5 detail-column-row-16 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                    [[$t("Girdle Min")]] 
+                    <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                        <svg @click.prevent="openPopup($event,16)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                        </svg>
+                        <div class="setting-tooltip-text pc-w-9/10" :class="isTooltipVisible == 16 ? 'pc-block' : 'pc-none'">
+                            <div class="setting-tooltip-content pc-fs-16">This grade is set by how well the facets are placed on the diamond, ensuring they are aligned and in the optimal angles to ensure light can refract internally and not be lost due to improper facet alignment.</div>
+                        </div>
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.girdleMin ? 'N/A' : diamond.girdleMin]]
+                </span>
+            </div>
+
+            <!-- <div class="pc-table-detail pc-gap-x-5 detail-column-row-16 pc-flex pc-w-49 pc-py-10 pc-px-20">
+                <span class="pc-w-1/2 detail-row-1 pc-text-04043F pc-flex pc-gap-x-10 pc-items-center pc-relative">
+                [[$t("Certificate")]]
+                    <div v-if="isTooltipVisible === 9" class="tooltip">
+                        <div class="tooltip-content">
+                            <div class="tooltip-content-text">
+                                <p>
+                                    This is the grading laboratory that assessed and certified the diamond.
+                                </p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </span>
+                <span class="pc-w-1/2 detail-row-2 pc-text-04043F">
+                    [[!diamond.lab ? 'N/A' : diamond.lab]]
+                </span>
+            </div> -->             
+        </div> 
+        <div class="pc-scan-QR pc-p-20 pc-flex pc-flex-col">
+            <span class="pc-w-full detail-row-1 pc-text-04043F">
+            [[$t("Scan To get Diamond Info")]] 
+            </span>
+            <span v-if="!changeMetalOrDiamondLoading" class="pc-w-full detail-row-2 pc-text-04043F">
+                <img :src="newQRCode" alt="QRCode"/>
+            </span>
+            <span v-else class="pc-w-90px pc-h-90px skeleton-box">
+            </span>
+        </div>         
+    </div>
+</script>
+<!-- DIAMOND DETAIL TABLE -->
+
+
+<!-- DIAMOND META DATA -->
+<script type="text/x-template" id="diamond-metadata">
+    <div class="pc-details-meta-data-div pc-w-full pc-flex pc-flex-col pc-gap-y-10 pc-pl-10">
+        <h1 class="pc-details_title pc-text-04043F">
+            [[getPageTitle]] [[diamond.diamondType == 'white' ? 'Natural Diamond' : 'Labgrown Diamond']]
+        </h1>          
+        <div class="pc-details_subtitle pc-text-04043F">
+            <ul class="pc-list-none pc-flex pc-gap-x-5 pc-p-0 pc-m-0">
+                <li v-if="diamond.color != '' && (!diamond.color?.toLowerCase().includes('n/a') && !diamond.color?.toLowerCase().includes('na')) " class="pc-flex pc-items-center pc-gap-x-5">
+                    [[ diamond.color ]]
+                    {% comment %} <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F"/>
+                    </svg> {% endcomment %}
+                </li>
+                <li v-if="diamond.clarity != '' && (!diamond.clarity?.toLowerCase().includes('n/a') && !diamond.clarity?.toLowerCase().includes('na')) " class="pc-flex pc-items-center pc-gap-x-5">
+                    •  [[ diamond.clarity ]]
+                    {% comment %} <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F"/>
+                    </svg> {% endcomment %}
+                </li>  
+                <li v-if="diamond.cut != '' && (!diamond.cut?.toLowerCase().includes('n/a') && !diamond.cut?.toLowerCase().includes('na')) " class="pc-flex pc-items-center pc-gap-x-5" :class="diamond.cut?.toLowerCase()">
+                    • [[ diamond.cut ]]
+                    {% comment %} <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.6" y="4.12109" width="5" height="5" transform="rotate(-45 0 4.12109)" fill="#04043F"/>
+                    </svg> {% endcomment %}
+                </li> 
+                <li v-if="diamond.flourIntensity != '' && (!diamond.flourIntensity?.toLowerCase().includes('n/a') && !diamond.flourIntensity?.toLowerCase().includes('na')) " class="pc-flex pc-items-center pc-gap-x-5" :class="diamond.cut?.toLowerCase()"> • [[ diamond.flourIntensity ]]</li>
+            </ul>
+        </div>
+        <ul v-if="diamond.diamondType == 'lab'" class="product-block product-single__meta-list product-single__meta-price list--inline pc-flex pc-justify-between">
+            <div class="product-block product-single__meta-list product-single__meta-price list--inline">
+                <li><span id="ProductPrice-template--24390716031340__main" class="product-single__price" itemprop="price" >
+                    [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${getNormalFormattedPrice((parseFloat(diamond.finalPriceAud)* 0.70).toFixed(2))}` ]]
+                  </span>
+                   </li>
+                
+                <li>
+                  <span class="visually-hidden">Regular price</span>
+                  <s id="ComparePrice-template--24390716031340__main" class="product-single__price product-single__price--compare">
+                    [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${getNormalFormattedPrice(parseFloat(diamond.finalPriceAud).toFixed(2))}` ]]
+                  </s>
+                </li>
+            </div>
+            <li>
+                <div class="pc-flex pc-flex-col pc-gap-y-5 pc-items-center pc-py-10">
+                    <span class="pc-applied-coupon-badge"><b>FIRST30</b>   Coupon Applied</span>
+                    <span class="pc-applied-coupon-message">
+                        You have saved 
+                        [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${getNormalFormattedPrice((parseFloat(diamond.finalPriceAud) - (parseFloat(diamond.finalPriceAud) * 0.70)).toFixed(2))}` ]].
+                    </span>
+                </div>
+            </li>
+        </ul>
+        <ul v-else class="product-block product-single__meta-list product-single__meta-price list--inline">
+            <li><span id="ProductPrice-template--24390716031340__main" class="product-single__price" itemprop="price" >
+                [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${getNormalFormattedPrice((parseFloat(diamond.finalPriceAud)).toFixed(2))}` ]]
+              </span>
+               </li>
+            
+            <li>
+              <span class="visually-hidden">Regular price</span>
+              <s id="ComparePrice-template--24390716031340__main" class="product-single__price product-single__price--compare">
+                [[ !diamond.finalPriceAud ? 'N/A' : `${diamond.currencySymbol}${getNormalFormattedPrice((parseFloat(diamond.finalPriceAud)/ 0.85).toFixed(2))}` ]]
+              </s>
+            </li>
+        </ul>
+        <!-- <div class="pc-offer-1 pc-mt-10 pc-text-04043F">
+            Starting at $54/mo or 05 APR with PARTNERS NAME/LOGO <span class="pc-bold-offer-link pc-text-04043F pc-underline pc-underline-offset-3">Check if you qualify</span>
+        </div> -->
+        <!-- <klarna-placement
+            data-key="credit-promotion-badge"
+            data-locale="en-US"
+            :data-purchase-amount="Math.round(diamond.finalPrice) * 100">  
+        </klarna-placement> -->
+        <div class="pc-action-btn-section pc-w-full pc-flex pc-gap-x-20 pc-py-10">
+            <div class="pc-tooltip-message" v-if="showBtnTooltip" :class="btnTooltipClass">[[$t(btnTooltipText)]]</div>    
+           <!--  <transition name="pc-form">
+            </transition> -->
+            
+            <button :disable="productStatus == 'Failed'" :title="productStatus == 'Failed' ? 'Product out of stock' : ''" v-if="addToCartButtonShouldShow" class="btn btn--full product-form__cart-submit product-form__cart-submit--outline btn-theme " :class="{ 'pr-8 pl-4': buttonClicked, 'pc-opacity-5 pc-pointer-disable': productStatus == 'Failed'}" @click="productStatus != 'Failed' && addCartCheckSatus($event)">
+                    [[productStatus == 'Failed' ? 'Product out of stock' : $t(buttonText)  ]]
+                    <div v-show="buttonText === 'Checking Stock . . .' || buttonText === 'Adding in the cart . . .'" class=""></div>
+                </button>   
+                <button :disable="productStatus == 'Failed'" :title="productStatus == 'Failed' ? 'Product out of stock' : ''" class="btn btn--full product-form__cart-submit product-form__cart-submit--outline btn-theme " :class="{ 'pr-8 pl-4': buttonClicked, 'pc-opacity-5 pc-pointer-disable': productStatus == 'Failed'}" @click="productStatus != 'Failed' && addDiamond($event)">
+                    [[ productStatus == 'Failed' ? 'Product out of stock' : $t(chooseBtnTextString) ]]
+                    <div v-show="chooseBtnTextString === 'Checking Stock . . .' || chooseBtnTextString === 'Adding . . .'" class=""></div>
+                </button>     
+            <!-- <template v-if="productStatus == 'Success'">
+
+            <template v-if="productStatus == 'Failed'">
+                <div class="pc-text-red">product out of stock</div>
+            </template> -->
+        </div>
+
+        <div class="gr-btnjs">
+            <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center flex-wrap">
+                {%- render 'product-diamond-contact' -%}
+              </div>
+            </div>
+          </div> 
+        </div> 
+
+        <!-- <div class="pc-middle-line pc-w-full pc-my-20"></div>
+
+        <div class="pc-diamond-tip pc-w-full pc-flex pc-items-center pc-gap-x-30">
+            <div class="pc-w-1/10 pc-svg-container pc-h-full pc-flex pc-items-center pc-justify-center">
+                <div class="pc-rounded pc-circle pc-flex pc-justify-center pc-items-center pc-bg-FEF9EF pc-w-full pc-h-full pc-px-20 pc-py-15">
+                    <svg width="30" height="32" viewBox="0 0 30 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.5727 20.6071C21.6653 19.4363 22.3931 17.9725 22.6672 16.3947C22.9414 14.8169 22.75 13.1935 22.1165 11.7227C21.483 10.2519 20.4348 8.99747 19.0999 8.11273C17.7651 7.22799 16.2014 6.75124 14.6 6.74072H14.4953C12.3683 6.81051 10.3475 7.68666 8.84269 9.19146C7.3379 10.6963 6.46175 12.7171 6.39196 14.844C6.36131 16.9823 7.16286 19.0488 8.62735 20.6071C9.66847 21.7095 10.2332 23.1778 10.1991 24.6937C10.0418 24.7189 9.89883 24.7997 9.79623 24.9216C9.69363 25.0434 9.63827 25.1981 9.64026 25.3573V28.92H9.71012C9.85683 29.7218 10.2793 30.447 10.9045 30.9701C11.5296 31.4931 12.318 31.7811 13.1331 31.7841H16.067C16.8821 31.7811 17.6705 31.4931 18.2956 30.9701C18.9207 30.447 19.3433 29.7218 19.49 28.92H19.5598V25.3573C19.5617 25.1889 19.5027 25.0254 19.3936 24.897C19.2844 24.7687 19.1326 24.684 18.966 24.6588C18.9427 23.9095 19.0732 23.1634 19.3496 22.4665C19.6259 21.7696 20.0422 21.1368 20.5727 20.6071ZM9.64026 19.6292C8.41331 18.3426 7.74746 16.6214 7.78908 14.844C7.85804 13.0875 8.58672 11.4215 9.82974 10.1785C11.0728 8.93548 12.7387 8.20681 14.4953 8.13784H14.6C16.4096 8.14708 18.1419 8.87241 19.4183 10.1553C20.6946 11.4381 21.411 13.1741 21.411 14.9837C21.4142 16.723 20.7518 18.3976 19.5598 19.6641C18.9064 20.3179 18.3929 21.098 18.0506 21.9567C17.7084 22.8153 17.5445 23.7347 17.5689 24.6588H15.2986V20.2229C15.7598 20.0653 16.1614 19.7696 16.4488 19.376C16.7363 18.9823 16.8956 18.5098 16.9053 18.0225C16.9053 17.4111 16.6624 16.8247 16.2301 16.3924C15.7978 15.9601 15.2114 15.7172 14.6 15.7172C13.9887 15.7172 13.4023 15.9601 12.97 16.3924C12.5377 16.8247 12.2948 17.4111 12.2948 18.0225C12.3045 18.5098 12.4638 18.9823 12.7512 19.376C13.0387 19.7696 13.4402 20.0653 13.9015 20.2229V24.6588H11.5962C11.6215 22.792 10.9201 20.9884 9.64026 19.6292ZM14.6 18.9306C14.3592 18.9306 14.1282 18.8349 13.9579 18.6646C13.7876 18.4943 13.6919 18.2633 13.6919 18.0225C13.6919 17.7816 13.7876 17.5506 13.9579 17.3803C14.1282 17.21 14.3592 17.1143 14.6 17.1143C14.8409 17.1143 15.0719 17.21 15.2422 17.3803C15.4125 17.5506 15.5082 17.7816 15.5082 18.0225C15.5082 18.2633 15.4125 18.4943 15.2422 18.6646C15.0719 18.8349 14.8409 18.9306 14.6 18.9306ZM16.067 30.387H13.1331C12.6885 30.3852 12.2561 30.2422 11.8982 29.9785C11.5403 29.7148 11.2755 29.3441 11.1422 28.92H18.0579C17.9246 29.3441 17.6598 29.7148 17.3019 29.9785C16.944 30.2422 16.5116 30.3852 16.067 30.387ZM11.0374 27.5229V26.0559H18.1627V27.5229H11.0374Z" fill="#04043F"/>
+                        <path d="M15.298 3.84208V0.69856C15.298 0.51329 15.2244 0.335609 15.0934 0.204603C14.9624 0.0735981 14.7847 0 14.5994 0C14.4142 0 14.2365 0.0735981 14.1055 0.204603C13.9745 0.335609 13.9009 0.51329 13.9009 0.69856V3.84208C13.9009 4.02735 13.9745 4.20503 14.1055 4.33604C14.2365 4.46704 14.4142 4.54064 14.5994 4.54064C14.7847 4.54064 14.9624 4.46704 15.0934 4.33604C15.2244 4.20503 15.298 4.02735 15.298 3.84208Z" fill="#04043F"/>
+                        <path d="M28.5013 12.6436H25.3577C25.1725 12.6436 24.9948 12.7172 24.8638 12.8482C24.7328 12.9792 24.6592 13.1568 24.6592 13.3421C24.6592 13.5274 24.7328 13.7051 24.8638 13.8361C24.9948 13.9671 25.1725 14.0407 25.3577 14.0407H28.5013C28.6865 14.0407 28.8642 13.9671 28.9952 13.8361C29.1262 13.7051 29.1998 13.5274 29.1998 13.3421C29.1998 13.1568 29.1262 12.9792 28.9952 12.8482C28.8642 12.7172 28.6865 12.6436 28.5013 12.6436Z" fill="#04043F"/>
+                        <path d="M3.84208 14.0407C4.02735 14.0407 4.20503 13.9671 4.33604 13.8361C4.46704 13.7051 4.54064 13.5274 4.54064 13.3421C4.54064 13.1568 4.46704 12.9792 4.33604 12.8482C4.20503 12.7172 4.02735 12.6436 3.84208 12.6436H0.69856C0.51329 12.6436 0.335609 12.7172 0.204604 12.8482C0.0735982 12.9792 0 13.1568 0 13.3421C0 13.5274 0.0735982 13.7051 0.204604 13.8361C0.335609 13.9671 0.51329 14.0407 0.69856 14.0407H3.84208Z" fill="#04043F"/>
+                        <path d="M4.54059 4.89016L6.74106 7.12555C6.88146 7.23405 7.05268 7.2952 7.23005 7.30019C7.41898 7.30019 7.60282 7.23891 7.75397 7.12555C7.87025 6.98237 7.93372 6.80354 7.93372 6.61909C7.93372 6.43465 7.87025 6.25581 7.75397 6.11264L5.51858 3.91217C5.38405 3.81128 5.21765 3.7623 5.04992 3.77422C4.88219 3.78614 4.72439 3.85816 4.60548 3.97707C4.48658 4.09597 4.41456 4.25377 4.40264 4.4215C4.39072 4.58923 4.4397 4.75563 4.54059 4.89016Z" fill="#04043F"/>
+                        <path d="M24.6592 3.91175C24.5971 3.844 24.5215 3.7899 24.4373 3.75289C24.3532 3.71589 24.2622 3.69678 24.1703 3.69678C24.0783 3.69678 23.9873 3.71589 23.9032 3.75289C23.819 3.7899 23.7434 3.844 23.6813 3.91175L21.4459 6.11222C21.3296 6.25539 21.2661 6.43422 21.2661 6.61867C21.2661 6.80312 21.3296 6.98195 21.4459 7.12513C21.597 7.23849 21.7809 7.29977 21.9698 7.29977C22.1472 7.29478 22.3184 7.23363 22.4588 7.12513L24.6592 4.88974C24.727 4.82757 24.7811 4.752 24.8181 4.66782C24.8551 4.58365 24.8742 4.4927 24.8742 4.40074C24.8742 4.30879 24.8551 4.21784 24.8181 4.13366C24.7811 4.04949 24.727 3.97392 24.6592 3.91175Z" fill="#04043F"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="pc-w-1/10 pc-h-full pc-flex pc-items-center pc-justify-center">
+                <div class="pc-percentage pc-text-04043F">
+                    60%
+                </div>
+            </div>
+            <div class="pc-w-7/10 pc-h-full">
+                <div class="pc-tip-header-text pc-text-04043F">
+                    of Americans have chosen this diamond as they are have ideal cut and falls within ideal selection.
+                </div>
+            </div>
+        </div> -->
+
+        <div class="">
+           
+            {% comment %} <div class="pc-share-btns pc-py-10 pc-flex pc-justify-around pc-px-20">                    
+                <div class="pc-wishlist-btn-div pc-w-1/3">
+                    <button :class="{'active' : isInWishlist && !showWishlistLoader, 'pc-wishlist-loading' : showWishlistLoader}" class="pc-text-04043F pc-flex pc-gap-x-10 pc-w-full pc-justify-center pc-items-end pc-p-0" @click="$emit('parentAddToWishlist', diamond.diamondId)">
+                        <span class="svg-container">
+                            <svg v-if="isInWishlist && !showWishlistLoader" width="24" height="24" viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.33968 1C4.11133 1 1.94434 3.48873 1.94434 6.56218C1.94434 10.0502 7.06021 14.2175 11.4431 17C15.8275 14.2175 20.8838 9.98327 20.9433 6.56218C20.9968 3.48873 18.9077 1 15.6793 1C14.3019 1 12.9045 1.69382 11.4431 3.08436C9.98161 1.69382 8.71715 1 7.33968 1Z" fill="#04043F" stroke="#04043F" stroke-width="2"/>
+                            </svg>
+                            <svg v-else-if="!isInWishlist && !showWishlistLoader" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#04043F" class="bi bi-heart" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                            </svg>
+                            <img v-else-if="showWishlistLoader" :src="loadingGIF" style="width:30px;height:30px"/>
+                            
+                        </span>    
+                        [[$t("Wishlist")]]
+                    </button>        
+                </div>
+                
+                <div class="pc-email pc-w-1/3">
+                    <button class="pc-text-04043F pc-flex pc-gap-x-10 pc-w-full pc-items-end  pc-justify-center pc-p-0" @click="openFormPopup($event, 'drop_a_hint')">
+                        <span class="svg-container">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#04043F" xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_181_1948)">
+                                <path d="M21.696 2.98804H2.304C1.032 2.98804 0 4.02004 0 5.28004V18.72C0 19.992 1.032 21.024 2.304 21.024H21.708C22.98 21.024 24.012 19.992 24.012 18.72V5.28004C24 4.02004 22.968 2.98804 21.696 2.98804ZM1.608 5.28004C1.608 4.89604 1.92 4.59604 2.292 4.59604H21.696C22.08 4.59604 22.38 4.90804 22.38 5.28004V18.72C22.38 19.104 22.068 19.404 21.696 19.404H2.304C1.92 19.404 1.62 19.092 1.62 18.72V5.28004H1.608Z" fill="#04043F"/>
+                                <path d="M4.10386 10.188L11.5679 15.168C11.6999 15.252 11.8559 15.3 12.0119 15.3C12.1679 15.3 12.3239 15.252 12.4559 15.168L19.9199 10.188C20.2679 9.93598 20.3639 9.46798 20.1359 9.10798C19.8959 8.73598 19.4039 8.61598 19.0199 8.85598L11.9999 13.536L4.97986 8.85598C4.96786 8.84398 4.95586 8.84398 4.94386 8.83198C4.57186 8.59198 4.06786 8.71198 3.82786 9.08398C3.62386 9.45598 3.73186 9.95998 4.10386 10.188Z" fill="#04043F"/>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_181_1948">
+                                <rect width="24" height="24" fill="white"/>
+                                </clipPath>
+                                </defs>
+                            </svg>
+                        </span>
+                        Send Hint
+                    </button>  
+                </div> 
+                                             
+                <div class="pc-relative pc-share-btn-div pc-w-1/3">
+                    <button class="pc-text-04043F pc-flex pc-gap-x-10 pc-w-full pc-justify-center pc-items-end pc-p-0 pc-select-none" @click="showIconSection">
+                        <span class="svg-container">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#04043F" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.9873 22.5469C14.6915 22.5469 12.824 20.6794 12.824 18.3836C12.824 16.0879 14.6915 14.2204 16.9873 14.2204C19.283 14.2204 21.1505 16.0879 21.1505 18.3836C21.1505 20.6794 19.283 22.5469 16.9873 22.5469ZM16.9873 15.8857C15.6098 15.8857 14.4894 17.0062 14.4894 18.3836C14.4894 19.7611 15.6098 20.8816 16.9873 20.8816C18.3647 20.8816 19.4852 19.761 19.4852 18.3836C19.4852 17.0062 18.3647 15.8857 16.9873 15.8857ZM7.01284 16.4408C4.71711 16.4408 2.84961 14.5733 2.84961 12.2775C2.84961 9.9818 4.71711 8.11432 7.01284 8.11432C9.30861 8.11432 11.1761 9.98182 11.1761 12.2775C11.1761 14.5733 9.30861 16.4408 7.01284 16.4408ZM7.01284 9.7796C5.63539 9.7796 4.51491 10.9001 4.51491 12.2775C4.51491 13.655 5.63541 14.7755 7.01284 14.7755C8.39028 14.7755 9.51081 13.655 9.51081 12.2775C9.51081 10.9001 8.39028 9.7796 7.01284 9.7796ZM16.9873 9.7796C14.6915 9.7796 12.824 7.9121 12.824 5.61637C12.824 3.32065 14.6915 1.45312 16.9873 1.45312C19.283 1.45312 21.1505 3.32063 21.1505 5.61637C21.1505 7.91213 19.283 9.7796 16.9873 9.7796ZM16.9873 3.11841C15.6098 3.11841 14.4894 4.23891 14.4894 5.61635C14.4894 6.9938 15.6098 8.1143 16.9873 8.1143C18.3647 8.1143 19.4852 6.9938 19.4852 5.61635C19.4852 4.23891 18.3647 3.11841 16.9873 3.11841Z" fill="#04043F"/>
+                                <path d="M13.7647 17.4242L9.3353 14.6486L10.2194 13.2371L14.6488 16.0125L13.7647 17.4242ZM13.8539 7.29932L14.6832 8.74349L10.1506 11.3464L9.32129 9.90221L13.8539 7.29932Z" fill="#04043F"/>
+                            </svg>
+                        </span>
+                        Share
+                    </button>
+                    <transition name="pc-form">
+                        <social-icon-comp v-if="showSocialIconDiv" :item-title="getPageTitle" @open-email="openFormPopup" :item-url="getPageUrl" @open-tooltip="handleBtnTooltip"  component="diamond"/>
+                    </transition>    
+                </div>                              
+                <!-- <tooltip-comp :show-tooltip="showTooltip" v-show="showTooltip" :wishlist-text="wishlistText" :tooltip-class="wishlistClass"></tooltip-comp>                 -->
+            </div>  {% endcomment %}
+            {% comment %} <div class="pc-middle-line pc-w-full pc-my-20"></div> {% endcomment %}
+            <hr>     
+            
+            {% comment %} <div class="pc-w-full pc-flex pc-gap-x-30 pc-flex-nowrap pc-items-center">
+                <img :src="coupon_ring_img" class="pc-w-1/4" />
+                <div class="pc-w-3/4 pc-flex pc-flex-col pc-items-start pc-gap-y-10">
+                    <span class="pc-coupon-text pc-text-04043F">
+                        Spend $3000 and get free diamond studs
+                    </span>
+                    <span class="pc-coupon-code pc-border-1 pc-border-dashed pc-flex pc-px-20 pc-py-10 pc-text-04043F pc-w-auto pc-pointer" @click="copyCoupon('STUDS3000')">
+                        Coupon : STUDS3000
+                    </span>
+                </div>
+            </div> {% endcomment %}
+            <div class="pc-w-full pc-flex pc-gap-x-30 pc-flex-nowrap pc-items-center">
+                <img src="https://cdn.shopify.com/s/files/1/0900/1870/9868/files/free-studs-banner.png?v=1742892459https://cdn.shopify.com/s/files/1/0900/1870/9868/files/free-studs-banner.png?v=1742892459" class="pc-w-full" />
+            </div>
+            <hr>
+                                            
+            <div class="pc-flex pc-flex-col pc-shipping-detail pc-w-full">                
+                
+                <span class="pc-shipping-div pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.29815 14.5643L2.29292 2.29325L14.5639 2.29286V14.5643H8.42857H8.27857V14.7143V15.8571V16.0071H8.42857H17.5714H17.7214V15.8571V14.7143V14.5643H17.5714H16.0071V2.14325C16.0071 1.43392 15.4274 0.85 14.7139 0.85H2.14325C1.43392 0.85 0.85 1.42978 0.85 2.14325V14.7139C0.85 15.4251 1.43393 16.0071 2.14821 16.0071H3.85714H4.00714V15.8571V14.7143V14.5643H3.85714H2.29815Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M22.1428 14.7142L22.1433 14.5642L21.9928 14.5637V14.7142V15.8571V16.0071H22.1428H23.8517C24.5774 16.0071 25.1499 15.4344 25.1499 14.7168V10.1402C25.1499 9.68895 24.985 9.09662 24.7548 8.71299L21.9109 3.9731C21.6185 3.4858 20.9989 3.13564 20.4311 3.13564H15.2856H15.1356V3.28564V4.4285V4.5785H15.2856H20.4311C20.4498 4.5785 20.5009 4.59189 20.5637 4.6274C20.6266 4.66293 20.6642 4.69966 20.6736 4.71544L23.5176 9.45533C23.5629 9.53081 23.6112 9.65296 23.6483 9.78685C23.6854 9.92072 23.7071 10.0509 23.7071 10.1402V14.5679C23.6725 14.568 23.6329 14.568 23.5893 14.5679C23.4287 14.5679 23.2146 14.5674 23.0003 14.5669L22.4111 14.5651L22.217 14.5645L22.1626 14.5643L22.1482 14.5642L22.1446 14.5642L22.1436 14.5642L22.1434 14.5642H22.1434L22.1428 14.7142Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M24 10.15H24.15V10V9.2V9.05H24H19.237C19.2369 8.98933 19.2368 8.91244 19.2368 8.82382C19.2368 8.59826 19.2373 8.29743 19.2379 7.9965C19.2385 7.69559 19.2392 7.39467 19.2399 7.16898L19.2405 6.94384C19.3123 6.94422 19.4066 6.94459 19.5165 6.94497C19.7723 6.94584 20.1133 6.94669 20.4542 6.94743L21.3918 6.94928L21.7007 6.94981L21.7873 6.94995L21.8101 6.94999L21.816 6.95L21.8174 6.95L21.8178 6.95L21.8179 6.95L21.8182 6.8L21.8179 6.95L21.9682 6.95024V6.8V6V5.85H21.8182H19.0859C18.7581 5.85 18.4549 5.94571 18.2299 6.10932C18.0048 6.27302 17.85 6.51226 17.85 6.79238V9.20762C17.85 9.48669 18.0033 9.72599 18.2285 9.89008C18.4534 10.054 18.7574 10.15 19.0884 10.15H24Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M6.14279 18.2926C7.80359 18.2926 9.14993 16.9463 9.14993 15.2855C9.14993 13.6247 7.80359 12.2783 6.14279 12.2783C4.48199 12.2783 3.13564 13.6247 3.13564 15.2855C3.13564 16.9463 4.48199 18.2926 6.14279 18.2926ZM7.70707 15.2855C7.70707 16.1494 7.00672 16.8498 6.14279 16.8498C5.27886 16.8498 4.5785 16.1494 4.5785 15.2855C4.5785 14.4216 5.27886 13.7212 6.14279 13.7212C7.00672 13.7212 7.70707 14.4216 7.70707 15.2855Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M19.8571 18.2926C21.5179 18.2926 22.8643 16.9463 22.8643 15.2855C22.8643 13.6247 21.5179 12.2783 19.8571 12.2783C18.1963 12.2783 16.85 13.6247 16.85 15.2855C16.85 16.9463 18.1963 18.2926 19.8571 18.2926ZM21.4214 15.2855C21.4214 16.1494 20.7211 16.8498 19.8571 16.8498C18.9932 16.8498 18.2929 16.1494 18.2929 15.2855C18.2929 14.4216 18.9932 13.7212 19.8571 13.7212C20.7211 13.7212 21.4214 14.4216 21.4214 15.2855Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                    </svg>
+                    <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/shipping/" target="_blank">Free Insured Shipping by <span class="pc-shipping-date">[[getDiamondShippingDays]]</span></a>
+                </span>   
+                <span class="pc-shipping-div pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.957 4.77015L23.9552 4.75853C23.9495 4.74348 23.9372 4.73382 23.9306 4.7194C23.904 4.65971 23.869 4.60405 23.8267 4.5541C23.8069 4.53202 23.7857 4.51128 23.7632 4.492C23.7227 4.45569 23.6781 4.42427 23.6302 4.3984C23.6044 4.38357 23.5777 4.37038 23.5503 4.35891C23.534 4.35254 23.5209 4.34127 23.504 4.33602L12.2099 0.835478C12.073 0.793122 11.9263 0.793122 11.7894 0.835478L0.495247 4.33602C0.478729 4.34113 0.465953 4.35219 0.450071 4.35842C0.421838 4.37008 0.394435 4.38362 0.368047 4.39896C0.320701 4.42464 0.276563 4.45575 0.236541 4.49165C0.213985 4.51106 0.192761 4.53195 0.173012 4.55417C0.130795 4.60403 0.0959074 4.65956 0.0693882 4.71912C0.0627529 4.73361 0.0502588 4.74341 0.0446118 4.75853L0.042706 4.77022C0.015002 4.84524 0.000554737 4.92445 0 5.00434V18.0364C0.00154207 18.4635 0.133683 18.8802 0.378972 19.2313C0.624262 19.5824 0.971161 19.8515 1.37386 20.003L11.2569 23.6785C11.7363 23.8563 12.2644 23.8563 12.7438 23.6785L22.6261 20.003C23.0289 19.8516 23.3759 19.5825 23.6212 19.2314C23.8665 18.8802 23.9986 18.4635 24 18.0364V5.00434C23.9994 4.9244 23.9848 4.84517 23.957 4.77015ZM12 2.23744L21.1213 5.06448L17.6394 6.35968L8.74588 3.24609L12 2.23744ZM11.2941 22.1967L1.87016 18.692C1.73584 18.6416 1.62011 18.5519 1.53827 18.4348C1.45642 18.3177 1.41231 18.1788 1.41176 18.0364V6.0148L11.2941 9.69037V22.1967ZM2.87866 5.06448L6.49595 3.9434L15.5828 7.12448L12 8.45699L2.87866 5.06448ZM22.5882 18.0364C22.5877 18.1788 22.5436 18.3177 22.4618 18.4347C22.3799 18.5517 22.2642 18.6413 22.1298 18.6917L12.7059 22.197V9.69009L16.9412 8.11485V10.6052C16.9412 10.7909 17.0155 10.969 17.1479 11.1003C17.2803 11.2315 17.4598 11.3053 17.6471 11.3053C17.8343 11.3053 18.0138 11.2315 18.1462 11.1003C18.2786 10.969 18.3529 10.7909 18.3529 10.6052V7.58991L22.5882 6.01466V18.0364Z" fill="#04043F"/>
+                    </svg>
+
+                    <div class="pc-shipping-text pc-text-04043F">
+                            {% comment %} <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/return-policy" target="_blank">30 Days Free Return & Exchange</a>
+                            <span class="pc-font-16"> • </span> {% endcomment %}
+                            <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/ring-resizing-services" target="_blank">Free 90 days resizing</a>
+                            <span class="pc-font-16"> • </span>
+                            <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/lifetime-manufacturing-warranty" target="_blank">Lifetime warranty.
+                    </div>
+                </span>  
+                <span class="pc-shipping-div pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.6916 15.0623L18.0977 13.1163C17.4615 12.6515 16.6747 12.4413 15.8915 12.5268C15.1083 12.6123 14.3854 12.9874 13.8645 13.5785C13.2408 14.1328 13.0254 14.2448 12.8129 14.1194C10.7641 12.9669 9.07036 11.275 7.91555 9.22752C7.87413 9.15361 7.85607 9.06889 7.86374 8.98451C7.87142 8.90013 7.90447 8.82006 7.95855 8.75484L8.81212 7.73034C9.25594 7.20103 9.50722 6.5369 9.52494 5.84637C9.54266 5.15584 9.32578 4.47969 8.9097 3.92831L6.96405 1.334C5.78083 -0.000101019 4.24912 -0.365597 2.89606 0.382869C0.925475 1.45724 -0.438714 4.76635 0.130131 7.00759C0.825651 13.041 8.76379 21.8644 16.1254 21.9931C19.6605 22.1841 24.3835 18.3932 20.6916 15.0623ZM19.9999 18.9294C16.3247 22.5377 10.4257 19.35 6.49607 15.5303C3.10458 12.1384 1.95539 8.8871 1.57702 6.70079C1.17391 4.86158 2.36335 1.67947 4.34977 1.47812C4.63269 1.50065 4.90793 1.58127 5.15828 1.71497C5.40863 1.84867 5.62872 2.03256 5.8048 2.25515L7.7255 4.81658C7.94071 5.1017 8.05291 5.45136 8.04379 5.80847C8.03466 6.16558 7.90476 6.50905 7.67527 6.78282L6.82167 7.80699C6.57627 8.10348 6.42627 8.46726 6.39138 8.85054C6.35649 9.23383 6.43833 9.61871 6.62617 9.95464C7.9094 12.2299 9.78973 14.1115 12.0642 15.3962C13.5294 16.1812 14.4037 14.9975 15.2435 14.3511C15.5175 14.1219 15.8609 13.9921 16.218 13.9829C16.5751 13.9737 16.9248 14.0857 17.2102 14.3005L19.8041 16.2461C20.0064 16.4003 20.1736 16.5958 20.2947 16.8194C20.4158 17.0431 20.4879 17.29 20.5065 17.5436C20.525 17.7973 20.4894 18.052 20.4021 18.2909C20.3147 18.5298 20.1777 18.7474 19.9999 18.9294ZM12.5375 1.71092C12.5375 1.61372 12.5566 1.51747 12.5938 1.42767C12.631 1.33786 12.6855 1.25627 12.7542 1.18754C12.823 1.11881 12.9046 1.06429 12.9944 1.02711C13.0842 0.989924 13.1804 0.970798 13.2776 0.970824C15.3396 0.973125 17.3166 1.79328 18.7746 3.25135C20.2327 4.70941 21.0528 6.68632 21.0551 8.74833C21.0551 8.94462 20.9772 9.13287 20.8384 9.27166C20.6996 9.41046 20.5113 9.48843 20.315 9.48843C20.1188 9.48843 19.9305 9.41046 19.7917 9.27166C19.6529 9.13287 19.575 8.94462 19.575 8.74833C19.573 7.07877 18.909 5.47814 17.7284 4.29757C16.5478 3.11701 14.9472 2.45293 13.2776 2.45101C13.1804 2.45104 13.0842 2.43191 12.9944 2.39473C12.9046 2.35755 12.823 2.30303 12.7542 2.2343C12.6855 2.16557 12.631 2.08398 12.5938 1.99417C12.5566 1.90437 12.5375 1.80812 12.5375 1.71092ZM12.5375 5.36008C12.5375 5.26288 12.5566 5.16663 12.5938 5.07683C12.631 4.98702 12.6855 4.90543 12.7542 4.8367C12.823 4.76797 12.9046 4.71345 12.9944 4.67627C13.0842 4.63908 13.1804 4.61996 13.2776 4.61998C14.3722 4.62116 15.4217 5.05646 16.1958 5.8304C16.9699 6.60434 17.4053 7.65372 17.4067 8.74833C17.404 8.94281 17.3248 9.12838 17.1863 9.26494C17.0478 9.40149 16.8611 9.47804 16.6666 9.47804C16.4721 9.47804 16.2854 9.40149 16.1469 9.26494C16.0084 9.12838 15.9293 8.94281 15.9265 8.74833C15.9257 8.04614 15.6463 7.37297 15.1497 6.87652C14.6531 6.38006 13.9798 6.10087 13.2776 6.10021C13.1804 6.10024 13.0842 6.08111 12.9944 6.04392C12.9046 6.00674 12.823 5.95222 12.7542 5.88349C12.6855 5.81475 12.631 5.73315 12.5938 5.64334C12.5566 5.55354 12.5375 5.45728 12.5375 5.36008ZM13.2779 8.00489C13.4697 8.01154 13.6515 8.09243 13.7848 8.23049C13.9182 8.36856 13.9928 8.55303 13.9928 8.74499C13.9928 8.93695 13.9182 9.12142 13.7848 9.25949C13.6515 9.39755 13.4697 9.47844 13.2779 9.48509C13.086 9.47844 12.9042 9.39755 12.7709 9.25949C12.6375 9.12142 12.563 8.93695 12.563 8.74499C12.563 8.55303 12.6375 8.36856 12.7709 8.23049C12.9042 8.09243 13.086 8.01154 13.2779 8.00489Z" fill="#04043F"/>
+                    </svg>
+                    <a href="tel:+61415900145" class="pc-shipping-text pc-text-04043F pc-underline pc-bold">+ 61 415 900 145</a>
+                </span>  
+                <span class="pc-shipping-div pc-flex pc-gap-x-10 pc-items-center pc-my-10">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.4286 1.70026H19.7143V0.850131C19.7143 0.624662 19.624 0.408428 19.4632 0.248997C19.3025 0.089567 19.0845 0 18.8571 0C18.6298 0 18.4118 0.089567 18.2511 0.248997C18.0903 0.408428 18 0.624662 18 0.850131V1.70026H6V0.850131C6 0.624662 5.90969 0.408428 5.74895 0.248997C5.5882 0.089567 5.37019 0 5.14286 0C4.91553 0 4.69751 0.089567 4.53677 0.248997C4.37602 0.408428 4.28571 0.624662 4.28571 0.850131V1.70026H2.57143C1.88944 1.70026 1.23539 1.96896 0.753154 2.44725C0.270918 2.92555 0 3.57425 0 4.25065V21.2533C0 21.9297 0.270918 22.5784 0.753154 23.0567C1.23539 23.535 1.88944 23.8037 2.57143 23.8037H21.4286C22.1106 23.8037 22.7646 23.535 23.2468 23.0567C23.7291 22.5784 24 21.9297 24 21.2533V4.25065C24 3.57425 23.7291 2.92555 23.2468 2.44725C22.7646 1.96896 22.1106 1.70026 21.4286 1.70026ZM22.2857 21.2533C22.2857 21.4787 22.1954 21.695 22.0347 21.8544C21.8739 22.0138 21.6559 22.1034 21.4286 22.1034H2.57143C2.3441 22.1034 2.12608 22.0138 1.96534 21.8544C1.80459 21.695 1.71429 21.4787 1.71429 21.2533V8.50131H22.2857V21.2533ZM22.2857 6.80105H1.71429V4.25065C1.71429 4.02518 1.80459 3.80895 1.96534 3.64952C2.12608 3.49009 2.3441 3.40052 2.57143 3.40052H4.28571V4.25065C4.28571 4.47612 4.37602 4.69236 4.53677 4.85179C4.69751 5.01122 4.91553 5.10078 5.14286 5.10078C5.37019 5.10078 5.5882 5.01122 5.74895 4.85179C5.90969 4.69236 6 4.47612 6 4.25065V3.40052H18V4.25065C18 4.47612 18.0903 4.69236 18.2511 4.85179C18.4118 5.01122 18.6298 5.10078 18.8571 5.10078C19.0845 5.10078 19.3025 5.01122 19.4632 4.85179C19.624 4.69236 19.7143 4.47612 19.7143 4.25065V3.40052H21.4286C21.6559 3.40052 21.8739 3.49009 22.0347 3.64952C22.1954 3.80895 22.2857 4.02518 22.2857 4.25065V6.80105ZM17.1429 12.752C17.1429 12.5265 17.2332 12.3103 17.3939 12.1508C17.5547 11.9914 17.7727 11.9018 18 11.9018H19.7143C19.9416 11.9018 20.1596 11.9914 20.3204 12.1508C20.4811 12.3103 20.5714 12.5265 20.5714 12.752C20.5714 12.9774 20.4811 13.1937 20.3204 13.3531C20.1596 13.5125 19.9416 13.6021 19.7143 13.6021H18C17.7727 13.6021 17.5547 13.5125 17.3939 13.3531C17.2332 13.1937 17.1429 12.9774 17.1429 12.752ZM10.2857 12.752C10.2857 12.5265 10.376 12.3103 10.5368 12.1508C10.6975 11.9914 10.9155 11.9018 11.1429 11.9018H12.8571C13.0845 11.9018 13.3025 11.9914 13.4632 12.1508C13.624 12.3103 13.7143 12.5265 13.7143 12.752C13.7143 12.9774 13.624 13.1937 13.4632 13.3531C13.3025 13.5125 13.0845 13.6021 12.8571 13.6021H11.1429C10.9155 13.6021 10.6975 13.5125 10.5368 13.3531C10.376 13.1937 10.2857 12.9774 10.2857 12.752ZM17.1429 17.8527C17.1429 17.6273 17.2332 17.411 17.3939 17.2516C17.5547 17.0922 17.7727 17.0026 18 17.0026H19.7143C19.9416 17.0026 20.1596 17.0922 20.3204 17.2516C20.4811 17.411 20.5714 17.6273 20.5714 17.8527C20.5714 18.0782 20.4811 18.2944 20.3204 18.4539C20.1596 18.6133 19.9416 18.7029 19.7143 18.7029H18C17.7727 18.7029 17.5547 18.6133 17.3939 18.4539C17.2332 18.2944 17.1429 18.0782 17.1429 17.8527ZM10.2857 17.8527C10.2857 17.6273 10.376 17.411 10.5368 17.2516C10.6975 17.0922 10.9155 17.0026 11.1429 17.0026H12.8571C13.0845 17.0026 13.3025 17.0922 13.4632 17.2516C13.624 17.411 13.7143 17.6273 13.7143 17.8527C13.7143 18.0782 13.624 18.2944 13.4632 18.4539C13.3025 18.6133 13.0845 18.7029 12.8571 18.7029H11.1429C10.9155 18.7029 10.6975 18.6133 10.5368 18.4539C10.376 18.2944 10.2857 18.0782 10.2857 17.8527ZM3.42857 12.752C3.42857 12.5265 3.51888 12.3103 3.67962 12.1508C3.84037 11.9914 4.05839 11.9018 4.28571 11.9018H6C6.22733 11.9018 6.44535 11.9914 6.60609 12.1508C6.76684 12.3103 6.85714 12.5265 6.85714 12.752C6.85714 12.9774 6.76684 13.1937 6.60609 13.3531C6.44535 13.5125 6.22733 13.6021 6 13.6021H4.28571C4.05839 13.6021 3.84037 13.5125 3.67962 13.3531C3.51888 13.1937 3.42857 12.9774 3.42857 12.752ZM3.42857 17.8527C3.42857 17.6273 3.51888 17.411 3.67962 17.2516C3.84037 17.0922 4.05839 17.0026 4.28571 17.0026H6C6.22733 17.0026 6.44535 17.0922 6.60609 17.2516C6.76684 17.411 6.85714 17.6273 6.85714 17.8527C6.85714 18.0782 6.76684 18.2944 6.60609 18.4539C6.44535 18.6133 6.22733 18.7029 6 18.7029H4.28571C4.05839 18.7029 3.84037 18.6133 3.67962 18.4539C3.51888 18.2944 3.42857 18.0782 3.42857 17.8527Z" fill="#04043F"/>
+                    </svg>
+                    <a class="pc-shipping-text pc-text-04043F pc-decoration-none" href="/pages/book-virtual-appointment" target="_blank">Book an Appointment</a>
+                    <!-- <div class="pc-flex">Free insured shipping by <div style="font-weight : 700">[[ getDiamondShippingDays || $t('Thursday, Nov 2') ]]</div> if you order today.</div> -->
+                </span>                
+            </div> 
+            
+
+            {% comment %} <div class="product-single__information product-block ">
+                {% comment %} <p v-if="diamond.sellerName" class="product-single__vendor"><span class="p-attr txt-body-60">Vendor: </span><span>[[diamond.sellerName]]</span></p> {% endcomment %}
+                <p v-if="diamond.diamondType" class="product-single__type"><span class="p-attr txt-body-60">Type: </span><span>[[diamond.diamondType == 'lab' ? "Lab Grown" : "Natural"]]</span></p>
+                <p  v-if="diamond.certificateNumber"  class="product-single__sku "><span class="p-attr txt-body-60">Sku: </span><span class="js-variant-sku">[[diamond.certificateNumber]]</span></p>
+                {% comment %} <p  v-if="diamond.availability"  class="product-single__availability "><span class="p-attr txt-body-60">Available: </span><span>[[diamond.availability]]</span></p> {% endcomment %}
+            </div> {% endcomment %}
+            <hr>                        
+        </div>
+    </div>
+    <!-- <div v-if="openHintPopup">
+        <?php echo do_shortcode('[contact-form-7 id="6ba4c21" title="send hint" ajax="true"]'); ?>
+    </div> -->
+
+    <div v-if="waitLoader">
+        <div class="pc-fixed pc-h-100-vh pc-w-full pc-z-1 pc-backdrop-blur pc-top-0 pc-left-0 pc-bg-backdrop-black">
+            <wait-loader :is-loading="waitLoader" :message="loaderMessage" />
+        </div>
+    </div>
+    
+    <teleport to="#popup-container">
+        <change-option-popup-comp :show-popup="showChangeDiamondConfirm" :popup-title="getConfirmPopupTitle" @change-current-option="changeCurrentOption" :popup-img="diamond.diamondImage" :popup-placeholder="diamond.shape" :popup-type="'diamond'" :popup-warning-msg="`${changeDiamondWaringMsg + getConfirmPopupTitle}`"></change-option-popup-comp>
+
+        <diamond-hint-popup-comp type="diamond" :openPopup="openHintPopup" :popup-placeholder-image="getPopupPlaceholderImage" :popup-title="getPopupTitle" :popup-image="getPopupImage" :diamond-data="diamond" @close-hint-popup="openHintPopup = false" @image-error="setNewImage"></diamond-hint-popup-comp>
+
+        <diamond-email-popup-comp :openPopup="openEmailPopup" :popup-placeholder-image="getPopupPlaceholderImage" :popup-title="getPopupTitle" :popup-image="getPopupImage" :diamond-data="diamond" @close-email-popup="openEmailPopup = false" @image-error="setNewImage" :form-type="'diamond'"></diamond-email-popup-comp>
+        
+        <request-diamond-img-popup-comp :openPopup="openRequestDiamondImgPopup" :popup-placeholder-image="getPopupPlaceholderImage" :popup-title="getPopupTitle" :popup-image="getPopupImage" :diamond-data="diamond" @close-request-diamond-popup="openRequestDiamondImgPopup = false" @image-error="setNewImage"></request-diamond-img-popup-comp>   
+
+        <diamond-confirmation-popup :confirm="" :cancel="" :replace-diamond = "replaceDiamond" :replace-setting = "replaceSetting" :diamond="diamond" :setting="setting" :setting-size="settingSize" @close-popup="closeConfirmationPopup" :open-conf-popup="openConfPopup" :wait-loading="waitLoader" @update-wait-loader="updateWaitLoader"/>               
+    </teleport>
+</script>
+<!-- END DIAMOND META DATA -->
+
+<!-- DIAMOND MEDIA GALLERY -->
+<script type="text/x-template" id="diamond-media-gallery">
+    <div class="new pc-details-media-gallery-div pc-flex pc-w-full pc-flex-col pc-items-center pc-gap-y-30 pc-px-20">
+        <div class="pc-flex pc-flex-col pc-w-full pc-items-center pc-detail-container-media">
+
+            <div class="pc-diamond-image-container">
+                <div class="pc-diamond-image-inner-container">
+                    <div v-if="showIframeLoader && !srcSet && (gallery.type === 'image' || gallery.type === 'video')" class="pc-iframe-loader pc-flex pc-items-center pc-justify-center"><span>Loading...</span></div>                
+                    <img :src="diamond.diamondImage" width="100" height="100" class="pc-w-full" :class="{'pc-slide-img' : gallery.type === 'image' && gallery.pos === 1}" v-if="gallery.type === 'image' && gallery.pos === 1" @error="$emit('imageError', $event.target, diamond.shape)" @mouseover="zoomImgUrl = $event.target.getAttribute('src')" @load="showIframeLoader = false"/>                                
+                    
+                    <diamond-canvas-comp v-else-if=" gallery.type == 'scalar_front' " :canvas-img-type="'front'" :diamond-data="diamond" @hide-loader=" showIframeLoader = false " />
+    
+                    <diamond-canvas-comp v-else-if=" gallery.type == 'scalar_side' " :canvas-img-type="'side'" :diamond-data="diamond" @hide-loader=" showIframeLoader = false " />
+    
+                    <iframe autoplay :src="diamond.diamondVideo" class="pc-select-none pc-min-height-500" :class="{'pc-slide-img' : gallery.type === 'video' && gallery.pos === 1,'pc-visibility-hidden':!srcSet,'pc-w-1/10':!srcSet}" v-else-if="!videoNotAvail && diamond.diamondVideo && gallery.type === 'video' && gallery.pos === 1" @load="handleIframeLoader($event, false)" @error="handleError($event)"></iframe>
+
+                    <div v-else-if="videoNotAvail && diamond.diamondVideo && gallery.type === 'video' && gallery.pos === 1"> Video is not available</div>
+                    <!-- <video id="myVideo" autoplay muted loop :poster="loadingGif" width="640" height="640" v-else-if="diamond.diamondVideo && gallery.type === 'video' && gallery.pos === 1" @mouseover="showZoomIcon = false" style="overflow:hidden" @load="handleIframeLoader(e, false)">
+                        <source :src="diamond.diamondVideo || ''" type="video/mp4" />
+                    </video>  -->
+    
+                    <diamond-skin-comparer :current-carat-weight="diamond.caratWeight" :class="{'pc-slide-img' : gallery.type === 'diamondSlider' && gallery.pos === 1}" v-else-if="diamond.caratWeight && gallery.type === 'diamondSlider' && gallery.pos === 1"></diamond-skin-comparer>                                    
+                </div>
+                <!-- <span class="tps_zoom_img_icon" @click="showFullImgPopup" v-if="gallery.type === 'image'">zoom</span> -->
+            </div>
+            <div class="pc-down-slider-div pc-flex pc-w-full pc-justify-center pc-gap-x-10 pc-my-15">            
+                <div class="pc-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center pc-select-none pc-overflow-hidden" :class="{'active' : gallery.type === 'image' && gallery.pos === 1}" @click="setMainMedia($event, 'image', 1), handleIframeLoader($event, true)">
+                    <img :src="diamond.diamondImage" @error="$emit('imageError', $event.target, diamond.shape)" width="80" height="80"/>
+                </div>
+                <div class="pc-video-div pc-select-none" v-if="diamond.diamondVideo">
+                    <div class="pc-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center pc-select-none" :class="{'active' : gallery.type === 'video' && gallery.pos === 1}" @click="setMainMedia($event, 'video', 1), handleIframeLoader($event, true,'videoClick')">
+                        <svg width="40" height="30" viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke="#04043F" strokeWidth="1" d="M17.1069 9.77509C16.8497 9.64647 16.4638 9.9037 16.4638 10.2896V19.6786C16.4638 20.0645 16.8497 20.3217 17.1069 20.1931L25.8529 15.4342C26.2388 15.3056 26.2388 14.7912 25.8529 14.5339L17.1069 9.77509ZM18.2645 7.97444L26.8818 12.6047C28.8111 13.6336 28.6825 16.3346 26.8818 17.3635L18.1359 21.9937C16.4638 23.0227 14.2773 21.7365 14.2773 19.6786V10.2896C14.2773 8.23168 16.4638 6.9455 18.2645 7.97444Z" fill="#04043F"/>
+                            <path stroke="#04043F" strokeWidth="1" d="M33.3119 2.1865H6.6881C4.24437 2.1865 2.1865 4.24437 2.1865 6.6881V23.2797C2.1865 25.7235 4.24437 27.7813 6.6881 27.7813H33.1833C35.7556 27.7813 37.8135 25.7235 37.8135 23.2797V6.6881C37.8135 4.11576 35.7556 2.1865 33.3119 2.1865ZM6.6881 0H33.3119C36.9132 0 40 2.9582 40 6.6881V23.2797C40 26.881 36.9132 29.9678 33.1833 29.9678H6.6881C3.08682 29.9678 0 26.881 0 23.2797V6.6881C0 3.08682 3.08682 0 6.6881 0Z" fill="#04043F"/>
+                        </svg>
+                    </div>
+                    {% comment %} <div class="pc-video-text pc-text-04043F">
+                        Play Video
+                    </div> {% endcomment %}
+                </div> 
+                <div class="pc-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center pc-select-none" :class="{ 'active' : gallery.type === 'scalar_front' }" @click="setMainMedia($event, 'scalar_front'), handleIframeLoader($event, true)" v-if="showDiamondScalarFrontViewImg(diamond) && diamond.diamondType != 'gemstone' ">
+                    <img :src="getDiamondScalarFrontViewImg(diamond)" width="80" height="80"/>
+                </div>
+                <div class="pc-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center pc-select-none" :class="{ 'active' : gallery.type === 'scalar_side' }" @click="setMainMedia($event, 'scalar_side'), handleIframeLoader($event, true)" v-if="showDiamondScalarSideViewImg(diamond) && diamond.diamondType != 'gemstone'">
+                    <img :src="getDiamondScalarSideViewImg(diamond)" width="80" height="80"/>
+                </div>
+                <div class="pc-cert-div pc-select-none" v-if="diamond.certificateFile && diamond.certificateFile != ''">
+                    <div class="pc-slider-div pc-border-1-f2f2f2 pc-rounded-8 pc-flex pc-items-center pc-justify-center" :class="{'active' : gallery.type === 'cert'}" @click="setMainMedia($event, 'cert'), handleIframeLoader($event, false)" :cert_url="diamond.certificateFile">
+                        <svg width="40" height="55" viewBox="0 0 29 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.7063 40.1083V35.2477H24.2272C26.6455 35.2477 28.6235 33.2697 28.6235 30.8514V10.0021V9.98727L28.6205 9.97271C28.574 9.74021 28.4356 9.45059 28.2305 9.2928L19.4462 1.1026L19.4404 1.09713L19.4339 1.09231C19.2436 0.949588 19.0005 0.85 18.7495 0.85H5.24628C2.82799 0.85 0.85 2.82799 0.85 5.24628V31.3185C0.85 33.7368 2.82799 35.7148 5.24628 35.7148H9.7672V40.1507C9.7672 40.5036 9.96715 40.8475 10.3055 41.0428C10.4695 41.1502 10.6347 41.1501 10.7572 41.15H10.7665C10.9555 41.15 11.1655 41.1036 11.3295 40.9461L14.7155 38.5924L18.1118 40.9533L18.1142 40.955C18.4073 41.1503 18.8046 41.204 19.1562 41.007C19.5126 40.8503 19.7063 40.4946 19.7063 40.1083ZM9.7672 33.7162H5.24628C3.92785 33.7162 2.84851 32.6369 2.84851 31.3185V5.24628C2.84851 3.92785 3.92785 2.84851 5.24628 2.84851H17.6653V8.7707C17.6653 10.2548 18.8789 11.4685 20.3631 11.4685H26.54V30.8938H26.54L26.5401 30.8984C26.5799 32.2124 25.5041 33.2916 24.1847 33.2916H19.6638V31.2938C20.8528 30.0421 21.6171 28.3673 21.6171 26.5202C21.6171 22.7437 18.5357 19.6186 14.7155 19.6186C10.939 19.6186 7.81391 22.7 7.81391 26.5202C7.81391 28.3627 8.53351 30.081 9.7672 31.2968V33.7162ZM19.7063 8.7707V4.06112L25.5431 9.46996H20.4055C20.0213 9.46996 19.7063 9.15495 19.7063 8.7707ZM14.7155 31.4233C12.0374 31.4233 9.81242 29.2391 9.81242 26.5202C9.81242 23.8029 12.0358 21.6596 14.7155 21.6596C17.3944 21.6596 19.6186 23.8446 19.6186 26.5202C19.6186 29.1974 17.3927 31.4233 14.7155 31.4233ZM15.2698 36.5467C15.2695 36.5465 15.2692 36.5463 15.2689 36.5461C14.9198 36.2973 14.4683 36.2974 14.1193 36.5464C14.1191 36.5465 14.1189 36.5466 14.1188 36.5467L11.7657 38.2054V32.7461C12.6637 33.1615 13.6697 33.4218 14.7155 33.4218C15.7613 33.4218 16.7673 33.1615 17.6653 32.7461V38.2081L15.2698 36.5467Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                            <path d="M7.11439 11.3412H13.3989C13.9488 11.3412 14.3982 10.8919 14.3982 10.3419C14.3982 9.792 13.9488 9.34268 13.3989 9.34268H7.11439C6.56446 9.34268 6.11514 9.792 6.11514 10.3419C6.11514 10.8919 6.56446 11.3412 7.11439 11.3412Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                            <path d="M22.3161 14.8627H7.11439C6.56446 14.8627 6.11514 15.312 6.11514 15.862C6.11514 16.4119 6.56446 16.8612 7.11439 16.8612H22.3161C22.866 16.8612 23.3153 16.4119 23.3153 15.862C23.3153 15.312 22.866 14.8627 22.3161 14.8627Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        </svg>
+                    </div>
+                    {% comment %} <div class="pc-cert-text pc-text-04043F">
+                        Download Certificate
+                    </div> {% endcomment %}
+                </div>            
+                 
+                <!-- <div class="pc-slider-div pc-flex pc-items-center pc-justify-center" :class="{'active' : gallery.type === 'cert_num'}" v-else-if="diamond.certificateNumber && diamond.certificateNumber != ''" @click="setMainMedia($event, 'cert_num'), handleIframeLoader($event, false)" :cert_number="diamond.certificateNumber" :lab_type="diamond.lab">
+                    <svg width="29" height="42" viewBox="0 0 29 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.7063 40.1083V35.2477H24.2272C26.6455 35.2477 28.6235 33.2697 28.6235 30.8514V10.0021V9.98727L28.6205 9.97271C28.574 9.74021 28.4356 9.45059 28.2305 9.2928L19.4462 1.1026L19.4404 1.09713L19.4339 1.09231C19.2436 0.949588 19.0005 0.85 18.7495 0.85H5.24628C2.82799 0.85 0.85 2.82799 0.85 5.24628V31.3185C0.85 33.7368 2.82799 35.7148 5.24628 35.7148H9.7672V40.1507C9.7672 40.5036 9.96715 40.8475 10.3055 41.0428C10.4695 41.1502 10.6347 41.1501 10.7572 41.15H10.7665C10.9555 41.15 11.1655 41.1036 11.3295 40.9461L14.7155 38.5924L18.1118 40.9533L18.1142 40.955C18.4073 41.1503 18.8046 41.204 19.1562 41.007C19.5126 40.8503 19.7063 40.4946 19.7063 40.1083ZM9.7672 33.7162H5.24628C3.92785 33.7162 2.84851 32.6369 2.84851 31.3185V5.24628C2.84851 3.92785 3.92785 2.84851 5.24628 2.84851H17.6653V8.7707C17.6653 10.2548 18.8789 11.4685 20.3631 11.4685H26.54V30.8938H26.54L26.5401 30.8984C26.5799 32.2124 25.5041 33.2916 24.1847 33.2916H19.6638V31.2938C20.8528 30.0421 21.6171 28.3673 21.6171 26.5202C21.6171 22.7437 18.5357 19.6186 14.7155 19.6186C10.939 19.6186 7.81391 22.7 7.81391 26.5202C7.81391 28.3627 8.53351 30.081 9.7672 31.2968V33.7162ZM19.7063 8.7707V4.06112L25.5431 9.46996H20.4055C20.0213 9.46996 19.7063 9.15495 19.7063 8.7707ZM14.7155 31.4233C12.0374 31.4233 9.81242 29.2391 9.81242 26.5202C9.81242 23.8029 12.0358 21.6596 14.7155 21.6596C17.3944 21.6596 19.6186 23.8446 19.6186 26.5202C19.6186 29.1974 17.3927 31.4233 14.7155 31.4233ZM15.2698 36.5467C15.2695 36.5465 15.2692 36.5463 15.2689 36.5461C14.9198 36.2973 14.4683 36.2974 14.1193 36.5464C14.1191 36.5465 14.1189 36.5466 14.1188 36.5467L11.7657 38.2054V32.7461C12.6637 33.1615 13.6697 33.4218 14.7155 33.4218C15.7613 33.4218 16.7673 33.1615 17.6653 32.7461V38.2081L15.2698 36.5467Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M7.11439 11.3412H13.3989C13.9488 11.3412 14.3982 10.8919 14.3982 10.3419C14.3982 9.792 13.9488 9.34268 13.3989 9.34268H7.11439C6.56446 9.34268 6.11514 9.792 6.11514 10.3419C6.11514 10.8919 6.56446 11.3412 7.11439 11.3412Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                        <path d="M22.3161 14.8627H7.11439C6.56446 14.8627 6.11514 15.312 6.11514 15.862C6.11514 16.4119 6.56446 16.8612 7.11439 16.8612H22.3161C22.866 16.8612 23.3153 16.4119 23.3153 15.862C23.3153 15.312 22.866 14.8627 22.3161 14.8627Z" fill="#04043F" stroke="#04043F" stroke-width="0.3"/>
+                    </svg>
+                </div>  -->                      
+            </div>
+        </div>
+
+        
+    </div>
+        
+    <teleport to="#popup-container">
+        <full-img-popup ref="fullImg" v-show="showPopupImg" @close-img-popup="showPopupImg = false, zoomImgUrl = '' " :class="{'tps_large_img' : showPopupImg}"></full-img-popup>
+
+        <certificate-img-popup :show-popup="showCertificateImgPopup" :cert-img-url="certificateImgUrl" @close-cert-popup="showCertificateImgPopup = false" :show-loader="showCertImgLoader" @hide-cert-img-loader="showCertImgLoader = false"></certificate-img-popup>
+    </teleport>
+</script>
+<!-- END DIAMOND MEDIA GALLERY -->
+
+<!-- DIAMOND CANVAS -->
+<script type="text/x-template" id="diamond-canvas-comp">
+    <center>
+        <canvas id="canvas-img" width="375" height="230" ref="diamond_canvas"></canvas>
+    </center>
+</script>
+<!-- DIAMOND CANVAS -->
+
+<!-- GIA CERTIFICATION POPUP -->
+<script type="text/x-template" id="gia-certificate-popup">
+    <transition name="pc-form">
+        <div v-if="showPopup" class="tps_gia_popup tps_popup_parent pc-active-form">
+            <div class="tps_details_page_form_popup">
+                <div><span @click="closePopup">close</span></div>
+                <div class="tps_gia_popup_img">
+                    <span v-if="showLoader" class="tps_gia_popup_loader">Loading...</span>
+                    <img :src="certImgUrl" title="GIA" alt @load="hideLoader">
+                </div>
+            </div>
+        </div>
+    </transition>    
+</script>
+<!-- END GIA CERTIFICATION POPUP -->
+
+<!-- DIAMOND SKIN COMPARER -->
+<script type="text/x-template" id="diamond-skin-comparer">
+    <!-- <div class="tps-diamond-skin-compare">
+        <div class="tps-skin-comparer-img">
+            <img :src="whiteHandImg" width="100" height="100" />
+            <img :src="darkHandImg" :style="{opacity : skinSlider.initialOpacity}" width="100" height="100" class="tps_slider_overlay_img" />
+            <span class="tps_carat_diamond_img round" :style="{'background-size' : getDiamondImgSize}"></span>
+        </div>
+        <div class="tps-skin-comparer-slider">
+            <div class="tps-skin-comparer-slider-inner">
+                Carat Slider
+                <slider v-model="caratSlider.initialCarat" :step="caratSlider.step" :min="caratSlider.minCarat" :max="caratSlider.maxCarat" :tooltips="true" :format="format" tooltipPosition="bottom"></slider>
+            </div>
+            <div class="tps-skin-comparer-slider-inner">
+                Skin Tone Slider
+                <slider v-model="skinSlider.initialOpacity" :step="skinSlider.step" :min="skinSlider.minOpacity" :max="skinSlider.maxOpacity" :tooltips="false"></slider>
+                <div class="tps_slider_tooltip_title">
+                    <span>[[$t("Lighter")]]</span>
+                    <span>[[$t("Darker")]]</span>
+                </div>
+            </div>
+        </div>
+    </div> -->
+</script>
+<!-- END DIAMOND SKIN COMPARER -->
+
+<!-- DIAMOND PAGE TOOLTIP -->
+<script type="text/x-template" id="detail-tooltip">
+    <div class="pc-tooltip pc-tt-commons pc-fs-16 pc-text-white pc-bg-transparent" :class="[{'active' : showTooltip}, tooltipClass, wishlistText.includes('Select Ring Size') ? 'pc-bg-transparent' : 'pc-bg-04043F']">[[$t(wishlistText)]]</div>  
+   
+</script>
+<!-- DIAMOND PAGE TOOLTIP -->
+
+<!-- FINAL RING PAGE DETAIL PAGE -->
+<script type="text/x-template" id="final-ring-detail-page">
+    <!-- <teleport to="#header-banner">
+        <div class="tps-top-banner-section">    
+        <picture>
+            <source :srcset="getDetailPageBannerUrl" media="(min-width: 768px)">
+            <img :src="getDetailPageBannerUrl" title="Shopping Time" alt="Shopping Time">
+        </picture>   
+        </div>
+    </teleport> -->
+
+    <teleport to="#header-banner">
+        <breadcrumbs-comp :url-list="breadcrumbs"></breadcrumbs-comp>
+    </teleport>
+    <header-steps-comp :redirect-page="redirectPage" :total-steps="totalSteps" :firstStepData="stepData.firstStep" :secondStepData="stepData.secondStep" :thirdStepData="stepData.thirdStep"></header-steps-comp>
+    <sticky-bar-comp :sticky-items="pageStickyItems"></sticky-bar-comp>
+    <!-- Detail spinner component -->
+    <detail-spinner-comp v-if="loading"></detail-spinner-comp>
+
+    <!-- Final Ring Page Not Found Div -->
+    <div class="pc-detail-data-notfound-div pc-flex pc-flex-col pc-items-center pc-justify-center pc-gap-y-10" v-show="dataNotFound && !redirectionPossible">
+        <span class="pc-tt-commons pc-text-04043F pc-font-24">[[$t("No Ring Found")]]</span>
+        <div class="back-btn-div pc-flex pc-flex-wrap pc-gap-y-10 pc-items-center pc-justify-center pc-gap-x-5">
+            <button class="back-btn button_style pc-pointer pc-text-04043F" @click="startWith('setting')">[[$t("Start with setting")]]</button>
+            <button class="back-btn button_style pc-pointer pc-text-04043F" @click="startWith('diamond')">[[$t("Start with diamond")]]</button>
+        </div>
+    </div>
+
+    <!-- Diamond detail div-->
+    <div class="container pc-new-layout-detail-page pc-product-detail-div pc-final-ring-page pc-py-20" v-show="!loading && !dataNotFound">
+        <!-- <div class="pc-back-btn-div">
+                <button class="pc-px-0 pc-back-btn pc-flex pc-items-center pc-relative pc-text-04043F pc-bg-transparent" @click="goBack">
+                    <div class="pc-svg-container"></div>
+                    [[$t("Back to search")]]
+                </button>
+            </div> -->
+        <span class="final-ring-heading pc-text-04043F pc-font-LinetoLight">REVIEW YOUR RING!</span>
+        <div class="pc-row pc-flex pc-w-full pc-gap-x-30">
+            <div class="diamond-media-gallery">
+                <template v-if="!redirectionPossible">
+                    <final-ring-media-gallery :change-in-metal-loading="changeInMetalLoading" :diamond="diamond.data" :media-gallery="pageMedia" v-if="pageMedia.length" :placeholder-shape="diamond.data.shape" @image-error="setNewImage"></final-ring-media-gallery>
+                </template>
+                <div class="diamond-meta-data-tablet-view">
+                    <final-ring-meta-data :redirection-possible="redirectionPossible" :change-in-metal-loading="changeInMetalLoading" :setting="setting.data" :diamond="diamond.data" v-model:setting-metal="setting.settingMetal" v-model:setting-size="setting.settingSize" :setting-metal-list="settingMetalList" :setting-metal="setting.settingMetal" @update-metal="updateMetalList" :setting-size-list="getSettingSizes" v-model:setting-country="defaultSettingCountry" @reset-setting-size="initializeSettingSize" :final-setting-size="finalSettingSize" @set-final-size="setFinalRingSize"></final-ring-meta-data>
+                </div>
+                <div v-if="!redirectionPossible" class="pc-w-full pc-flex pc-justify-center pc-items-center pc-flex-col pc-spend-coupon pc-px-10 pc-gap-y-30 pc-mt-10">
+                    {% comment %} <div class="pc-spend-div pc-w-9/10 pc-flex pc-gap-x-30 pc-flex-nowrap pc-items-center pc-py-20 pc-px-20 pc-bg-FEF9EF">
+                        <div class="pc-w-full pc-flex pc-flex-col pc-items-center pc-gap-y-10 pc-justify-center">
+                            <span class="pc-coupon-text pc-text-04043F pc-text-center">
+                                Have this diamond reviewed by a Diamond expert!
+                            </span>
+                            <span class="pc-connect button_style pc-border-solid pc-flex pc-px-20 pc-gap-x-10 pc-py-10 pc-text-04043F pc-w-auto pc-transform-none pc-pointer" @click="functionOnConnect">
+                                <svg width="24" height="24" viewBox="0 0 59 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20.7333 0.565623C14.4811 2.15341 9.56864 6.62809 7.6632 12.4307C6.77003 15.231 6.65094 19.5036 7.39525 22.3328C7.9907 24.5845 9.62819 27.6158 11.1466 29.2902C12.3375 30.6181 13.052 30.878 13.707 30.2428C14.3025 29.6655 14.1238 29.1458 12.8436 27.7601C11.4145 26.2012 10.1343 23.6896 9.44955 21.2069C7.39525 13.47 12.8436 4.80935 21.0608 2.73079C23.2342 2.21115 27.1047 2.18228 29.0994 2.70192C32.8805 3.6546 36.6914 6.36827 38.7755 9.51498C39.9664 11.3337 41.1573 14.8846 41.1573 16.6745C41.1573 18.2045 41.5146 18.753 42.5566 18.753C43.42 18.753 43.688 17.8292 43.3902 15.6929C42.8841 11.6224 41.1275 8.27362 37.9121 5.18465C33.2676 0.709969 26.8665 -0.993297 20.7333 0.565623Z" fill="#725149" stroke-width="2" stroke="#04043F" />
+                                    <path d="M23.5915 12.4596C22.0433 12.8926 20.6143 14.0474 19.989 15.4042C19.4829 16.5012 19.4234 17.5405 19.4234 30.5026C19.4234 38.1818 19.334 44.4463 19.2149 44.4463C19.0959 44.4463 18.5302 43.9555 17.9347 43.3493C16.4461 41.7615 14.4811 40.3181 12.5757 39.3654C10.6405 38.4416 6.85934 38.0663 4.98367 38.6725C2.72096 39.3943 0.696429 41.9347 0.666656 44.071C0.666656 44.8793 1.0537 45.399 3.13778 47.3909C6.82957 50.9996 9.03274 53.5978 11.9504 57.8126C15.4041 62.8358 16.8331 64.5679 19.9593 67.6569C25.7947 73.4018 30.2308 75.3071 36.9594 74.9607C46.8141 74.47 54.9122 68.956 58.0681 60.5552L58.872 58.4477L58.9613 48.1415C59.0506 38.4127 59.0208 37.7776 58.4849 36.7383C57.8002 35.497 57.2047 34.8907 55.8352 34.2267C54.674 33.6494 51.9945 33.6494 50.9822 34.1979C49.9104 34.7752 49.8509 34.7464 49.6127 33.6205C49.3448 32.1482 47.8561 30.3294 46.427 29.6943C44.7896 29.0015 42.765 29.0015 41.3955 29.6943L40.3237 30.2717L39.9366 29.3768C38.6266 26.2878 34.9944 24.8155 32.1362 26.23L31.0346 26.7786V22.2461C31.0346 16.9343 30.6774 15.3176 29.1887 13.9319C28.6528 13.4411 27.9383 12.9215 27.6108 12.7483C26.6283 12.2864 24.6931 12.142 23.5915 12.4596ZM27.6406 15.4042L28.6528 16.3858V29.2901C28.6528 37.6044 28.7719 42.3678 28.9506 42.743C29.3674 43.4648 30.3201 43.4648 30.7369 42.743C30.9156 42.3966 31.0346 39.7696 31.0346 36.2187C31.0346 29.5788 31.1835 28.9726 32.9996 28.1354C34.2798 27.558 35.1433 27.5869 36.3044 28.2797C38.0312 29.2901 38.1801 29.8964 38.1801 36.594C38.1801 41.7615 38.2396 42.6853 38.6564 43.0317C38.9839 43.2916 39.2519 43.3204 39.6091 43.0895C40.0259 42.8585 40.145 42.0791 40.2641 38.1529C40.3832 34.0246 40.4725 33.4184 41.0382 32.6967C42.2887 31.0512 44.2536 30.7047 45.9507 31.8306C47.4393 32.8122 47.6775 33.7937 47.6775 39.4809C47.7073 43.8112 47.7668 44.4752 48.1836 44.6484C49.315 45.0814 49.6425 44.3886 49.7913 41.0975C49.9402 37.6621 50.2379 36.8827 51.5777 36.2187C53.364 35.3237 55.6565 35.93 56.4902 37.5178C57.1452 38.7591 57.1452 55.9361 56.4902 58.4477C54.6443 65.4629 48.4218 70.8902 40.413 72.478C32.9401 73.9792 27.4322 72.1604 21.4777 66.2135C18.2027 62.9224 17.0713 61.5367 14.0643 57.1486C11.1466 52.876 9.1816 50.5088 5.40049 46.6403L2.63164 43.8112L3.19732 42.7719C4.15004 41.1264 5.16231 40.5779 7.51434 40.4624C9.33046 40.3469 9.80682 40.4335 11.5336 41.2419C13.5284 42.1368 16.7141 44.9082 19.1852 47.9106C20.1081 49.0076 20.3463 49.1519 20.8227 48.8921C21.3288 48.5746 21.3586 47.6796 21.5074 32.5812C21.6265 20.4851 21.7456 16.4435 22.0433 15.9527C22.6388 14.9134 23.6213 14.4227 25.1695 14.4227C26.4199 14.4227 26.7772 14.567 27.6406 15.4042Z" fill="#725149" stroke-width="2" stroke="#04043F" />
+                                </svg>
+                                Get in Touch
+                            </span>
+                        </div>
+                    </div> {% endcomment %}
+                    {% comment %} <div class="pc-w-9/10 pc-flex pc-summary-section pc-flex-nowrap">
+                        <div class="pc-w-full pc-summary-div pc-grid pc-grid-row-2 pc-place-items-center  pc-px-8  pc-my-10">
+
+                            <svg class="pc-h-full pc-object-cover" width="43" height="39" viewBox="0 0 43 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M42.6028 5.29283C42.5951 2.61627 40.6796 0.697355 38.0016 0.696516C29.0716 0.693111 20.1423 0.693111 11.2123 0.70076C10.8064 0.70076 10.3903 0.738211 9.99713 0.834427C8.07144 1.30777 6.80009 2.98574 6.78475 5.05106C6.7269 12.7956 6.67156 20.541 6.61543 28.2856C6.61455 28.4558 6.61543 28.6261 6.61543 28.8168C4.90497 28.8168 3.26686 28.827 1.6296 28.81C1.19476 28.8058 0.850968 28.9003 0.648438 29.3114C0.648438 30.7051 0.648438 32.0987 0.648438 33.4923C0.673966 33.5528 0.713111 33.6115 0.722471 33.6745C1.07732 36.1357 3.16815 38.5509 6.42821 38.5688C13.8282 38.6088 21.229 38.5782 28.6291 38.585C29.6885 38.5858 30.7344 38.5399 31.7011 38.0546C33.9638 36.9198 35.0504 35.0579 35.0504 32.5448C35.0522 25.8516 35.0513 19.1585 35.0513 12.4653C35.0513 12.2933 35.0513 12.1205 35.0513 11.9145C35.253 11.9145 35.4002 11.9145 35.5482 11.9145C37.5693 11.9145 39.5895 11.9153 41.6105 11.9145C42.3832 11.9137 42.6028 11.6906 42.6036 10.9082C42.6044 9.03528 42.6079 7.16408 42.6028 5.29283ZM25.1086 37.2254C18.9493 37.2263 12.79 37.2016 6.63072 37.2382C4.16548 37.2535 2.33761 35.5253 2.08827 33.5179C1.95467 32.4435 2.06445 31.3393 2.06445 30.1977C9.2219 30.1977 16.3726 30.1977 23.5854 30.1977C23.5854 30.3679 23.582 30.5254 23.5862 30.6838C23.6109 31.6926 23.576 32.7082 23.6773 33.7103C23.8058 34.9745 24.4202 36.0352 25.3171 36.93C25.375 36.9879 25.4362 37.0424 25.4907 37.1028C25.5043 37.1181 25.5 37.1505 25.5094 37.2058C25.3724 37.2135 25.2405 37.2254 25.1086 37.2254ZM34.3237 2.95762C33.8438 3.72129 33.6778 4.5641 33.6787 5.45714C33.6829 14.4991 33.6778 23.542 33.6838 32.584C33.6847 34.4986 32.8796 35.9459 31.1692 36.7955C28.5074 38.1176 25.2124 36.2345 24.9835 33.2693C24.8942 32.1149 24.9435 30.9494 24.9324 29.789C24.9248 29.0296 24.7146 28.8168 23.9555 28.8168C18.8081 28.8159 13.6606 28.8168 8.51394 28.8168C8.35054 28.8168 8.18798 28.8168 7.99396 28.8168C7.98123 28.6942 7.96076 28.5903 7.96165 28.4865C8.01694 20.7011 8.07055 12.9156 8.13437 5.13025C8.14715 3.58762 8.93174 2.53451 10.3325 2.15995C10.6566 2.07311 11.0064 2.05352 11.3442 2.05352C19.0582 2.04755 26.7723 2.04928 34.4863 2.05012C34.6173 2.05012 34.7492 2.0629 34.9186 2.07139C34.6999 2.3966 34.5033 2.67158 34.3237 2.95762ZM41.1978 10.5191C39.1691 10.5191 37.1404 10.5191 35.0513 10.5191C35.0513 9.41241 35.0504 8.33551 35.0513 7.25857C35.0522 6.5213 35.0275 5.78152 35.0666 5.04597C35.1347 3.75365 35.7925 2.81379 36.9685 2.31405C38.1505 1.81175 39.2738 2.01948 40.2379 2.88444C40.8294 3.41482 41.1961 4.08992 41.208 4.89272C41.2361 6.72222 41.2276 8.55346 41.2327 10.383C41.2327 10.4213 41.214 10.4595 41.1978 10.5191Z" fill="#04043F" />
+                                <path d="M29.0656 20.4707C28.8826 20.4265 28.6886 20.4171 28.4988 20.4171C23.325 20.4145 18.1519 20.4145 12.9781 20.4154C12.8419 20.4154 12.704 20.4086 12.5696 20.4256C12.1543 20.4801 11.899 20.7585 11.9126 21.1271C11.9254 21.4753 12.1849 21.735 12.5781 21.7809C12.6998 21.7954 12.8231 21.7877 12.9465 21.7877C15.5403 21.7877 18.134 21.7877 20.7278 21.7877C23.3352 21.7877 25.9425 21.7886 28.5499 21.7852C28.7252 21.7852 28.9072 21.7767 29.0749 21.7324C29.3898 21.649 29.5506 21.4191 29.548 21.0973C29.5455 20.7763 29.3821 20.5473 29.0656 20.4707Z" fill="#04043F" />
+                                <path d="M12.8249 18.639C12.8521 18.639 12.8794 18.639 12.9066 18.639C18.1205 18.639 23.3352 18.639 28.5491 18.6382C28.6988 18.6382 28.8503 18.6339 28.9967 18.6075C29.3566 18.5445 29.5455 18.3147 29.5464 17.9545C29.5473 17.5885 29.3388 17.3705 28.9899 17.3007C28.8452 17.2718 28.6912 17.2828 28.5414 17.2828C25.9341 17.282 23.3275 17.282 20.7202 17.282C18.0856 17.282 15.451 17.2812 12.8173 17.2828C12.2327 17.2828 11.9246 17.511 11.9144 17.9426C11.9025 18.3853 12.2224 18.6305 12.8249 18.639Z" fill="#04043F" />
+                            </svg>
+                            <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                [[diamond.data.lab]] <br />Certified
+                            </div>
+                        </div>
+                        <!-- <div class="pc-w-full pc-summary-div pc-flex pc-px-8 pc-flex-col pc-items-center pc-gap-y-10 pc-justify-between pc-my-10">
+                                <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.48878 16.093C7.54752 15.9792 7.63563 15.88 7.75124 15.7946C7.86779 15.7092 8.01277 15.6394 8.18806 15.5861C8.36335 15.532 8.56428 15.5054 8.79131 15.5054C9.37405 15.5054 9.80154 15.6211 10.0752 15.8534C10.3489 16.0857 10.4854 16.3896 10.4854 16.7661C10.4854 16.9415 10.4542 17.0985 10.3927 17.2381C10.3316 17.3777 10.2449 17.4989 10.1339 17.6017C10.023 17.7046 9.89152 17.7863 9.73954 17.846C9.5871 17.9056 9.42346 17.9406 9.24818 17.9507C9.41367 17.9663 9.57591 18.0058 9.73581 18.0709C9.89525 18.1352 10.0379 18.2234 10.1614 18.3345C10.2854 18.4456 10.3847 18.5806 10.4589 18.7403C10.5335 18.9001 10.5708 19.0856 10.5708 19.2977C10.5708 19.8239 10.4122 20.2151 10.0957 20.4703C9.77776 20.7256 9.32836 20.8532 8.74516 20.8532C8.50321 20.8532 8.28922 20.8193 8.10275 20.7523C7.9172 20.6852 7.7615 20.5998 7.63469 20.497C7.50789 20.3941 7.41279 20.2766 7.34845 20.1453C7.28412 20.014 7.25195 19.8863 7.25195 19.7623C7.25195 19.5457 7.31815 19.3831 7.44915 19.2748C7.58062 19.1664 7.72653 19.1122 7.88643 19.1122C8.05613 19.1122 8.20111 19.1683 8.31952 19.2785C8.43794 19.3896 8.49761 19.5429 8.49761 19.7385C8.49761 19.935 8.44074 20.0764 8.32792 20.1646C8.2137 20.2518 8.0883 20.2959 7.94844 20.2959C7.9228 20.2959 7.90089 20.295 7.88271 20.2922C7.86406 20.2895 7.84215 20.283 7.81651 20.2729H7.80066C7.79087 20.2729 7.78527 20.2858 7.78527 20.3115C7.78527 20.3427 7.80718 20.3813 7.85147 20.4272C7.89529 20.474 7.95869 20.5172 8.04028 20.5585C8.12233 20.5998 8.22209 20.6356 8.33864 20.6669C8.45425 20.6981 8.58199 20.7137 8.72138 20.7137C8.8342 20.7137 8.93443 20.6935 9.01881 20.6522C9.10412 20.6108 9.17498 20.5383 9.23186 20.4354C9.28873 20.3326 9.33116 20.1894 9.3596 20.0057C9.38803 19.823 9.40155 19.5888 9.40155 19.3051C9.40155 18.8818 9.33815 18.5613 9.21274 18.3418C9.08594 18.1224 8.8729 18.0131 8.57454 18.0131H7.90928C7.83189 18.0131 7.79367 17.9874 7.79367 17.936C7.79367 17.9204 7.80252 17.9048 7.82024 17.8891C7.83842 17.8735 7.86779 17.8662 7.90928 17.8662H8.57454C8.83234 17.8662 9.02068 17.7826 9.13909 17.6146C9.2575 17.4465 9.31717 17.1646 9.31717 16.767C9.31717 16.5503 9.30691 16.3703 9.28593 16.2253C9.26496 16.0811 9.23279 15.9664 9.18943 15.8809C9.14561 15.7955 9.09061 15.7349 9.02348 15.6991C8.95634 15.6633 8.87942 15.6449 8.79131 15.6449C8.66731 15.6449 8.55542 15.655 8.45425 15.6762C8.35356 15.6964 8.26638 15.7212 8.19086 15.7496C8.11673 15.7781 8.05986 15.8066 8.02116 15.835C7.98247 15.8635 7.96336 15.8855 7.96336 15.9011C7.96336 15.9112 7.97362 15.9167 7.99459 15.9167H8.03328C8.05333 15.9122 8.08177 15.9094 8.1186 15.9094C8.27337 15.9094 8.40111 15.9636 8.50134 16.0719C8.60204 16.1803 8.65192 16.307 8.65192 16.4512C8.65192 16.6321 8.59411 16.779 8.4771 16.8919C8.36148 17.0058 8.20764 17.0618 8.01744 17.0618C7.84215 17.0618 7.6953 17.0067 7.57688 16.8956C7.45847 16.7845 7.3988 16.6311 7.3988 16.4355C7.39974 16.3198 7.4291 16.206 7.48878 16.093Z" fill="#04043F"/>
+                                    <path d="M11.5162 17.1839C11.6034 16.8643 11.7339 16.5788 11.9074 16.329C12.0799 16.0793 12.2962 15.8782 12.5572 15.7257C12.8178 15.5733 13.1232 15.4971 13.4738 15.4971C13.8192 15.4971 14.1236 15.5733 14.3866 15.7257C14.65 15.8782 14.8672 16.0793 15.0397 16.329C15.2122 16.5797 15.3427 16.8643 15.4308 17.1839C15.518 17.5044 15.5623 17.8313 15.5623 18.1664C15.5623 18.5016 15.518 18.8303 15.4308 19.1535C15.3427 19.4758 15.2131 19.7623 15.0397 20.0121C14.8672 20.2628 14.65 20.4648 14.3866 20.62C14.1227 20.7752 13.8192 20.8523 13.4738 20.8523C13.1232 20.8523 12.8178 20.7752 12.5572 20.62C12.2962 20.4648 12.0799 20.2628 11.9074 20.0121C11.7349 19.7623 11.6043 19.4758 11.5162 19.1535C11.4281 18.8312 11.3848 18.5025 11.3848 18.1664C11.3848 17.8313 11.4291 17.5034 11.5162 17.1839ZM14.0649 16.3171C14.042 16.1518 14.0048 16.0196 13.953 15.9185C13.9017 15.8175 13.8355 15.7459 13.7558 15.7018C13.6761 15.6577 13.5814 15.6357 13.4733 15.6357C13.3647 15.6357 13.27 15.6577 13.1903 15.7018C13.1106 15.7459 13.0444 15.8175 12.9931 15.9185C12.9418 16.0196 12.9041 16.1518 12.8812 16.3171C12.8579 16.4824 12.8463 16.6862 12.8463 16.9286V19.4208C12.8463 19.6632 12.8579 19.867 12.8812 20.0323C12.9041 20.1976 12.9418 20.3307 12.9931 20.4308C13.0444 20.5318 13.1106 20.6035 13.1903 20.6476C13.27 20.6916 13.3647 20.7136 13.4733 20.7136C13.5814 20.7136 13.6752 20.6916 13.7558 20.6476C13.8355 20.6035 13.9017 20.5309 13.953 20.4308C14.0048 20.3298 14.042 20.1976 14.0649 20.0323C14.0882 19.867 14.0999 19.6632 14.0999 19.4208V16.9286C14.0999 16.6862 14.0891 16.4824 14.0649 16.3171Z" fill="#04043F"/>
+                                    <path d="M21.356 15.7841C21.624 15.9337 21.8469 16.1312 22.025 16.3763C22.203 16.6215 22.3373 16.8997 22.4273 17.212C22.5172 17.5242 22.562 17.8428 22.562 18.1678C22.562 18.4929 22.5172 18.8125 22.4273 19.1274C22.3373 19.4424 22.203 19.7225 22.025 19.9667C21.8469 20.2119 21.624 20.4093 21.356 20.559C21.0879 20.7086 20.7732 20.783 20.4124 20.783H18.1621V20.6591H18.5793V15.683H18.1621V15.5591H20.4124C20.7732 15.5591 21.0879 15.6344 21.356 15.7841ZM20.2427 20.6591C20.3765 20.6591 20.5015 20.6297 20.618 20.57C20.7336 20.5103 20.8357 20.3955 20.9238 20.2256C21.011 20.0558 21.0805 19.8207 21.1322 19.5213C21.1835 19.222 21.2091 18.8327 21.2091 18.3524V17.9805C21.2091 17.5159 21.1835 17.1348 21.1322 16.8355C21.0805 16.5361 21.011 16.3019 20.9238 16.1312C20.8357 15.9613 20.7308 15.8438 20.6105 15.7795C20.4898 15.7152 20.3593 15.683 20.2199 15.683H19.825V20.6591H20.2427Z" fill="#04043F"/>
+                                    <path d="M25.1828 15.5125L26.8844 20.6584H27.3021V20.7823H25.2215V20.6584H25.6392L25.1441 19.1644H23.5894L23.2645 20.2011C23.2491 20.2424 23.2398 20.2745 23.2379 20.2975C23.236 20.3205 23.2342 20.348 23.2342 20.3783C23.2342 20.404 23.2398 20.4343 23.25 20.4674C23.2598 20.5013 23.2812 20.5317 23.3115 20.5601C23.3428 20.5886 23.3857 20.6116 23.4425 20.6299C23.4994 20.6483 23.574 20.6566 23.6668 20.6566V20.7805H22.498V20.6566C22.6635 20.6566 22.7936 20.6161 22.8883 20.5363C22.9838 20.4564 23.0496 20.3618 23.0855 20.2535L24.6476 15.5098H25.1828V15.5125ZM23.6365 19.0414H25.0985L24.3633 16.8045L23.6365 19.0414Z" fill="#04043F"/>
+                                    <path d="M31.7441 15.5581V15.682C31.6304 15.682 31.5367 15.6949 31.4612 15.7206C31.387 15.7463 31.3236 15.7812 31.2724 15.8253C31.2211 15.8694 31.1768 15.9199 31.1409 15.9759C31.105 16.0328 31.0714 16.0916 31.0402 16.154L29.988 18.2899V20.658H30.4057V20.782H28.3251V20.658H28.7428V18.491L27.2188 15.6738H26.8086V15.5498H28.9125V15.6738H28.4948L29.8258 18.1962L30.8318 16.1531C30.8728 16.0705 30.8933 15.9933 30.8933 15.9208C30.8933 15.8492 30.8612 15.7904 30.7968 15.7463C30.7325 15.7022 30.6122 15.6802 30.4369 15.6802V15.5562H31.7441V15.5581Z" fill="#04043F"/>
+                                    <path d="M35.0408 15.4351C35.0664 15.4351 35.079 15.4608 35.079 15.5122V16.8124C35.079 16.8436 35.0785 16.8703 35.0757 16.8942C35.0729 16.9171 35.0589 16.929 35.0333 16.929C35.0021 16.929 34.9792 16.8933 34.9634 16.8207C34.8967 16.5728 34.8114 16.3698 34.7084 16.2092C34.6058 16.0494 34.4944 15.9254 34.376 15.8373C34.2576 15.75 34.135 15.6894 34.0091 15.6554C33.8823 15.6215 33.7601 15.605 33.6417 15.605C33.4977 15.605 33.3709 15.6279 33.2627 15.6747C33.1546 15.7216 33.0646 15.7831 32.9919 15.8602C32.9196 15.9374 32.8655 16.0264 32.8296 16.1274C32.7937 16.2284 32.7755 16.3303 32.7755 16.4332C32.7755 16.6242 32.8105 16.7831 32.88 16.9089C32.9499 17.0356 33.0646 17.1265 33.224 17.1834C33.348 17.2247 33.4921 17.2642 33.6576 17.3037C33.8226 17.3423 33.9611 17.3726 34.0753 17.3928C34.534 17.48 34.8808 17.6701 35.1149 17.9612C35.3498 18.2522 35.4664 18.6361 35.4664 19.1099C35.4664 19.3321 35.4291 19.5488 35.3545 19.76C35.2804 19.9712 35.1676 20.1594 35.0179 20.3247C34.8683 20.49 34.6799 20.6232 34.4534 20.7233C34.2263 20.8243 33.9601 20.8739 33.6566 20.8739C33.4599 20.8739 33.2911 20.8555 33.1499 20.8197C33.0077 20.7838 32.8837 20.7398 32.7783 20.6884C32.6725 20.6369 32.5816 20.5809 32.5075 20.5222C32.4329 20.4634 32.3695 20.4074 32.3182 20.356L32.0786 20.7196C32.032 20.7922 31.9914 20.828 31.955 20.828C31.9289 20.828 31.9126 20.8151 31.9042 20.7894C31.8968 20.7637 31.8926 20.7352 31.8926 20.704V19.187C31.8926 19.1356 31.8963 19.1016 31.9042 19.086C31.9126 19.0704 31.9238 19.0631 31.9392 19.0631C31.9648 19.0631 31.9877 19.0989 32.0091 19.1714C32.0604 19.3569 32.1275 19.5424 32.2101 19.7288C32.2926 19.9143 32.3979 20.0824 32.5266 20.232C32.6553 20.3817 32.811 20.5029 32.9947 20.5956C33.1774 20.6884 33.3988 20.7352 33.6566 20.7352C33.8473 20.7352 34.0137 20.7012 34.1559 20.6342C34.2972 20.5672 34.4137 20.4845 34.5037 20.3863C34.5937 20.288 34.6608 20.1815 34.7046 20.0649C34.7489 19.9492 34.7708 19.839 34.7708 19.7362C34.7708 19.5195 34.7284 19.3441 34.6431 19.21C34.5578 19.0759 34.3946 18.9749 34.1522 18.9079C34.1056 18.8923 34.0384 18.8748 33.9513 18.8537C33.8641 18.8326 33.7667 18.8115 33.6613 18.7876C33.5555 18.7647 33.4483 18.7398 33.3401 18.7142C33.2315 18.6885 33.1317 18.6627 33.038 18.637C32.6403 18.5241 32.3541 18.3432 32.1797 18.0953C32.0045 17.8473 31.9164 17.5406 31.9164 17.1742C31.9164 16.9676 31.9541 16.7619 32.0282 16.5553C32.1028 16.3487 32.2129 16.166 32.3569 16.0062C32.501 15.8465 32.68 15.7161 32.8949 15.615C33.1084 15.514 33.3573 15.4644 33.6408 15.4644C33.9191 15.4644 34.1485 15.503 34.3293 15.5811C34.5102 15.6582 34.6543 15.7335 34.7624 15.8051L34.9634 15.503C34.9895 15.4589 35.0151 15.4351 35.0408 15.4351Z" fill="#04043F"/>
+                                    <path d="M11.1169 27.6438C11.15 27.7549 11.2292 27.81 11.3528 27.81C11.4143 27.81 11.4842 27.7806 11.5612 27.721C11.6386 27.6622 11.7211 27.5594 11.8092 27.4151C11.8451 27.3481 11.8763 27.3141 11.902 27.3141C11.9276 27.3141 11.9402 27.3298 11.9402 27.361C11.9402 27.3766 11.9379 27.3922 11.9332 27.4078C11.9276 27.4234 11.9201 27.4418 11.9103 27.462C11.7919 27.7246 11.632 27.9138 11.4302 28.0267C11.2292 28.1396 11.0199 28.1966 10.8031 28.1966C10.6535 28.1966 10.5169 28.1773 10.3929 28.1387C10.2689 28.1002 10.1635 28.0359 10.0754 27.945C9.98731 27.855 9.91925 27.7347 9.87077 27.5851C9.82089 27.4354 9.79711 27.2527 9.79711 27.0359V26.5171C9.79711 26.3004 9.78172 26.1241 9.75049 25.9873C9.71925 25.8505 9.67403 25.7449 9.61529 25.6705C9.55655 25.5961 9.48429 25.5438 9.39898 25.5153C9.31367 25.4868 9.21717 25.4731 9.10901 25.4731H8.71415V27.9652H9.13185V28.0892H7.05078V27.9652H7.46849V22.9892H7.05078V22.8652H9.44933C9.98079 22.8652 10.3957 22.9745 10.695 23.1939C10.9943 23.4134 11.1439 23.7504 11.1439 24.2041C11.1439 24.4207 11.1034 24.6026 11.0237 24.7495C10.9435 24.8964 10.8428 25.0167 10.7216 25.1095C10.6004 25.2022 10.4656 25.2729 10.316 25.3225C10.1663 25.372 10.0223 25.4088 9.88242 25.4345C10.2847 25.4813 10.5831 25.6126 10.7756 25.8293C10.9691 26.0461 11.0656 26.2986 11.0656 26.5878V27.2297C11.0665 27.395 11.0833 27.5327 11.1169 27.6438ZM9.3146 25.3142C9.42555 25.2913 9.52532 25.2398 9.61623 25.159C9.70713 25.0782 9.78172 24.9634 9.84046 24.811C9.8992 24.6586 9.9295 24.4538 9.9295 24.1958C9.9295 23.9221 9.90014 23.7054 9.84046 23.5457C9.78079 23.3859 9.7062 23.2647 9.61623 23.182C9.52625 23.0994 9.42555 23.047 9.3146 23.0232C9.20318 23.0002 9.09876 22.9883 9.00132 22.9883H8.71508V25.3482H9.00132C9.09876 25.3491 9.20318 25.3371 9.3146 25.3142Z" fill="#04043F"/>
+                                    <path d="M15.0292 26.192C15.0035 25.9284 14.9373 25.7328 14.8315 25.6043C14.7261 25.4757 14.5746 25.4105 14.3793 25.4105H13.9075V27.9641H14.6427C14.8902 27.9641 15.0898 27.9283 15.2417 27.8558C15.3942 27.7833 15.5163 27.6859 15.6091 27.562C15.7019 27.438 15.7713 27.2929 15.8175 27.1249C15.8641 26.9568 15.9075 26.7778 15.9485 26.5868C15.9643 26.5042 15.9974 26.4628 16.0496 26.4628C16.1009 26.4628 16.1266 26.5042 16.1266 26.5868V27.8558C16.1266 27.9283 16.1121 27.9853 16.0846 28.0257C16.0562 28.067 16.0012 28.0872 15.9182 28.0872H12.2441V27.9633H12.6618V22.9872H12.2441V22.8633H15.6016C15.679 22.8633 15.7387 22.8789 15.7797 22.9101C15.8212 22.9413 15.8441 22.9983 15.8496 23.08L15.9112 24.2021C15.9112 24.2691 15.8855 24.3031 15.8338 24.3031C15.7825 24.3031 15.7569 24.2691 15.7569 24.2021C15.7466 24.0579 15.7145 23.9128 15.6604 23.7687C15.6063 23.6245 15.5266 23.4941 15.4208 23.3775C15.3154 23.2618 15.1858 23.1672 15.0343 23.0947C14.8823 23.0221 14.7061 22.9863 14.5047 22.9863H13.9094V25.2847H14.3812C14.5765 25.2847 14.728 25.2186 14.8334 25.0873C14.9392 24.956 15.0049 24.7613 15.031 24.5032C15.0352 24.4105 15.0623 24.3637 15.1079 24.3637C15.1592 24.3637 15.1849 24.4105 15.1849 24.5032V26.1901C15.1849 26.2829 15.1592 26.3297 15.1079 26.3297C15.0604 26.3315 15.0338 26.2847 15.0292 26.192Z" fill="#04043F"/>
+                                    <path d="M19.7927 27.9652V28.0892H17.7116V27.9652H18.1293V22.9892H17.8118C17.5494 22.9892 17.3237 23.1159 17.1354 23.3684C16.9471 23.6209 16.8142 23.9644 16.7373 24.3978H16.582L16.6986 23.0278C16.7032 22.9809 16.7186 22.9424 16.7452 22.9121C16.7708 22.8809 16.8179 22.8652 16.8851 22.8652H20.5903C20.6728 22.8652 20.7279 22.8809 20.7563 22.9121C20.7847 22.9433 20.8015 22.9818 20.8066 23.0278L20.9227 24.3978H20.7675C20.6901 23.9644 20.5572 23.6219 20.3689 23.3684C20.181 23.1159 19.9549 22.9892 19.6915 22.9892H19.374V27.9652H19.7927Z" fill="#04043F"/>
+                                    <path d="M24.767 22.8652H25.7339V22.9892C25.6309 22.9892 25.5353 23.0213 25.4472 23.0856C25.3591 23.1499 25.3162 23.2491 25.3162 23.384V26.518C25.3162 27.0754 25.1731 27.4914 24.8864 27.7678C24.6001 28.0442 24.1787 28.1819 23.6216 28.1819C23.3381 28.1819 23.0794 28.1488 22.8444 28.0809C22.6095 28.0139 22.4081 27.9119 22.2412 27.7751C22.0734 27.6383 21.9428 27.4684 21.8501 27.2645C21.7578 27.0607 21.7107 26.8219 21.7107 26.5492V22.9892H21.293V22.8652H23.374V22.9892H22.9563V26.8119C22.9563 26.9772 22.9726 27.1296 23.0067 27.2682C23.0407 27.4078 23.0985 27.5272 23.181 27.6282C23.2635 27.7292 23.3759 27.8072 23.5181 27.8642C23.6593 27.9211 23.8421 27.9496 24.0631 27.9496C24.2071 27.9496 24.347 27.9202 24.4808 27.8605C24.615 27.8008 24.7334 27.7127 24.8369 27.5933C24.94 27.4748 25.0225 27.3261 25.085 27.148C25.146 26.9698 25.1773 26.7623 25.1773 26.5254V23.3831C25.1773 23.2491 25.1362 23.1499 25.0537 23.0847C24.9707 23.0204 24.8756 22.9883 24.767 22.9883V22.8652Z" fill="#04043F"/>
+                                    <path d="M30.1852 27.6438C30.2183 27.7549 30.2971 27.81 30.4211 27.81C30.4827 27.81 30.5521 27.7806 30.6295 27.721C30.7064 27.6622 30.789 27.5594 30.8771 27.4151C30.913 27.3481 30.9442 27.3141 30.9698 27.3141C30.9955 27.3141 31.0085 27.3298 31.0085 27.361C31.0085 27.3766 31.0057 27.3922 31.0011 27.4078C30.9955 27.4234 30.9885 27.4418 30.9782 27.462C30.8598 27.7246 30.6999 27.9138 30.4981 28.0267C30.2971 28.1396 30.0878 28.1966 29.8715 28.1966C29.7218 28.1966 29.5848 28.1773 29.4608 28.1387C29.3372 28.1002 29.2314 28.0359 29.1433 27.945C29.0552 27.855 28.9871 27.7347 28.9387 27.5851C28.8902 27.4354 28.8655 27.2527 28.8655 27.0359V26.5171C28.8655 26.3004 28.8496 26.1241 28.8184 25.9873C28.7871 25.8505 28.7424 25.7449 28.6837 25.6705C28.6249 25.5961 28.5522 25.5438 28.4669 25.5153C28.3816 25.4868 28.2851 25.4731 28.1769 25.4731H27.782V27.9652H28.1997V28.0892H26.1191V27.9652H26.5368V22.9892H26.1191V22.8652H28.5172C29.0487 22.8652 29.4636 22.9745 29.7629 23.1939C30.0622 23.4134 30.2118 23.7504 30.2118 24.2041C30.2118 24.4207 30.1713 24.6026 30.0915 24.7495C30.0118 24.8964 29.9107 25.0167 29.7894 25.1095C29.6682 25.2022 29.5335 25.2729 29.3839 25.3225C29.2342 25.372 29.0902 25.4088 28.9508 25.4345C29.3526 25.4813 29.651 25.6126 29.8435 25.8293C30.0375 26.0461 30.134 26.2986 30.134 26.5878V27.2297C30.1358 27.395 30.1521 27.5327 30.1852 27.6438ZM28.3834 25.3142C28.4944 25.2913 28.5946 25.2398 28.6855 25.159C28.7764 25.0782 28.8505 24.9634 28.9093 24.811C28.968 24.6586 28.9983 24.4538 28.9983 24.1958C28.9983 23.9221 28.969 23.7054 28.9093 23.5457C28.8496 23.3859 28.7755 23.2647 28.6855 23.182C28.5955 23.0994 28.4944 23.047 28.3834 23.0232C28.2725 23.0002 28.1676 22.9883 28.0706 22.9883H27.7839V25.3482H28.0706C28.1676 25.3491 28.2725 25.3371 28.3834 25.3142Z" fill="#04043F"/>
+                                    <path d="M34.4126 22.8652H35.379V22.9892C35.2764 22.9892 35.1808 23.0213 35.0927 23.0856C35.0046 23.1499 34.9613 23.2472 34.9613 23.3758V28.1507H34.6979L31.7124 23.8404V27.563C31.7124 27.6971 31.7562 27.7981 31.8434 27.8651C31.9306 27.9321 32.0261 27.9661 32.1301 27.9661V28.0901H31.1632V27.9661C31.2718 27.9661 31.3679 27.9321 31.4536 27.8651C31.539 27.7981 31.5809 27.6971 31.5809 27.563V23.6549L31.0938 23.059V22.8652H32.6019L34.8293 26.0846V23.3914C34.8293 23.2573 34.7869 23.1563 34.7016 23.0893C34.6163 23.0223 34.5198 22.9883 34.4116 22.9883V22.8652H34.4126Z" fill="#04043F"/>
+                                    <path d="M41.6868 21.2648C41.3829 21.2648 41.1358 21.5118 41.1358 21.8157C41.1358 32.7805 32.219 41.7012 21.2589 41.7012C10.2987 41.7012 1.38192 32.7805 1.38192 21.8157C1.38192 10.8509 10.2987 1.93006 21.2589 1.93006C25.6849 1.93006 29.9803 3.4094 33.4562 6.11362L31.6507 6.20821L32.8292 7.26971L35.4665 7.13105L35.328 4.49292L34.1495 3.43142L34.2502 5.33681C30.5603 2.42411 25.9804 0.829102 21.2598 0.829102C15.6562 0.829102 10.3878 3.01181 6.42563 6.97589C2.46301 10.94 0.28125 16.2107 0.28125 21.8166C0.28125 27.4226 2.46301 32.6933 6.42563 36.6574C10.3878 40.6215 15.6562 42.8042 21.2598 42.8042C26.8634 42.8042 32.1318 40.6215 36.0944 36.6574C40.0566 32.6933 42.2383 27.4226 42.2383 21.8166C42.2374 21.5118 41.9912 21.2648 41.6868 21.2648Z" fill="#04043F"/>
+                                </svg>
+                                <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                    30 Days return
+                                </div>
+                
+                            </div> -->
+                        <div class="pc-w-full pc-summary-div pc-grid pc-grid-row-2 pc-place-items-center pc-my-10">
+                            <svg class="pc-h-full pc-object-cover" width="42" height="34" viewBox="0 0 42 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M41.938 22.1748C41.6284 19.3102 41.2788 16.449 40.945 13.587C40.5734 10.3995 40.1846 7.21369 39.834 4.02368C39.6145 2.0265 38.0019 0.743929 36.0141 0.988877C32.6277 1.40662 29.2376 1.79163 25.8488 2.18587C22.4461 2.58178 19.042 2.97183 15.6397 3.36691C12.1694 3.76954 8.69956 4.18309 5.22785 4.57565C4.27123 4.68385 3.41763 4.97241 2.77429 5.72567C2.52115 6.02174 2.52395 6.37321 2.7645 6.60976C3.01997 6.86138 3.39386 6.85974 3.66891 6.55356C4.12112 6.04944 4.69687 5.8758 5.34161 5.80365C8.27114 5.47401 11.1993 5.13177 14.127 4.79121C17.5572 4.39194 20.9865 3.99014 24.4157 3.58835C27.1406 3.26962 29.865 2.95 32.5899 2.63043C33.8099 2.48781 35.029 2.33516 36.2504 2.20681C37.4746 2.07766 38.4471 2.80994 38.5865 3.97923C38.9544 7.05768 39.3049 10.1378 39.6629 13.2171C40.0051 16.1605 40.317 19.1081 40.7026 22.0464C40.8839 23.4238 39.9758 24.7399 38.0844 24.5385C38.0718 24.3104 38.0775 24.0772 38.0425 23.8499C37.9912 23.5219 37.78 23.3449 37.4472 23.3466C37.1134 23.3483 36.912 23.532 36.8574 23.8583C36.8332 24.0051 36.8374 24.1577 36.8374 24.3079C36.836 26.1121 36.8434 27.9156 36.8341 29.7199C36.8276 31.072 36.0038 31.8849 34.6551 31.8849C24.2339 31.8865 13.8118 31.8865 3.3906 31.8849C2.05264 31.8849 1.22934 31.0503 1.22934 29.7014C1.22747 23.6746 1.22841 17.6469 1.22981 11.62C1.22981 11.4296 1.23354 11.235 1.2727 11.0504C1.49181 10.0053 2.29739 9.41724 3.50482 9.41724C13.8305 9.4164 24.1566 9.4164 34.4822 9.41724C36.0668 9.41724 36.8364 10.1923 36.8364 11.7894C36.8374 14.8368 36.8365 17.8851 36.8383 20.9325C36.8383 21.1095 36.8351 21.2907 36.871 21.4626C36.9362 21.773 37.1772 21.9684 37.4602 21.908C37.6723 21.8627 37.8677 21.648 38.0238 21.4685C38.0961 21.3855 38.0658 21.2059 38.0658 21.07C38.0677 17.927 38.0733 14.7831 38.0597 11.6401C38.0583 11.2358 38.0103 10.8156 37.8905 10.4314C37.4513 9.01969 36.2071 8.1884 34.5852 8.1884C25.2022 8.18672 15.8183 8.18756 6.43528 8.18756C5.39707 8.18756 4.35934 8.18336 3.32113 8.18924C2.45495 8.19427 1.69274 8.47527 1.04381 9.06078C0.472257 9.57749 0.193003 10.2485 0 10.9691C0 17.4472 0 23.9262 0 30.4044C0.0177152 30.4237 0.0461559 30.4404 0.0526825 30.4639C0.597192 32.3084 1.66943 33.1171 3.57755 33.1171C13.9176 33.1171 24.2572 33.1179 34.5964 33.1162C36.7008 33.1162 38.0532 31.77 38.0676 29.6645C38.0742 28.7351 38.0681 27.8057 38.069 26.8763C38.069 25.8496 38.069 25.8496 39.0667 25.7338C40.8471 25.525 42.1314 23.9698 41.938 22.1748Z" fill="#04043F" />
+                                <path d="M5.96315 21.9337C7.21907 21.9471 8.47592 21.9471 9.73184 21.9337C10.9351 21.9211 11.7248 21.1267 11.7434 19.9214C11.756 19.1019 11.7551 18.2815 11.7434 17.462C11.7266 16.2273 10.9486 15.4547 9.70759 15.4354C9.07964 15.4254 8.45168 15.4338 7.82279 15.4338C7.19483 15.4338 6.56594 15.422 5.93798 15.4362C4.73661 15.4639 3.94828 16.2667 3.93849 17.4645C3.9315 18.2706 3.93243 19.0767 3.93849 19.8828C3.94735 21.1008 4.74826 21.9211 5.96315 21.9337ZM5.16923 17.5081C5.17342 16.9369 5.42424 16.671 5.98926 16.6668C7.23165 16.6567 8.47358 16.6567 9.71597 16.6676C10.267 16.6727 10.5085 16.9243 10.5141 17.4821C10.5234 18.2882 10.5243 19.0943 10.5136 19.8996C10.5066 20.4448 10.2516 20.6956 9.70106 20.7049C9.08709 20.7149 8.47265 20.7074 7.85821 20.7074C7.24331 20.7074 6.62887 20.7141 6.01536 20.7057C5.42657 20.6973 5.17156 20.4372 5.16736 19.8451C5.16317 19.065 5.16224 18.2865 5.16923 17.5081Z" fill="#04043F" />
+                                <path d="M4.61612 28.5143C4.68371 28.5177 4.75272 28.5152 4.82032 28.5152C9.02628 28.5152 13.2318 28.5152 17.4377 28.5152C17.5599 28.5152 17.6857 28.5244 17.8056 28.5026C18.275 28.4162 18.5081 27.8684 18.1846 27.5379C18.0373 27.387 17.7561 27.298 17.5347 27.2963C15.4187 27.2788 13.3012 27.2854 11.1852 27.2854C10.4071 27.2854 9.62812 27.2854 8.85005 27.2854C7.44402 27.2854 6.03707 27.2821 4.63104 27.288C4.21939 27.2896 3.94854 27.5404 3.94341 27.8902C3.93921 28.2409 4.21006 28.4933 4.61612 28.5143Z" fill="#04043F" />
+                                <path d="M31.2224 19.8898C31.565 20.05 31.9081 19.894 32.1044 19.4729C32.5603 18.4958 32.806 17.4707 32.792 16.3886C32.8079 15.3066 32.5673 14.2799 32.1119 13.3026C31.9081 12.864 31.593 12.7079 31.2424 12.8598C30.8909 13.0124 30.7897 13.3605 30.9874 13.7975C31.7715 15.5263 31.7645 17.251 30.9809 18.978C30.793 19.3924 30.8928 19.7363 31.2224 19.8898Z" fill="#04043F" />
+                                <path d="M27.6252 24.6206C27.6355 25.0039 27.9273 25.2245 28.4397 25.2262C29.2439 25.2287 30.0485 25.227 30.8527 25.227C31.6708 25.227 32.4885 25.2296 33.3067 25.2262C33.8255 25.2245 34.1006 25.0098 34.1057 24.6139C34.1099 24.2129 33.8423 23.9982 33.3221 23.9974C31.6862 23.9957 30.0494 23.9957 28.4136 23.9974C27.9087 23.999 27.6154 24.2355 27.6252 24.6206Z" fill="#04043F" />
+                                <path d="M4.62727 25.2233C5.47248 25.2385 6.31769 25.2275 7.16242 25.2267C8.03559 25.2267 8.90737 25.2359 9.78007 25.2225C10.1903 25.2158 10.436 24.9491 10.4225 24.5833C10.4099 24.2311 10.1735 24.0037 9.77122 24.0021C8.05285 23.9953 6.33493 23.9895 4.61795 24.0129C4.42076 24.0154 4.16108 24.1522 4.04454 24.3116C3.75597 24.7058 4.08463 25.2133 4.62727 25.2233Z" fill="#04043F" />
+                                <path d="M25.4899 23.9998C24.6577 23.9948 23.826 23.9982 22.9944 23.9982C22.1627 23.9982 21.331 23.9956 20.4993 23.999C20.0037 24.0015 19.7445 24.2121 19.7422 24.6021C19.739 24.9905 20.007 25.2253 20.4877 25.2262C22.151 25.2304 23.8144 25.2304 25.4778 25.2262C25.9467 25.2245 26.2283 24.9737 26.2199 24.5937C26.2115 24.228 25.9425 24.0024 25.4899 23.9998Z" fill="#04043F" />
+                                <path d="M15.0706 25.2272C15.8878 25.2272 16.7065 25.2297 17.5237 25.2264C18.0304 25.2247 18.3265 24.994 18.3288 24.6107C18.3311 24.224 18.0435 23.9992 17.5307 23.9983C15.8948 23.9967 14.259 23.9967 12.6231 23.9983C12.1108 23.9992 11.8357 24.2257 11.846 24.6241C11.8558 25.0007 12.1341 25.2239 12.6157 25.2264C13.4348 25.2306 14.252 25.2272 15.0706 25.2272Z" fill="#04043F" />
+                                <path d="M28.9059 18.7197C29.2289 18.8497 29.5842 18.7113 29.7203 18.3179C29.9348 17.6946 30.0881 17.0504 30.2793 16.3743C30.0881 15.7058 29.9305 15.049 29.7077 14.4141C29.5711 14.0257 29.2028 13.9032 28.8793 14.0508C28.5558 14.1993 28.4289 14.5357 28.5991 14.9123C29.0411 15.8895 29.0443 16.8567 28.6033 17.8347C28.4257 18.2273 28.5632 18.5812 28.9059 18.7197Z" fill="#04043F" />
+                                <path d="M26.53 17.5198C26.8209 17.6691 27.1766 17.5517 27.3207 17.2338C27.4424 16.967 27.5002 16.6718 27.5883 16.3816C27.5025 16.0896 27.4489 15.807 27.3365 15.5503C27.1906 15.2164 26.8694 15.1015 26.5594 15.224C26.2498 15.3465 26.1384 15.6392 26.1981 15.9906C26.2405 16.2448 26.2433 16.5199 26.1953 16.7733C26.1291 17.1206 26.2289 17.3655 26.53 17.5198Z" fill="#04043F" />
+                                <path d="M7.0996 19.273C7.60122 19.3032 8.1075 19.3049 8.60819 19.2697C8.93405 19.2471 9.10841 19.0088 9.10515 18.6767C9.10188 18.3444 8.92426 18.1322 8.59559 18.092C8.36763 18.0634 8.1336 18.087 7.90284 18.087C7.90284 18.0853 7.90284 18.0844 7.90284 18.0828C7.64457 18.0828 7.38397 18.0643 7.12757 18.087C6.77373 18.118 6.58398 18.352 6.58398 18.6892C6.58492 19.008 6.77 19.2537 7.0996 19.273Z" fill="#04043F" />
+                            </svg>
+                            <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                No Commissioned Salesperson
+                            </div>
+                        </div>
+                        <div class="pc-w-full pc-summary-div pc-grid pc-grid-row-2 pc-place-items-center pc-my-10">
+                            <svg class="pc-h-full pc-object-cover" width="43" height="35" viewBox="0 0 43 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M41.4806 20.2919C41.7259 20.0856 41.9851 19.8938 42.207 19.6652C42.6037 19.2555 42.6009 18.8003 42.2098 18.3867C42.0424 18.2095 41.8475 18.0555 41.655 17.9025C41.1459 17.4976 41.1431 17.485 41.421 16.9029C41.5343 16.6666 41.6485 16.4273 41.7259 16.1784C41.8788 15.6922 41.6918 15.3096 41.2215 15.1052C41.0965 15.051 40.9636 15.0103 40.8322 14.9754C40.5734 14.9057 40.3124 14.8447 40.0518 14.7798C39.9049 14.743 39.8331 14.6471 39.828 14.496C39.8233 14.3188 39.8126 14.1415 39.8052 13.9652C39.8098 13.9652 39.8145 13.9652 39.8196 13.9643C39.8117 13.787 39.8107 13.6098 39.7944 13.4335C39.745 12.8814 39.4411 12.5695 38.9306 12.554C38.7954 12.5502 38.6569 12.5685 38.5222 12.5937C38.2416 12.6461 37.9637 12.709 37.684 12.7681C37.6392 12.7778 37.5978 12.7797 37.56 12.7759C37.7022 12.5899 37.8444 12.4029 37.987 12.217C38.6947 11.2901 39.4206 10.3777 40.139 9.45852C40.139 9.27835 40.139 9.09725 40.139 8.91708C40.0849 8.84638 40.0327 8.77278 39.9753 8.70399C37.8066 6.10144 35.644 3.49507 33.458 0.907074C33.3009 0.721077 32.9806 0.586477 32.7326 0.580648C31.4972 0.54772 30.2599 0.565163 29.0236 0.565163C22.0433 0.565163 15.0622 0.566143 8.08189 0.562272C7.76022 0.562272 7.4777 0.597111 7.25206 0.867337C5.07869 3.48248 2.9002 6.09277 0.723556 8.70595C0.498387 8.97711 0.491368 9.26674 0.685769 9.5573C0.786466 9.70645 0.902081 9.84595 1.01117 9.98927C7.24925 18.1678 13.486 26.3454 19.7236 34.523C20.1226 35.046 20.5814 35.0402 20.9851 34.5104C23.6834 30.9722 26.3817 27.4331 29.08 23.895C29.08 23.9162 29.08 23.9356 29.08 23.9589C29.0819 24.2436 29.0856 24.5322 29.1322 24.8122C29.1998 25.2189 29.4721 25.4543 29.8814 25.4892C30.0385 25.5027 30.2021 25.4863 30.3578 25.4592C30.6338 25.4117 30.9056 25.3478 31.1788 25.2868C31.3597 25.2461 31.4916 25.3013 31.5737 25.4708C31.659 25.6451 31.7415 25.8214 31.8352 25.9909C31.9494 26.1943 32.0557 26.4074 32.2002 26.5876C32.4548 26.9062 32.817 26.9837 33.1857 26.8093C33.3592 26.727 33.5186 26.6108 33.6757 26.4984C33.8384 26.3822 33.9885 26.2485 34.1489 26.1304C34.4085 25.9396 34.478 25.9396 34.7414 26.1343C34.9022 26.2524 35.0523 26.3871 35.215 26.5023C35.3778 26.6166 35.5423 26.7357 35.7213 26.8181C36.0728 26.9798 36.4155 26.9042 36.6672 26.6108C36.7922 26.4655 36.8901 26.2941 36.9838 26.1246C37.0999 25.9154 37.2006 25.6965 37.3064 25.4814C37.3912 25.3071 37.5232 25.2441 37.7129 25.2887C37.9236 25.3381 38.1357 25.3846 38.3488 25.4243C38.5115 25.4553 38.6751 25.4853 38.8397 25.4979C39.3809 25.5386 39.7488 25.1967 39.7912 24.6039C39.8126 24.3075 39.8019 24.0092 39.8154 23.7128C39.8322 23.338 39.8583 23.3119 40.2261 23.217C40.5245 23.1404 40.8303 23.0842 41.1198 22.9826C41.7035 22.7782 41.9012 22.3607 41.6937 21.7776C41.593 21.4939 41.4499 21.2246 41.3277 20.9476C41.172 20.5873 41.1837 20.5418 41.4806 20.2919ZM32.9787 2.38315C34.6631 4.40453 36.3218 6.39396 38.0215 8.43474C35.1377 8.43474 32.3261 8.43474 29.4516 8.43474C30.6357 6.40366 31.7937 4.41712 32.9787 2.38315ZM31.7093 1.93957C30.5107 3.99485 29.3346 6.01334 28.1826 7.9892C26.1579 5.96488 24.1365 3.9435 22.1333 1.93957C25.2507 1.93957 28.4418 1.93957 31.7093 1.93957ZM26.5183 8.44053C22.4219 8.44053 18.2984 8.44053 14.2799 8.44053C16.2906 6.42983 18.3567 4.36582 20.4023 2.32117C22.3939 4.31447 24.4559 6.3775 26.5183 8.44053ZM18.5394 1.91923C16.5567 3.90283 14.5363 5.92421 12.5042 7.95819C11.3802 6.03172 10.1988 4.00745 8.98115 1.91923C12.2505 1.91923 15.4379 1.91923 18.5394 1.91923ZM7.72337 2.38119C8.91309 4.42197 10.072 6.40851 11.2534 8.43572C8.38864 8.43572 5.57704 8.43572 2.68014 8.43572C4.37287 6.40464 6.03017 4.41423 7.72337 2.38119ZM18.4448 30.6226C13.1792 23.7187 7.91313 16.8157 2.59344 9.84207C2.78784 9.84207 2.89738 9.84207 3.00554 9.84207C5.8782 9.84207 8.75179 9.84497 11.624 9.83624C11.8641 9.83527 11.9853 9.89147 12.0627 10.1365C14.1801 16.8738 16.305 23.6092 18.4285 30.3446C18.4546 30.4269 18.4709 30.5131 18.4924 30.5974C18.4765 30.6061 18.4602 30.6148 18.4448 30.6226ZM20.4033 31.8788C20.3711 31.8846 20.3403 31.8914 20.3086 31.8972C17.9917 24.5594 15.6747 17.2225 13.3503 9.85756C18.0402 9.85756 22.6708 9.85756 27.3537 9.85756C25.0302 17.2205 22.717 24.5497 20.4033 31.8788ZM22.2592 30.6216C22.2377 30.611 22.2177 30.6003 22.1963 30.5897C22.4876 29.6598 22.7771 28.73 23.0704 27.8012C24.9188 21.9501 26.77 16.1 28.6082 10.246C28.7042 9.93988 28.8282 9.83335 29.1583 9.83429C32.1084 9.84884 35.058 9.84301 38.1078 9.84301C37.6654 10.4232 37.2248 11.0004 36.7824 11.5806C36.7787 11.5748 36.7759 11.569 36.7707 11.5632C36.4705 11.1322 36.0407 11.0353 35.5885 11.3007C35.3834 11.4218 35.1927 11.5709 35.0057 11.7211C34.451 12.1666 34.4393 12.1656 33.8799 11.7172C33.6929 11.5671 33.5023 11.4179 33.2962 11.2978C32.8487 11.0372 32.4258 11.1312 32.1256 11.5535C32.0105 11.7152 31.9242 11.8974 31.8305 12.0736C31.7415 12.2402 31.6589 12.4097 31.5769 12.5782C31.4944 12.7468 31.3657 12.8058 31.1825 12.7642C30.9718 12.7158 30.7587 12.6712 30.5457 12.6286C30.417 12.6034 30.287 12.5782 30.1574 12.5656C29.5191 12.5008 29.1388 12.8155 29.0945 13.4567C29.0739 13.7531 29.0837 14.0514 29.0702 14.3478C29.0539 14.712 29.0255 14.741 28.6684 14.833C28.37 14.9096 28.0642 14.9657 27.7747 15.0665C27.1812 15.2728 26.984 15.6893 27.1966 16.282C27.3005 16.5716 27.4465 16.8448 27.5714 17.1266C27.7145 17.4521 27.6992 17.514 27.4302 17.7426C27.1863 17.9489 26.9257 18.1398 26.702 18.3664C26.2819 18.7935 26.2819 19.2546 26.7001 19.6817C26.9187 19.9054 27.1747 20.0923 27.4157 20.2948C27.7052 20.5389 27.7178 20.5902 27.5649 20.936C27.4358 21.2285 27.2838 21.5132 27.1812 21.8135C26.9933 22.3607 27.1989 22.7743 27.742 22.9709C27.8348 23.0048 27.9308 23.0329 28.0264 23.059C26.1029 25.5822 24.1808 28.1024 22.2592 30.6216ZM41.0723 19.6807C40.9716 19.765 40.8727 19.8531 40.7818 19.9471C40.5128 20.2251 40.4131 20.5553 40.5473 20.9234C40.6606 21.2333 40.8061 21.5317 40.9385 21.8348C41.1082 22.2193 41.0937 22.2532 40.6891 22.3549C40.4564 22.414 40.2215 22.4615 39.9898 22.5234C39.3511 22.6978 39.111 22.998 39.0849 23.6605C39.0742 23.9346 39.0849 24.2097 39.0751 24.4838C39.0653 24.7579 39.022 24.7967 38.7525 24.7521C38.4658 24.7047 38.1833 24.6291 37.8966 24.5778C37.2849 24.4674 36.9451 24.6262 36.6467 25.1676C36.5064 25.4224 36.3913 25.6907 36.2528 25.9473C36.1153 26.202 36.0603 26.2127 35.8239 26.0393C35.6071 25.8805 35.4029 25.7052 35.1861 25.5463C34.637 25.1463 34.2528 25.1463 33.7018 25.5483C33.4664 25.7197 33.244 25.9086 33.0067 26.0791C32.8305 26.205 32.7792 26.1933 32.6715 26.0025C32.5564 25.7991 32.4557 25.587 32.3541 25.3769C31.9816 24.6039 31.6427 24.4363 30.8049 24.6126C30.5485 24.6669 30.2902 24.7144 30.0324 24.7628C29.9047 24.787 29.8362 24.7279 29.8292 24.6C29.8194 24.418 29.8119 24.2349 29.8031 24.0518C29.8086 24.0518 29.8156 24.0509 29.8212 24.0509C29.8086 23.8455 29.8021 23.6402 29.7816 23.4358C29.769 23.3089 29.7373 23.1947 29.6917 23.092C29.5882 22.8586 29.4003 22.6891 29.1243 22.599C28.921 22.5331 28.7131 22.4818 28.5038 22.4314C28.3961 22.4053 28.288 22.3791 28.1803 22.3511C27.8087 22.2542 27.7844 22.2077 27.9383 21.8619C28.0478 21.6169 28.1737 21.3786 28.2744 21.1307C28.5047 20.565 28.4255 20.2202 27.9714 19.8115C27.7504 19.6129 27.5094 19.4366 27.287 19.24C27.0749 19.0531 27.0768 18.995 27.2898 18.8061C27.46 18.654 27.6441 18.5175 27.8185 18.3693C27.9267 18.2763 28.0343 18.1814 28.1322 18.0778C28.3826 17.8095 28.473 17.4908 28.3481 17.1431C28.2348 16.8273 28.0875 16.5232 27.9518 16.2152C27.7835 15.8307 27.797 15.7968 28.2017 15.6951C28.4339 15.636 28.6693 15.5895 28.9005 15.5256C29.5415 15.3503 29.7788 15.0539 29.8059 14.3885C29.8175 14.1144 29.8068 13.8393 29.8157 13.5652C29.8254 13.293 29.8697 13.2524 30.1378 13.2969C30.4245 13.3444 30.7075 13.4199 30.9937 13.4712C31.6156 13.5827 31.9485 13.4218 32.2515 12.8659C32.3746 12.6402 32.4781 12.4039 32.596 12.1763C32.7755 11.8315 32.8179 11.8218 33.1228 12.0504C33.2738 12.1637 33.4202 12.2828 33.568 12.3991C33.5904 12.4165 33.6118 12.4359 33.6351 12.4533C34.2361 12.9134 34.6407 12.9163 35.2449 12.461C35.4598 12.2993 35.6654 12.1259 35.8831 11.969C36.0574 11.8441 36.1069 11.8596 36.2197 12.0465C36.2509 12.0969 36.2789 12.1501 36.3069 12.2024C36.3381 12.2605 36.367 12.3206 36.3973 12.3787C36.4533 12.4911 36.5045 12.6054 36.5596 12.7187C36.7232 13.0519 36.8877 13.2669 37.0943 13.386C37.3381 13.5274 37.6392 13.5352 38.0681 13.4403C38.3245 13.3841 38.5833 13.3376 38.8406 13.2872C38.9861 13.2582 39.0574 13.326 39.0644 13.4674C39.0718 13.6156 39.0742 13.7647 39.0798 13.9129C39.0896 14.158 39.0868 14.405 39.1138 14.649C39.1553 15.019 39.345 15.2999 39.7035 15.4229C40.021 15.5314 40.3501 15.6069 40.6755 15.6922C41.0956 15.8036 41.11 15.8287 40.9357 16.22C40.8168 16.4854 40.6881 16.7469 40.5786 17.0172C40.3995 17.4588 40.4914 17.8472 40.8429 18.1688C40.9986 18.3112 41.166 18.4419 41.3277 18.5775C41.42 18.655 41.5156 18.7276 41.6037 18.809C41.8088 18.9988 41.8112 19.0589 41.6 19.2458C41.4303 19.396 41.2466 19.5335 41.0723 19.6807Z" fill="#04043F" />
+                                <path d="M37.1798 16.8039C37.2707 16.7119 37.3309 16.5898 37.3696 16.5327C37.3668 16.2527 37.2078 16.0794 37.0087 16.1075C36.8903 16.1239 36.7607 16.1966 36.6745 16.2828C35.0121 17.9371 33.3557 19.5962 31.6984 21.2554C31.6615 21.2922 31.6247 21.328 31.5949 21.3697C31.4989 21.4995 31.497 21.6757 31.5897 21.8017C31.6904 21.9372 31.8317 21.9828 31.9846 21.9334C32.0718 21.9053 32.1515 21.8356 32.2191 21.7687C32.7389 21.2535 33.2559 20.7343 33.7729 20.2171C34.9104 19.079 36.047 17.9439 37.1798 16.8039Z" fill="#04043F" />
+                                <path d="M31.7708 18.1524C31.9965 18.3529 32.2916 18.4759 32.6142 18.4769C32.9363 18.4779 33.2314 18.3558 33.457 18.1573C33.5862 18.0439 33.6915 17.9064 33.7671 17.7514C33.8505 17.5809 33.8976 17.3911 33.8967 17.1896C33.8948 16.748 33.6636 16.3557 33.3167 16.1252C33.1153 15.9915 32.8752 15.9131 32.6188 15.9121C31.9158 15.9102 31.3294 16.4991 31.334 17.2013C31.3368 17.5781 31.5065 17.918 31.7708 18.1524ZM32.6109 16.6492C32.7042 16.6482 32.7923 16.6715 32.8696 16.7112C33.0477 16.8042 33.1708 16.9901 33.1675 17.2013C33.1629 17.4957 32.9083 17.7475 32.616 17.7456C32.4589 17.7447 32.3177 17.6749 32.2188 17.5664C32.1298 17.4686 32.0748 17.3388 32.0738 17.1974C32.0706 16.8913 32.306 16.6521 32.6109 16.6492Z" fill="#04043F" />
+                                <path d="M36.273 19.5752C35.5728 19.5762 34.998 20.1505 34.9961 20.8508C34.9938 21.5569 35.5779 22.1438 36.2795 22.139C36.9788 22.1351 37.5546 21.5588 37.5587 20.8605C37.5643 20.1573 36.9807 19.5742 36.273 19.5752ZM36.2847 21.4019C35.9774 21.4048 35.7229 21.1539 35.7266 20.8508C35.7308 20.5573 35.9863 20.3045 36.2777 20.3055C36.5751 20.3065 36.8198 20.5535 36.8217 20.8527C36.8226 21.1578 36.5877 21.398 36.2847 21.4019Z" fill="#04043F" />
+                            </svg>
+                            <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                Easy Financing
+                            </div>
+                        </div>
+                        <div class="pc-w-full pc-summary-div pc-grid pc-grid-row-2 pc-place-items-center pc-my-10">
+                            <svg class="pc-h-full pc-object-cover" width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M42.8341 17.4672C42.8387 17.0134 42.6616 16.7715 42.228 16.6484C39.7945 15.9559 37.3703 15.2418 34.9321 14.5611C34.5778 14.4614 34.4986 14.3073 34.4986 13.9641C34.5126 11.0504 34.5079 8.13663 34.5079 5.22291C34.5079 3.9804 33.8646 3.33067 32.6329 3.32312C32.1131 3.31981 31.5924 3.32228 31.0353 3.32228C31.0353 2.88858 31.0367 2.51267 31.0353 2.13671C31.0301 0.971253 30.3598 0.303103 29.1831 0.303103C21.5217 0.301424 13.8608 0.303942 6.19948 0.296387C5.83399 0.296387 5.56873 0.403563 5.33004 0.686569C3.95152 2.32509 2.55247 3.94607 1.18467 5.59299C1.00891 5.80482 0.88957 6.13554 0.88957 6.41183C0.874185 16.3771 0.876982 26.3423 0.877448 36.3076C0.877448 37.5217 1.51941 38.1672 2.7329 38.1756C3.2527 38.1789 3.77251 38.1764 4.34499 38.1764C4.34499 38.5925 4.34313 38.9526 4.34499 39.3126C4.35105 40.55 4.99533 41.1955 6.23399 41.1955C15.0165 41.1964 23.7991 41.1964 32.5816 41.1955C33.8599 41.1955 34.5079 40.5393 34.5079 39.2498C34.5079 37.5886 34.5172 35.9283 34.4986 34.2672C34.4986 33.9616 34.6012 33.851 34.8809 33.7581C39.5801 32.2033 42.7781 27.8068 42.8247 22.8434C42.8387 21.0516 42.8201 19.259 42.8341 17.4672ZM31.0511 4.46684C31.7024 4.46684 32.3509 4.42916 32.9928 4.48191C33.3378 4.51041 33.3891 4.84784 33.3891 5.16265C33.3844 7.37721 33.3891 9.59182 33.3891 11.8064C33.3891 12.5935 33.3797 13.3805 33.3937 14.1667C33.3984 14.412 33.3285 14.5284 33.0814 14.592C32.411 14.767 31.7457 14.968 31.0521 15.1664C31.0511 11.5854 31.0511 8.04788 31.0511 4.46684ZM5.35101 2.39458C5.35101 2.84339 5.35101 3.16571 5.35101 3.48724C5.35008 3.99546 5.35289 4.50369 5.34777 5.01107C5.3445 5.36021 5.15661 5.56034 4.81209 5.56622C4.13145 5.57876 3.4513 5.56953 2.65178 5.56953C3.57157 4.48778 4.4135 3.49811 5.35101 2.39458ZM2.7716 37.0679C2.15483 37.0679 2.00098 36.9088 2.00098 36.2884C2.00005 26.5701 2.00005 16.851 2.00098 7.13273C2.00098 7.00382 2.0117 6.87486 2.01916 6.68985C2.92963 6.68985 3.78694 6.694 4.64473 6.68901C5.82698 6.68229 6.46894 6.03004 6.47266 4.84028C6.475 3.74762 6.47595 2.65501 6.47921 1.56235C6.47921 1.53554 6.49503 1.50877 6.52161 1.42589C6.6582 1.42589 6.813 1.42589 6.96731 1.42589C14.3229 1.42589 21.6793 1.42589 29.0349 1.42589C29.8125 1.42589 29.9145 1.52887 29.9145 2.31002C29.9155 6.54997 29.9085 10.79 29.9243 15.0299C29.9262 15.4142 29.7975 15.5499 29.446 15.6436C28.2516 15.9618 27.0689 16.3227 25.8783 16.6526C25.4881 16.7606 25.2806 16.9707 25.2848 17.3911C25.3063 19.4742 25.2279 21.5632 25.3585 23.6388C25.5608 26.8422 26.9696 29.4997 29.405 31.587C29.7891 31.917 29.9407 32.2293 29.9253 32.7249C29.8903 33.9189 29.916 35.1145 29.9127 36.3093C29.9113 36.9046 29.7537 37.0679 29.1644 37.0679C20.3679 37.0695 11.57 37.0695 2.7716 37.0679ZM33.3844 39.4139C33.3844 39.9045 33.1793 40.072 32.6245 40.0729C29.1882 40.0745 25.7515 40.0737 22.3152 40.0737C17.0011 40.0737 11.6856 40.0737 6.37103 40.0737C5.57617 40.0737 5.45126 39.9515 5.44986 39.1745C5.44799 38.1764 5.44799 38.1764 6.45636 38.1764C14.0138 38.1764 21.5712 38.1773 29.1276 38.1756C30.1411 38.1756 30.7747 37.7519 30.9807 36.9255C31.0292 36.7313 31.032 36.522 31.0325 36.3202C31.0367 35.1698 31.0353 34.0194 31.0353 32.8405C31.7882 33.1578 32.4982 33.4466 33.1979 33.7614C33.2912 33.8033 33.3797 33.9733 33.3797 34.0847C33.3891 35.8605 33.3891 37.6372 33.3844 39.4139ZM41.7152 18.0692C41.6872 18.9718 41.7059 19.8752 41.7059 20.7778C41.7012 22.3628 41.7991 23.9561 41.3376 25.5042C40.284 29.0208 38.0556 31.433 34.5918 32.6898C34.2142 32.8271 33.8646 32.8371 33.4963 32.6964C29.8777 31.325 27.5794 28.7679 26.6806 25.0069C26.4764 24.1537 26.4419 23.2486 26.4172 22.3653C26.3762 20.9243 26.4088 19.4817 26.4028 18.04C26.4018 17.8013 26.4279 17.6489 26.7123 17.5677C29.0475 16.9054 31.3742 16.218 33.7107 15.5566C33.9298 15.4938 34.2049 15.508 34.4287 15.5716C36.7223 16.218 39.0113 16.8887 41.305 17.535C41.608 17.6221 41.7199 17.7435 41.7152 18.0692Z" fill="#04043F" />
+                                <path d="M8.3573 18.9285C10.7456 20.2875 13.125 21.664 15.4993 23.048C15.8317 23.2414 16.1026 23.2305 16.4294 23.0404C18.7794 21.6715 21.1309 20.3067 23.4959 18.9654C23.9313 18.7184 24.1103 18.4262 24.107 17.9255C24.0884 15.2462 24.0893 12.5669 24.107 9.88851C24.1103 9.40538 23.9406 9.11654 23.522 8.87873C21.1701 7.54243 18.827 6.19107 16.4928 4.82548C16.1012 4.59606 15.7921 4.60782 15.4075 4.83304C13.0607 6.20697 10.7064 7.56841 8.34284 8.91306C7.9629 9.12909 7.81047 9.38948 7.81653 9.81902C7.83424 11.1729 7.82304 12.5267 7.82304 13.8815C7.82211 13.8815 7.82165 13.8815 7.82165 13.8815C7.82165 15.2504 7.8333 16.6194 7.81465 17.9875C7.80812 18.4304 7.9629 18.7042 8.3573 18.9285ZM22.9789 10.8807C22.9807 13.1229 22.9854 15.366 22.9705 17.6082C22.9696 17.7756 22.8665 18.0184 22.7355 18.0963C20.73 19.2761 18.7114 20.434 16.6951 21.5953C16.6601 21.6154 16.6159 21.6187 16.5189 21.6464C16.5189 19.2132 16.5161 16.8262 16.5263 14.4391C16.5263 14.3361 16.6126 14.1896 16.7021 14.1368C18.7617 12.9362 20.827 11.7464 22.9397 10.5265C22.9565 10.6722 22.9789 10.776 22.9789 10.8807ZM21.0022 8.71046C21.4447 8.98927 21.9025 9.24126 22.3971 9.5293C22.261 9.61805 22.157 9.69174 22.0483 9.75452C20.1468 10.8547 18.2396 11.9457 16.3464 13.0601C16.0508 13.2343 15.8392 13.2351 15.5604 13.0492C15.1637 12.7838 14.7376 12.5619 14.2523 12.2797C15.0476 11.8193 15.7622 11.4048 16.4783 10.9912C17.7892 10.2343 19.103 9.48327 20.4069 8.71713C20.6223 8.5899 20.7869 8.57483 21.0022 8.71046ZM19.5384 7.93681C18.6345 8.45926 17.7557 8.96581 16.8769 9.47403C15.8443 10.071 14.8112 10.668 13.7795 11.2658C13.0905 11.6644 13.0905 11.6652 12.3675 11.1679C12.5106 11.08 12.6365 10.9987 12.7661 10.9242C14.5795 9.87676 16.4098 8.85616 18.199 7.7677C18.7221 7.44869 19.0899 7.48553 19.5384 7.93681ZM12.5022 14.733C11.8863 14.5797 11.622 14.2758 11.698 13.6663C11.7582 13.1815 11.7106 12.6841 11.7106 12.1843C12.4514 12.397 12.5041 12.4665 12.5031 13.1899C12.5013 13.6973 12.5022 14.203 12.5022 14.733ZM14.7814 6.45481C15.6415 5.90055 16.3352 5.78083 17.1161 6.47239C17.2634 6.60303 17.4587 6.68092 17.6694 6.80479C15.9562 7.79531 14.284 8.76237 12.6117 9.72943C12.5619 9.75872 12.5115 9.78801 12.4607 9.81566C12.0421 10.0459 11.5801 10.5173 11.215 10.4512C10.6253 10.3431 10.0985 9.88264 9.49434 9.54185C11.3046 8.49527 13.0882 7.54579 14.7814 6.45481ZM8.93212 10.5006C9.49621 10.8288 10.0099 11.1143 10.5036 11.4291C10.5773 11.476 10.5806 11.6643 10.5824 11.7874C10.589 12.675 10.5973 13.5633 10.5815 14.4508C10.575 14.8309 10.7162 15.0796 11.0528 15.2571C11.5917 15.5434 12.1138 15.8616 12.6481 16.1572C13.2005 16.462 13.6005 16.2376 13.6122 15.6037C13.6262 14.8343 13.6154 14.0648 13.6154 13.2016C14.2182 13.5516 14.7562 13.8563 15.2844 14.1787C15.3487 14.2181 15.3879 14.3487 15.3879 14.4366C15.394 16.822 15.3921 19.2074 15.3921 21.6907C15.0951 21.5199 14.8835 21.4002 14.6732 21.2779C12.8607 20.2305 11.0453 19.1873 9.2398 18.129C9.1046 18.0494 8.94704 17.8585 8.94564 17.7187C8.92699 15.3492 8.93212 12.9772 8.93212 10.5006Z" fill="#04043F" />
+                                <path d="M5.41611 29.5676C5.53172 29.5809 5.64875 29.5734 5.7653 29.5734C11.8663 29.5734 17.9683 29.5734 24.0693 29.5726C24.2283 29.5726 24.4334 29.6128 24.5364 29.5315C24.7113 29.3942 24.935 29.1723 24.929 28.9923C24.9229 28.8115 24.6847 28.6097 24.5056 28.4741C24.4101 28.4021 24.2236 28.4481 24.0786 28.4481C21.0204 28.4472 17.9622 28.4472 14.9045 28.4472C12.0356 28.4472 9.16709 28.4472 6.29815 28.4472C6.00725 28.4472 5.71494 28.4355 5.4245 28.4531C5.08745 28.4724 4.87486 28.6566 4.87113 29.0049C4.86787 29.354 5.08325 29.5299 5.41611 29.5676Z" fill="#04043F" />
+                                <path d="M23.8152 25.0308C21.5154 25.0308 19.2162 25.0308 16.9165 25.0308C14.6023 25.0308 12.2882 25.0308 9.97402 25.0308C9.85793 25.0308 9.73997 25.0225 9.62528 25.0359C9.30548 25.0719 9.06865 25.2712 9.1204 25.5718C9.15629 25.7786 9.3908 25.9653 9.56889 26.126C9.63602 26.1863 9.79359 26.1536 9.90874 26.1536C14.5664 26.1545 19.2237 26.1545 23.8814 26.1536C24.0119 26.1536 24.1867 26.1871 24.2627 26.1185C24.4394 25.9585 24.6907 25.7384 24.6804 25.5567C24.6697 25.375 24.3942 25.1866 24.2007 25.0468C24.114 24.9831 23.9466 25.0308 23.8152 25.0308Z" fill="#04043F" />
+                                <path d="M17.7589 31.8633C17.7296 31.8633 17.7002 31.8633 17.6718 31.8633C13.6966 31.8633 9.72087 31.8633 5.74567 31.865C5.5867 31.865 5.38067 31.8265 5.27857 31.9085C5.10701 32.0467 4.89117 32.2711 4.89863 32.4511C4.90655 32.6319 5.14569 32.8254 5.32051 32.966C5.40256 33.0313 5.57414 32.9894 5.70467 32.9894C7.69996 32.9903 9.6943 32.9903 11.6896 32.9903C13.7138 32.9903 15.7375 32.9911 17.7613 32.9903C18.3053 32.9903 18.5841 32.7969 18.5832 32.4285C18.5832 32.0584 18.302 31.8666 17.7589 31.8633Z" fill="#04043F" />
+                                <path d="M26.3049 31.8637C24.297 31.8612 22.2887 31.8612 20.2808 31.8637C19.789 31.8645 19.5069 32.0864 19.52 32.4456C19.5326 32.7897 19.8006 32.9865 20.2733 32.9873C21.2775 32.9898 22.2812 32.9881 23.2854 32.9881C24.2896 32.9881 25.2933 32.9898 26.2974 32.9873C26.7944 32.9865 27.0676 32.7746 27.055 32.4096C27.0433 32.0613 26.7818 31.8645 26.3049 31.8637Z" fill="#04043F" />
+                                <path d="M5.41765 26.1415C6.14397 26.1616 6.87218 26.1624 7.5985 26.1415C7.92577 26.1323 8.15185 25.9414 8.14672 25.5864C8.14113 25.2146 7.91689 25.038 7.55699 25.0321C7.20781 25.0263 6.85865 25.0304 6.50994 25.0304C6.16076 25.0304 5.81206 25.0263 5.46289 25.0313C5.10113 25.0363 4.8778 25.2163 4.87127 25.5855C4.86381 25.9389 5.08852 26.1323 5.41765 26.1415Z" fill="#04043F" />
+                                <path d="M34.0883 18.9249C31.2129 18.9123 28.8563 21.2499 28.8419 24.126C28.8279 27.0062 31.1546 29.3607 34.0324 29.3816C36.9041 29.4017 39.263 27.0598 39.2724 24.1788C39.2817 21.2843 36.9647 18.9374 34.0883 18.9249ZM34.093 28.2622C31.8189 28.2756 29.971 26.4452 29.9644 24.1737C29.9574 21.8905 31.7844 20.0468 34.051 20.0476C36.326 20.0485 38.1675 21.8863 38.1722 24.1536C38.1722 26.395 36.3307 28.2488 34.093 28.2622Z" fill="#04043F" />
+                                <path d="M9.77667 17.6002C10.3664 17.9694 10.9673 18.3253 11.5859 18.6443C11.9561 18.8351 12.3486 18.5622 12.357 18.0573C12.3151 17.9912 12.2582 17.7986 12.1309 17.7191C11.5407 17.3498 10.9407 16.9923 10.323 16.6708C10.0554 16.5318 9.77572 16.6139 9.61582 16.9077C9.46943 17.1807 9.52959 17.4453 9.77667 17.6002Z" fill="#04043F" />
+                                <path d="M36.4982 21.9377C36.3117 21.9561 36.1066 22.116 35.9714 22.2684C35.1603 23.1819 34.3677 24.1104 33.5379 25.0691C33.2582 24.8506 33.0167 24.6622 32.7762 24.4746C32.5244 24.277 32.2759 24.0752 32.0191 23.8843C31.6941 23.6432 31.3738 23.6608 31.1697 23.9212C30.9575 24.1908 31.0056 24.4939 31.33 24.7551C31.9421 25.2483 32.5603 25.7331 33.1836 26.2111C33.5379 26.4816 33.799 26.4556 34.0973 26.1207C34.5589 25.5991 35.0157 25.0674 35.4726 24.5391C35.9481 23.989 36.4423 23.4523 36.8851 22.8754C37.0064 22.7147 37.0343 22.409 36.9737 22.2098C36.9364 22.075 36.6567 21.9218 36.4982 21.9377Z" fill="#04043F" />
+                            </svg>
+                            <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                Lifetime Warranty
+                            </div>
+                        </div>
+                        <div class="pc-w-full pc-summary-div pc-grid pc-grid-row-2 pc-place-items-center pc-my-10">
+                            <svg class="pc-h-full pc-object-cover" width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M26.4964 35.336C33.1116 34.1011 37.8061 27.8684 36.9903 21.1792C36.3283 15.7512 33.2981 12.0902 28.1653 10.1973C27.6012 9.98816 26.9999 9.86885 26.3798 9.69806C26.571 9.47032 26.7481 9.25574 26.9252 9.04008C27.4241 8.43247 27.3961 8.08323 26.7901 7.57412C26.888 7.4537 26.9905 7.33109 27.0884 7.21067C27.9928 6.1257 28.8972 5.04079 29.8016 3.95475C30.1 3.59456 30.0907 3.37666 29.7597 3.04604C29.0185 2.3049 28.2772 1.56698 27.5313 0.829102C25.2237 0.829102 22.9207 0.829102 20.6131 0.829102C19.8858 1.55168 19.1585 2.27421 18.4313 2.99791C18.035 3.39201 18.0304 3.57595 18.3893 4.0062C19.3776 5.19516 20.366 6.38408 21.359 7.57305C20.7389 8.10403 20.7156 8.43135 21.2377 9.06195C21.4102 9.26889 21.5827 9.47471 21.7832 9.71117C21.6573 9.74405 21.5734 9.76919 21.4895 9.78672C19.732 10.1513 18.1096 10.8388 16.6364 11.8668C16.3334 12.0781 16.2635 12.365 16.4453 12.619C16.6178 12.8631 16.9021 12.9091 17.1912 12.7098C18.7156 11.6676 20.3846 10.9965 22.2027 10.6834C22.9813 10.5487 23.2097 9.86009 22.7109 9.23825C22.5244 9.00505 22.3333 8.77405 22.1188 8.51129C23.4475 8.32627 24.7155 8.3175 26.0302 8.51674C25.7784 8.82769 25.55 9.08056 25.3495 9.35209C24.9812 9.85132 25.2143 10.5093 25.8157 10.6615C26.0488 10.7195 26.2819 10.7501 26.515 10.7972C33.7736 12.2686 38.0019 20.1381 35.2141 26.9816C32.4729 33.696 24.7621 36.4877 18.3613 33.0786C13.3172 30.3908 10.8743 24.3026 12.6598 18.879C13.2426 17.1109 14.161 15.5541 15.4476 14.2097C15.7274 13.9207 15.7367 13.6207 15.5129 13.405C15.2798 13.1806 14.9908 13.2112 14.7157 13.5058C11.7135 16.7453 10.5061 20.565 11.2893 24.9026C12.5759 32.0067 19.4243 36.6552 26.4964 35.336ZM21.0186 1.87899C21.0699 1.83081 21.1864 1.84835 21.2797 1.84835C23.1398 1.84723 25.0045 1.84616 26.8693 1.85054C26.9765 1.85054 27.1164 1.85712 27.1817 1.92059C27.536 2.24683 27.8716 2.5928 28.2772 2.99571C25.4381 2.99571 22.7062 2.99571 19.8718 2.99571C20.2867 2.58515 20.6457 2.22496 21.0186 1.87899ZM22.5664 7.4329C21.634 6.31622 20.7063 5.1995 19.7226 4.01935C20.324 4.01935 20.8321 4.01384 21.3403 4.0248C21.4195 4.027 21.5407 4.09047 21.564 4.15399C21.9323 5.22688 22.2913 6.30419 22.6503 7.37927C22.6223 7.39899 22.5943 7.41541 22.5664 7.4329ZM24.5244 7.09901C24.4451 7.34862 24.3006 7.36504 24.0955 7.35408C23.8997 7.34312 23.7132 7.39787 23.6246 7.11104C23.3309 6.15308 22.9999 5.205 22.6829 4.25254C22.6643 4.19014 22.655 4.12335 22.6363 4.03245C23.6153 4.03245 24.5523 4.03245 25.5267 4.03245C25.48 4.19233 25.4381 4.33024 25.3915 4.46601C25.0978 5.34296 24.7994 6.2166 24.5244 7.09901ZM25.578 7.43509C25.5547 7.42087 25.5267 7.40552 25.5034 7.3913C25.536 7.28729 25.5593 7.18222 25.5919 7.0804C25.8996 6.1487 26.2166 5.21923 26.5196 4.28538C26.5849 4.07956 26.6782 4.00512 26.8973 4.01384C27.3775 4.03245 27.8623 4.01935 28.4217 4.01935C27.4381 5.19843 26.5104 6.31622 25.578 7.43509Z" fill="#04043F" />
+                                <path d="M31.4427 29.0503C31.3448 29.2046 31.3075 29.4685 31.3728 29.6327C31.4241 29.7641 31.6711 29.8976 31.825 29.8889C31.9835 29.8802 32.17 29.7324 32.2865 29.5955C34.4263 27.0424 35.2841 24.104 34.762 20.8207C33.9322 15.5613 29.3915 11.7174 24.0816 11.6616C23.4569 11.7317 22.8229 11.7678 22.2028 11.8784C15.8813 12.9983 11.9047 19.3077 13.6343 25.455C15.6762 32.6993 24.338 35.7417 30.3985 31.3428C30.7435 31.0943 30.832 30.8063 30.6502 30.5436C30.4637 30.2754 30.17 30.2622 29.8204 30.5053C29.7645 30.5436 29.7085 30.5841 29.6526 30.6224C27.5874 32.0303 25.3077 32.5974 22.8369 32.2832C17.3778 31.5924 13.583 26.5739 14.3615 21.1141C15.1354 15.7058 20.3148 11.9276 25.6946 12.8517C32.6642 14.0505 36.1326 21.9264 32.3052 27.88C32.0441 28.2861 31.7038 28.6419 31.4427 29.0503Z" fill="#04043F" />
+                                <path d="M42.5851 37.7461C41.4709 36.6207 40.3473 35.5007 39.2238 34.3851C38.8042 33.969 38.2775 33.9537 37.9139 34.326C37.5549 34.6971 37.5875 35.2062 38.0071 35.6332C38.5525 36.1882 39.1073 36.7345 39.6574 37.2863C39.7227 37.3542 39.774 37.4363 39.8439 37.5239C28.6087 37.5239 17.4155 37.5239 6.23162 37.5239C6.23162 26.3055 6.23162 15.1156 6.23162 3.83914C6.88894 4.50258 7.48567 5.11238 8.09638 5.71449C8.54392 6.16008 9.05672 6.19842 9.43434 5.82946C9.81661 5.4583 9.78395 4.9394 9.34107 4.49162C8.24552 3.38698 7.14533 2.2856 6.04046 1.1886C5.55563 0.706913 5.10339 0.710178 4.6139 1.19298C3.60693 2.19362 2.60464 3.19865 1.60233 4.20698C1.3739 4.43687 1.17343 4.69086 0.958984 4.93394C0.958984 5.09816 0.958984 5.26126 0.958984 5.42547C1.42051 6.22687 1.97059 6.3035 2.62326 5.65428C3.11742 5.16383 3.60694 4.66899 4.1011 4.17853C4.19434 4.08656 4.29222 4.00224 4.43674 3.86978C4.43674 15.1287 4.43674 26.3142 4.43674 37.5512C3.64888 37.5512 2.87501 37.5709 2.10579 37.5447C1.56501 37.5261 1.17809 37.7023 0.958984 38.207C0.958984 38.3712 0.958984 38.5343 0.958984 38.6986C1.22005 39.1606 1.61167 39.3237 2.14312 39.3007C2.89369 39.2679 3.65357 39.2919 4.46007 39.2919C4.46007 40.0988 4.48804 40.8575 4.45541 41.613C4.4321 42.1405 4.59062 42.536 5.05681 42.7953C5.21998 42.7953 5.38311 42.7953 5.54628 42.7953C6.04976 42.5752 6.23159 42.1876 6.20828 41.648C6.18031 40.8849 6.20362 40.1207 6.20362 39.3237C17.4108 39.3237 28.5994 39.3237 39.8392 39.3237C39.7693 39.4124 39.7227 39.4978 39.6574 39.5657C39.1353 40.089 38.6131 40.6079 38.091 41.1312C37.443 41.7861 37.5176 42.3429 38.3194 42.7953C38.4873 42.7953 38.6504 42.7953 38.8136 42.7953C38.9488 42.6881 39.1026 42.5938 39.2238 42.4721C40.3473 41.3557 41.4709 40.2379 42.5851 39.1113C43.028 38.6613 43.028 38.1939 42.5851 37.7461Z" fill="#04043F" />
+                            </svg>
+                            <div class="pc-summary-text pc-text-04043F pc-transform-none">
+                                90 Days Free Resizing
+                            </div>
+
+
+                        </div>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+            <div class="diamond-meta-data-big-screen-view pc-w-1/2">
+                <final-ring-meta-data :redirection-possible="redirectionPossible" :change-in-metal-loading="changeInMetalLoading" :setting="setting.data" v-model:setting-metal="setting.settingMetal" :diamond="diamond.data" v-model:setting-size="setting.settingSize" :setting-metal="setting.settingMetal" :setting-metal-list="settingMetalList" @update-metal="updateMetalList" :setting-size-list="getSettingSizes" v-model:setting-country="defaultSettingCountry" @reset-setting-size="initializeSettingSize" :final-setting-size="finalSettingSize" @set-final-size="setFinalRingSize"></final-ring-meta-data>
+            </div>
+        </div>
+        <div class="pc-w-full pc-flex pc-flex-col pc-gap-y-30" v-if="!redirectionPossible">
+            <final-ring-detail-table :change-in-metal-loading="changeInMetalLoading" :sku-details="setting.data.sku" :setting-details="setting.attributes" :diamond="diamond.data" :diamond-obj="diamond" :selected-metal="setting.settingMetal" :setting-id="setting.data.id"></final-ring-detail-table>
+            <!-- <div class="accordion-active pc-accordion-div">
+                    <div class="pc-accordion pc-text-04043F active pc-select-none pc-w-full pc-p-20 pc-flex pc-justify-between" @click="openDetail($event)">
+                        INFORMATION
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M0 0h24v24H0V0z" style="fill: none;"></path>
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+                        </svg>
+                    </div>
+                    <div class="info panel">
+                        <div class="pc-diamond_details_graphics" id="pc-dia-graphics">
+                            <diamond-carat-graphic-comp   :diamond="diamond.data"></diamond-carat-graphic-comp>
+                            <diamond-clarity-graphic-comp :diamond="diamond.data"></diamond-clarity-graphic-comp>
+                            <diamond-color-graphic-comp   :diamond="diamond.data" v-if="diamond.data?.diamondType != 'fancy' "></diamond-color-graphic-comp>
+                            <diamond-cut-graphic-comp     :diamond="diamond.data" v-if="diamond.data?.cut && diamond?.data?.cut?.toLowerCase() != 'na'"></diamond-cut-graphic-comp> 
+                        </div>
+                    </div>
+                </div> -->
+        </div>
+
+        <!-- <div class="tps_row tps_diamonds_dinfo_row">
+                <div class="tps_diamond_details_info">
+                    <h3>Your custom ring details</h3>
+                </div>
+                <div class="tps_diamond_details_right_info">
+                    <div class="tps_diamond_details_img">
+                        <a href="#" title="Got Questions">
+                        <img :src="getBannerImgUrl" alt="Got Questions" title="Got Questions">
+                        </a>
+                    </div>
+                    <div class="tps_diamond_details_right_panel_info">
+                        <div>
+                            <h3>Lifetime Diamond Upgrade Program</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <a href="#" title="Got Questions">Learn More</a>
+                        </div>
+                        <div>
+                            <h3>Financing Options</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                            <ul>
+                                <li>6-month financing available for orders of $500 or more.</li>
+                                <li>12-month financing available for orders of $1,500 or more.</li>
+                                <li>48-month financing available for orders of $4,000 or more.</li>
+                                <li>More financing options available.</li>
+                            </ul>
+                            <a href="#" title="Got Questions">Learn More</a>
+                        </div>
+                    </div>
+                </div>             
+            </div> -->
+    </div>
+</script>
+<!-- END FINAL RING PAGE DETAIL PAGE -->

@@ -1,0 +1,748 @@
+<!-- LEFT ITEM STICKY BAR -->
+<script type="text/x-template" id="left-sticky-bar">
+  <teleport to="#sticky-items-sidebar">
+      <transition name="sticky-bar" appear>
+          <span class="sticky-bar-icon-div pc-bg-04043F" v-if="stickyItems.length" :class="getInitialRingItem"></span>
+      </transition>
+      <transition name="sticky-bar" appear>
+          <span class="sticky-bar-arrow-div pc-bg-04043F" @click="slideStickyBar" v-if="stickyItems.length">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" stroke-width="1" stroke="white" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+              </svg>
+          </span>
+      </transition>
+      <div class="pc-left-sticky-bar" v-if="stickyItems.length">
+          <div class="sticky-bar-item-div">
+              <div class="pc-bg-04043F pc-flex pc-items-center pc-tt-commons pc-justify-center pc-mb-10 pc-py-10">
+                  <p class="pc-text-white pc-fs-16 pc-text-nowrap pc-lh-20">[[$t("You have selected")]]</p>
+              </div>
+              <template v-for="(stickyItem, index) in stickyItems" :key="index">
+                  <div @click="viewDetailPage(stickyItem.id, stickyItem.page, stickyItem.diamondType,stickyItem)" class="pc-gap-y-10 pc-m-0 pc-flex pc-flex-col pc-justify-center pc-items-center pc-pointer pc-p-10" :class="stickyItems.length > 1 ? 'pc-chose-product-view':''">
+                      <div class="pc-w-8/10">
+                          <img class="pc-rounded-10" :src="stickyItem.imgUrl" :alt="stickyItem.title" :title="stickyItem.title" :placeholder="stickyItem.placeholder" @error="setPlaceholderImg" :page-type="stickyItem.page">
+                      </div>
+                      <!-- setting div -->
+                      <div v-if="stickyItem.page == 'setting'" class="pc-w-full pc-flex pc-flex-col pc-justify-center pc-items-center">
+                          <div class="pc-name_of_product pc-flex pc-flex-col pc-justify-center pc-items-center" v-if="stickyItem.title">
+                              <span class="pc-sticky_r_title pc-flex pc-flex-col pc-justify-center pc-items-center pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center">[[stickyItem.title]]</span>
+                               <span class="pc-meta_sub_title pc-fs-16 pc-text-04043F pc-tt-commons"> in [[stickyItem.metal]] </span>
+                              <div class="pc-sticky_meta">
+                                  <ul class="pc-m-0 pc-mt-20 pc-flex pc-flex-col pc-w-full pc-list-none pc-pt-10 pc-my-10 pc-justify-center pc-gap-y-5">
+                                      <!-- <li>
+                                          <span> Metal :</span>
+                                          <span> [[stickyItem.metal]] </span>
+                                      </li> -->
+                                      <li class="pc-text-center">
+                                          <span class="pc-fs-16 pc-text-04043F pc-tt-commons">[[$t("Ring Size")]] :</span>
+                                          <span v-if="stickyItem.size" class="pc-fs-16 pc-text-04043F pc-tt-commons"> [[stickyItem.size]]</span>
+                                      </li>
+                                      <li class="pc-text-center">
+                                          <span class="pc-fs-16 pc-text-04043F pc-tt-commons">Sku : </span>
+                                          <span v-if="stickyItem.sku" class="pc-fs-16 pc-text-04043F pc-tt-commons">[[stickyItem.sku]]</span>
+                                      </li>
+                                      <!-- <li class="pc-text-center">
+                                          <span class="pc-fs-16 pc-text-04043F pc-tt-commons">[[$t("Style")]]  : </span>
+                                          <span v-if="stickyItem.style" class="pc-fs-16 pc-text-04043F pc-tt-commons">[[stickyItem.style]]</span>
+                                      </li> -->
+                                  </ul>
+                              </div>
+                          </div>
+                          <div class="pc-price_of_product pc-flex pc-flex-col pc-justify-center pc-items-center" v-if="stickyItem.price">
+                              <span class="pc-text-04043F pc-tt-commons pc-text-center pc-font-18 product-card__price pc-bold">[[setFormattedPrice(stickyItem.price)]]</span>
+                              {% comment %} <span class="pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center">[[adjustPriceByRingSize(stickyItem.size,stickyItem.price)]]</span> {% endcomment %}
+                          </div>
+                      </div>
+                      <!-- diamond div -->
+                      <div class="pc-flex pc-flex-col pc-justify-center pc-items-center" v-if="stickyItem.page == 'diamond'">
+                          <div class="pc-name_of_product pc-flex pc-flex-col pc-justify-center pc-items-center" v-if="stickyItem.title">
+                              <span class="pc-sticky_r_title pc-fs-16 pc-text-04043F pc-tt-commons">[[stickyItem.title]]</span>
+                              <div class="pc-details_subtitle pc-sticky_ring_meta">
+                                  <ul class="pc-m-0 pc-mt-20 pc-flex pc-flex-col pc-w-full pc-list-none pc-pt-10 pc-my-10 pc-justify-around pc-gap-y-5 pc-items-center">
+                                      <li class="pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center" v-if="!!stickyItem.cut && stickyItem.cut.toLowerCase() != 'na' ">[[stickyItem.cut]] [[$t("Cut")]] </li>
+                                      <li class="pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center" v-if="!!stickyItem.color && stickyItem.color.toLowerCase() != 'na' ">[[stickyItem.color]] [[$t("Color")]] </li>
+                                      <li class="pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center" v-if="!!stickyItem.clarity && stickyItem.clarity.toLowerCase() != 'na' ">[[stickyItem.clarity]] [[$t("Clarity")]] </li>
+                                  </ul>
+                              </div>
+                          </div>
+                          <div v-if="stickyItem.lab != '' && stickyItem.lab != 'N/A'" class="pc-sticky_lab_gia pc-fs-16 pc-text-04043F pc-tt-commons pc-text-center">
+                              [[$t("Lab")]] : [[stickyItem.lab]]
+                          </div>
+                          <div class="pc-price_of_product pc-fs-16 pc-text-04043F pc-tt-commons" v-if="stickyItem.price">
+                              <span class="pc-text-04043F pc-tt-commons pc-text-center pc-font-18 product-card__price pc-bold">[[setFormattedPrice(stickyItem.price)]]</span>
+                          </div>
+                      </div>
+                  </div>
+              </template>
+          </div>
+      </div>
+  </teleport>
+</script>
+<!-- END LEFT ITEM STICKY BAR -->
+
+<!-- HEADER STEPS -->
+<script
+  type="text/x-template"
+  id="pc-header-steps"
+>
+    <div class="container pc-ringbuilder-steps pc-relative">
+        <div class="pc-flex pc-w-full">
+            <div class="pc-steps pc-steps-first pc-flex pc-w-full pc-items-center pc-border-right-white" :class="1 <= totalSteps ? 'pc-bg-04043F' : 'pc-bg-F8F0E5'" :data-id="$t(firstStepData.headerTitle)" @click="handleClick">
+                <a class="first pc-w-full pc-h-full"
+                :href="1 <= totalSteps ? '#' : ((secondStepData.headerTitle === 'SETTING' && !firstStepData.title) ? '/collections/natural-diamonds' : ($t(secondStepData.headerTitle) === 'DIAMOND' ? '/collections/engagement-rings' : `/collections/${firstStepData.diamondType==='white'?'natural':'lab'}-diamonds/diamonds?diamondId=${firstStepData.id}`))"
+                :data-id="$t(firstStepData.headerTitle)">
+                    <div class="pc-step-section">
+                        <div class="pc-node-skin pc-flex pc-items-center pc-h-full pc-p-20">
+                            <div class="pc-w-9/10 pc-flex pc-items-center pc-gap-x-10">
+                                <div class="pc-w-full pc-flex pc-gap-x-10">
+                                    <div class="pc-steps_num pc-flex pc-items-center">
+                                        <svg width="30" height="30" v-if="!!firstStepData.headerTitle && firstStepData.headerTitle.toLowerCase() == 'setting'" viewBox="0 0 40 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M26.9228 1.93733C28.7377 2.64619 30.4675 3.66411 32.035 4.99732C39.6076 11.438 40.5252 22.7979 34.0846 30.3705C27.644 37.9431 16.284 38.8607 8.71139 32.4201C1.1388 25.9795 0.221167 14.6195 6.6618 7.04691C8.89106 4.42586 11.7096 2.60208 14.7566 1.60474" stroke="white" stroke-width="3"/>
+                                        </svg>
+                                        <svg width="30" height="30" v-else-if="!!firstStepData.headerTitle && firstStepData.headerTitle.toLowerCase() == 'diamond'" class="dia-svg" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill="white" d="M35.8579 8.80377L29.8678 0.403825C29.6886 0.15284 29.3687 0 29.0233 0H6.97694C6.63222 0 6.31248 0.15284 6.13296 0.403825L0.142781 8.80377C0.137667 8.8119 0.136729 8.82038 0.131359 8.82778C0.0912949 8.88864 0.0588175 8.95378 0.0373363 9.02248C0.0341823 9.03358 0.029153 9.04373 0.0264252 9.05389C0.0100586 9.11402 0 9.17568 0 9.24039C0 9.2525 0.00332446 9.26403 0.00451786 9.27615C0.00537029 9.29399 0.0081833 9.31031 0.0100586 9.32772C0.0186681 9.39439 0.0355462 9.45989 0.0606076 9.52162C0.0650402 9.53134 0.067427 9.542 0.0716039 9.55143C0.105189 9.62281 0.151391 9.68795 0.205435 9.74772C0.211061 9.75425 0.213618 9.76194 0.218733 9.76789L17.2247 27.6805L17.2324 27.6884C17.2366 27.6928 17.242 27.6951 17.2461 27.6987C17.2921 27.7456 17.345 27.7877 17.4028 27.8258C17.4056 27.8266 17.4076 27.8299 17.4106 27.8321C17.4183 27.837 17.4253 27.8401 17.4335 27.844C17.5133 27.8916 17.6002 27.9346 17.6991 27.9607C17.7734 27.9806 17.8486 27.9853 17.923 27.9894C17.9489 27.9917 17.9726 28 17.9984 28C17.999 28 17.999 28 17.9993 28C18.0051 28 18.0099 27.9976 18.0153 27.9976C18.1021 27.9962 18.1861 27.9846 18.2673 27.9643C18.2778 27.962 18.2887 27.9627 18.2997 27.9593C18.3008 27.9593 18.3016 27.9593 18.3025 27.9583C18.3037 27.9583 18.3037 27.9576 18.3055 27.9576C18.3281 27.9496 18.3496 27.941 18.3718 27.9325C18.3983 27.9241 18.4239 27.9146 18.4492 27.9043C18.4798 27.8908 18.5088 27.8741 18.5371 27.8575C18.5562 27.8475 18.5757 27.8376 18.594 27.8261C18.6035 27.82 18.6132 27.8163 18.6222 27.8094C18.666 27.7777 18.7061 27.7435 18.7435 27.7069C18.75 27.6994 18.7602 27.695 18.7669 27.6869L18.7754 27.6796L35.7804 9.76658C36.0421 9.49246 36.0723 9.10706 35.8579 8.80377ZM20.1293 1.67986L23.2874 8.39951H12.7132L15.8716 1.67986H20.1293ZM7.5329 1.67986H13.745L10.5866 8.39951H2.74021L7.5329 1.67986ZM3.05365 10.0797H10.5345L15.4491 23.1361L3.05365 10.0797ZM18.0001 24.4062L12.6075 10.0797H23.3925L18.0001 24.4062ZM20.5517 23.1368L25.4654 10.0797H32.9461L20.5517 23.1368ZM25.4137 8.39988L22.2552 1.68022H28.4673L33.2597 8.39988H25.4137Z"/>
+                                        </svg>                                                               
+                                    </div>
+                                    <div class="pc-steps_data">
+                                        <h2 class="pc-steps-mainhead pc-fs-16 pc-text-white pc-bold pc-m-0 pc-flex pc-flex-col" :class="{'pc-text-white' : (2 <= totalSteps)}"><span class="choose-text-trigger pc-fs-16" v-if="!firstStepData.title || (!!redirectPage ? firstStepData.headerTitle == redirectPage : redirectPage != redirectPage)">[[$t("Choose Your")]]</span> <span class="pc-title pc-bold">[[firstStepData.headerTitle.slice(0,1)]][[firstStepData.headerTitle.slice(1)?.toLowerCase()]]</span></h2>
+                                        <div class="pc-name_of_product pc-text-white pc-m-0" v-if="firstStepData.title && (!!redirectPage ? firstStepData.headerTitle != redirectPage : redirectPage==redirectPage)">
+                                            <span>[[firstStepData.title]]</span>
+                                        </div>                                
+                                    </div>
+                                </div>
+                                <div class="pc-step-action-btn">
+                                    <div class="pc-steps_link pc-fs-16 pc-flex pc-flex-col pc-gap-y-5">                                    
+                                        <a class="steps_link pc-text-white selected-product-action pc-fs-16" v-if="firstStepData.isView && (!!redirectPage ? firstStepData.headerTitle != redirectPage : redirectPage == redirectPage)" :handle="firstStepData.handle || ''" @click.prevent="viewPage" :page-id="firstStepData.id ? firstStepData.id : '' " :page-type="firstStepData.page" :diamond-type="firstStepData.diamondType">[[$t("View")]] </a>
+                                        <a class="steps_link pc-text-white selected-product-action pc-fs-16" v-if="firstStepData.isChange && (!!redirectPage ? firstStepData.headerTitle != redirectPage : redirectPage == redirectPage)" @click.prevent="removeListing"  :page-type="firstStepData.page" :diamond-type="firstStepData.diamondType">[[$t("Remove")]]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pc-w-1/10">
+                                <div class="pc-steps_img pc-h-full pc-flex pc-items-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_371_2274" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                                            <path d="M24 0L24 24L9.84875e-07 24L0 1.11746e-06L24 0Z" fill="white"/>
+                                        </mask>
+                                        <g mask="url(#mask0_371_2274)">
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>    
+                                </div>
+                            </div>                            
+                        </div>    
+                    </div>
+                </a>
+            </div>
+
+            <div class="pc-steps pc-steps-second pc-flex pc-w-full pc-items-center pc-border-right-white" :class="2 <= totalSteps ? 'pc-bg-04043F' : 'pc-bg-F8F0E5'" :data-id="$t(secondStepData.headerTitle)" @click="handleClick">
+                <a class="second pc-w-full pc-h-full"
+                :href="2 <= totalSteps ? '#' : ((firstStepData.headerTitle === 'DIAMOND' && !secondStepData.title) ? '/collections/engagement-rings' : ($t(firstStepData.headerTitle) === 'SETTING' ? '/collections/natural-diamonds' : `/collections/engagement-rings/settings/${secondStepData?.id}`))"
+                :data-id="$t(secondStepData.headerTitle)" >                    
+                    <div class="pc-step-section">
+                        <div class="pc-node-skin pc-flex pc-items-center pc-h-full pc-p-20">
+                            <div class="pc-w-9/10 pc-flex pc-items-center pc-gap-x-10">
+                                <div class="pc-w-full pc-flex pc-gap-x-10">
+                                    <div class="pc-steps_num pc-flex pc-items-center">
+                                        <svg width="30" height="30" v-if="secondStepData.headerTitle?.toLowerCase() == 'setting'" viewBox="0 0 40 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M26.9228 1.93733C28.7377 2.64619 30.4675 3.66411 32.035 4.99732C39.6076 11.438 40.5252 22.7979 34.0846 30.3705C27.644 37.9431 16.284 38.8607 8.71139 32.4201C1.1388 25.9795 0.221167 14.6195 6.6618 7.04691C8.89106 4.42586 11.7096 2.60208 14.7566 1.60474" :stroke="secSettingSvg" stroke-width="3"/>
+                                        </svg>
+                                        <svg width="40" height="30" v-else-if="secondStepData.headerTitle?.toLowerCase() == 'diamond'" class="dia-svg" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path :fill="secDiamondSvg" d="M35.8579 8.80377L29.8678 0.403825C29.6886 0.15284 29.3687 0 29.0233 0H6.97694C6.63222 0 6.31248 0.15284 6.13296 0.403825L0.142781 8.80377C0.137667 8.8119 0.136729 8.82038 0.131359 8.82778C0.0912949 8.88864 0.0588175 8.95378 0.0373363 9.02248C0.0341823 9.03358 0.029153 9.04373 0.0264252 9.05389C0.0100586 9.11402 0 9.17568 0 9.24039C0 9.2525 0.00332446 9.26403 0.00451786 9.27615C0.00537029 9.29399 0.0081833 9.31031 0.0100586 9.32772C0.0186681 9.39439 0.0355462 9.45989 0.0606076 9.52162C0.0650402 9.53134 0.067427 9.542 0.0716039 9.55143C0.105189 9.62281 0.151391 9.68795 0.205435 9.74772C0.211061 9.75425 0.213618 9.76194 0.218733 9.76789L17.2247 27.6805L17.2324 27.6884C17.2366 27.6928 17.242 27.6951 17.2461 27.6987C17.2921 27.7456 17.345 27.7877 17.4028 27.8258C17.4056 27.8266 17.4076 27.8299 17.4106 27.8321C17.4183 27.837 17.4253 27.8401 17.4335 27.844C17.5133 27.8916 17.6002 27.9346 17.6991 27.9607C17.7734 27.9806 17.8486 27.9853 17.923 27.9894C17.9489 27.9917 17.9726 28 17.9984 28C17.999 28 17.999 28 17.9993 28C18.0051 28 18.0099 27.9976 18.0153 27.9976C18.1021 27.9962 18.1861 27.9846 18.2673 27.9643C18.2778 27.962 18.2887 27.9627 18.2997 27.9593C18.3008 27.9593 18.3016 27.9593 18.3025 27.9583C18.3037 27.9583 18.3037 27.9576 18.3055 27.9576C18.3281 27.9496 18.3496 27.941 18.3718 27.9325C18.3983 27.9241 18.4239 27.9146 18.4492 27.9043C18.4798 27.8908 18.5088 27.8741 18.5371 27.8575C18.5562 27.8475 18.5757 27.8376 18.594 27.8261C18.6035 27.82 18.6132 27.8163 18.6222 27.8094C18.666 27.7777 18.7061 27.7435 18.7435 27.7069C18.75 27.6994 18.7602 27.695 18.7669 27.6869L18.7754 27.6796L35.7804 9.76658C36.0421 9.49246 36.0723 9.10706 35.8579 8.80377ZM20.1293 1.67986L23.2874 8.39951H12.7132L15.8716 1.67986H20.1293ZM7.5329 1.67986H13.745L10.5866 8.39951H2.74021L7.5329 1.67986ZM3.05365 10.0797H10.5345L15.4491 23.1361L3.05365 10.0797ZM18.0001 24.4062L12.6075 10.0797H23.3925L18.0001 24.4062ZM20.5517 23.1368L25.4654 10.0797H32.9461L20.5517 23.1368ZM25.4137 8.39988L22.2552 1.68022H28.4673L33.2597 8.39988H25.4137Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="pc-steps_data">
+                                        <h2 class="pc-steps-mainhead pc-fs-16 pc-m-0 pc-flex pc-flex-col" :class="{'pc-text-white':(2 <= totalSteps),'pc-text-04043F':(2 > totalSteps)}"><span v-if="!secondStepData.title || (!!redirectPage ? secondStepData.headerTitle == redirectPage : redirectPage != redirectPage)" class="choose-text-trigger pc-fs-16">[[$t("Choose Your")]]</span> <span class="pc-title pc-bold">[[secondStepData.headerTitle.slice(0,1)]][[secondStepData.headerTitle.slice(1)?.toLowerCase()]]</span></h2>
+                                        <div class="pc-name_of_product pc-m-0" v-if="secondStepData.title && (!!redirectPage ? secondStepData.headerTitle != redirectPage : redirectPage==redirectPage)">
+                                            <span>[[secondStepData.title]]</span>
+                                        </div>                                
+                                    </div>
+                                </div>
+                                <div class="pc-step-action-btn">
+                                    <div class="pc-steps_link pc-fs-16 pc-flex pc-flex-col pc-gap-y-5">                                    
+                                        <a href="#" class="steps_link selected-product-action pc-fs-16" v-if="secondStepData.isView && (!!redirectPage ? secondStepData.headerTitle != redirectPage : redirectPage == redirectPage)" @click.prevent="viewPage" :handle="secondStepData.handle || ''" :page-id="secondStepData.id ? secondStepData.id : '' " :page-type="secondStepData.page" :diamond-type="secondStepData.diamondType">[[$t("View")]] </a>
+                                        <a href="#" class="steps_link selected-product-action pc-fs-16" v-if="secondStepData.isChange && (!!redirectPage ? secondStepData.headerTitle != redirectPage : redirectPage == redirectPage)" @click.prevent="removeListing" :page-type="secondStepData.page" :diamond-type="secondStepData.diamondType" data-type="second">[[$t("Remove")]]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pc-w-1/10">
+                                <div class="pc-steps_img pc-h-full pc-flex pc-items-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_527_305" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                                            <path d="M24 0L24 24L1.04907e-06 24L0 1.04907e-06L24 0Z" fill="white"/>
+                                        </mask>
+                                        <g mask="url(#mask0_527_305)">
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" :stroke="2 <= totalSteps ? 'white' : '#04043F'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" :stroke="2 <= totalSteps ? 'white' : '#04043F'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="pc-steps pc-steps-third pc-flex pc-w-full pc-items-center" :class="3 <= totalSteps ? 'pc-bg-04043F' : 'pc-bg-F8F0E5'" :data-id="$t(thirdStepData.headerTitle)">
+                <a class="pc-w-full" :href="(!!thirdStepData.diamondId && !!thirdStepData.settingId) ? `/final-ring?settingId=${thirdStepData.settingId}&diamondId=${thirdStepData.diamondId}&diamondType=${thirdStepData.diamondType}` : '#'"
+                :data-id="$t(thirdStepData.headerTitle)">
+                    <div class="pc-step-section">
+                        <div class="pc-node-skin pc-flex pc-items-center pc-gap-x-10 pc-h-full pc-p-20">
+                            <div class="pc-w-9/10 pc-flex pc-items-center pc-gap-x-10">
+                                <div class="pc-w-full pc-flex pc-gap-x-10">
+                                    <div class="pc-steps_num pc-flex pc-items-center">
+                                        <svg width="25" height="30" viewBox="0 0 31 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path :fill="thirdCompleteSvg" d="M3.59426e-06 21.2668C-0.00194093 23.9795 0.785154 26.64 2.27443 28.9547C3.7637 31.2693 5.89725 33.1482 8.43961 34.3839C10.982 35.6195 13.8343 36.164 16.6819 35.9571C19.5294 35.7503 22.2614 34.8002 24.5764 33.2117C26.8914 31.6232 28.6994 29.458 29.8008 26.9552C30.9023 24.4523 31.2543 21.7091 30.8182 19.0282C30.382 16.3473 29.1746 13.833 27.3291 11.7627C25.4837 9.69246 23.0719 8.14674 20.3601 7.29615L22.1151 4.70323C22.2848 4.45306 22.3795 4.16365 22.3889 3.86616C22.3983 3.56867 22.3221 3.27438 22.1684 3.01498L20.8768 0.834313C20.727 0.581137 20.5089 0.370412 20.245 0.223786C19.981 0.0771598 19.6808 -8.0545e-05 19.375 6.30272e-08H11.625C11.3192 -8.0545e-05 11.019 0.0771598 10.7551 0.223786C10.4911 0.370412 10.273 0.581137 10.1232 0.834313L8.83156 3.01498C8.67794 3.27438 8.60173 3.56867 8.61114 3.86616C8.62054 4.16365 8.71521 4.45306 8.88495 4.70323L10.6399 7.29615C7.54696 8.26915 4.85488 10.1421 2.94519 12.6496C1.03551 15.1571 0.00509475 18.172 3.59426e-06 21.2668ZM14.2634 6.59925L12.3432 3.76259L12.6325 3.27182H18.3675L18.6568 3.76259L16.7366 6.59925C16.306 6.56163 15.8961 6.54363 15.5 6.54363C15.1039 6.54363 14.694 6.56163 14.2634 6.59925ZM15.5 9.81545C17.8844 9.81545 20.2152 10.4871 22.1977 11.7453C24.1802 13.0036 25.7254 14.7921 26.6379 16.8846C27.5503 18.977 27.7891 21.2795 27.3239 23.5008C26.8587 25.7222 25.7106 27.7626 24.0246 29.3641C22.3386 30.9656 20.1905 32.0563 17.8519 32.4981C15.5134 32.94 13.0894 32.7132 10.8865 31.8465C8.68368 30.9797 6.80086 29.512 5.47617 27.6288C4.15149 25.7457 3.44445 23.5317 3.44445 21.2668C3.45444 18.2326 4.72778 15.3254 6.98647 13.18C9.24517 11.0345 12.3057 9.82494 15.5 9.81545Z"/>
+                                        </svg>                                
+                                    </div>
+                                    <div class="pc-steps_data">
+                                        <h2 class="pc-steps-mainhead pc-fs-16 pc-bold pc-m-0 pc-flex pc-flex-col" :class="{'pc-text-white':(3 <= totalSteps),'pc-text-04043F':(3 > totalSteps)}"><span class="choose-text-trigger pc-fs-16" v-if="!thirdStepData.title">[[$t("Complete Your ")]] </span> <span class="pc-title pc-bold pc-text-nowrap">[[$t(thirdStepData.headerTitle)]]</span></h2>
+                                        <div class="pc-name_of_product pc-m-0" v-if="thirdStepData.title">
+                                            <span v-if="thirdStepData.title">[[thirdStepData.title]]</span>
+                                        </div>                                
+                                    </div>
+                                </div>
+                                <div class="pc-step-action-btn">
+                                    <div class="pc-steps_link pc-fs-16 pc-flex pc-flex-col pc-gap-y-5">
+                                        <a href="#" class="steps_link selected-product-action pc-fs-16" v-if="thirdStepData.title" @click.prevent="showResetPopup=true" :page-type="secondStepData.page" :diamond-type="secondStepData.diamondType">[[$t("Remove")]]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pc-w-1/10">
+                                <div class="pc-steps_img pc-h-full pc-flex pc-items-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <mask id="mask0_527_305" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                                            <path d="M24 0L24 24L1.04907e-06 24L0 1.04907e-06L24 0Z" fill="white"/>
+                                        </mask>
+                                        <g mask="url(#mask0_527_305)">
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" :stroke="3 <= totalSteps ? 'white' : '#04043F'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 20L14.172 14.828C15.505 13.495 16.172 12.828 16.172 12C16.172 11.172 15.505 10.505 14.172 9.172L9 4" :stroke="3 <= totalSteps ? 'white' : '#04043F'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>            
+        </div>
+        <!-- RESET STEPS POPUP-->
+            <transition name="pc-form">
+                <div v-if="showResetPopup" class="pc_filter_reset_popup pc-flex pc-flex-col pc-items-center pc-justify-center pc-gap-y-10 pc-p-10">
+                    <span class="pc-font-tt-commons pc-text-04043F pc-reset-text">[[$t("Do you want to reset final ring")]] ?</span>
+                    <div class="pc-flex pc-justify-center pc-gap-x-10 pc-w-full">
+                        <button @click="confirmReset('yes')" class="pc-pointer pc-font-tt-commons pc-pointer pc-font-tt-commons pc-choose-btn pc-px-10 pc-py-0">[[$t("Yes")]]</button>
+                        <button @click="confirmReset('no')" class="pc-pointer pc-font-tt-commons pc-pointer pc-font-tt-commons pc-choose-btn pc-px-10 pc-py-0">No</button>
+                    </div>
+                </div>
+            </transition>
+        <!-- RESET STEPS POPUP-->
+    </div>
+</script>
+<!-- HEADER STEPS -->
+
+<!-- BREADCRUMBS -->
+<script type="text/x-template" id="pc-breadcrumbs">
+  <div class="container mobile-container">
+      <el-breadcrumb :separator="'>'">
+          <!-- <template> -->
+              <span class="pc-flex pc-w-full pc-relative pc-items-center pc-breadcrumbs pc-overflow-x-auto pc-text-nowrap">
+                  <span class="el-breadcrumb__item pc-text-nowrap">
+                      <span class="el-breadcrumb__inner is-link" role="link"><a href="/">[[$t("Home")]]</a></span>
+                      <span class="el-breadcrumb__separator" role="presentation">></span>
+                  </span>
+                  <template v-for="(url,i) of urlList" :key="url.path">
+                      <el-breadcrumb-item :to="{path : url.path}" :class="i">[[$t(url.name.trim())]]</el-breadcrumb-item>
+                  </template>
+              </span>
+          <!-- </template> -->
+      </el-breadcrumb>
+  </div>
+</script>
+<!-- BREADCRUMBS -->
+
+<!-- PAGE BANNER COMPONENT -->
+<script type="text/x-template" id="page-banner">
+   <!-- Listing Banner Title -->
+   <!-- <teleport to="#header-banner">
+       <div class="tps-diamond-tab-title">
+           <div class="tps_inner_banner_section">
+               <div class="tps_inner_banner_title">
+                   <h1>[[$t(bannerTitle)]]</h1>
+               </div>
+               <div class="tps_banner_bg_color"></div>
+           </div>
+       </div>
+  </teleport> -->
+   <!-- Listing Banner Title -->
+</script>
+<!-- PAGE BANNER COMPONENT -->
+
+<!-- CHOOSE SETTINGS FILTER PAGE -->
+<script
+  type="text/x-template"
+  id="settings-filter-page"
+>
+    <page-banner-comp v-if="showBannerTitle" :banner-title="bannerTitle"></page-banner-comp> 
+
+    <teleport to="#header-banner">
+        <breadcrumbs-comp :url-list="breadcrumbs"></breadcrumbs-comp>   
+    </teleport>
+
+    <header-steps-comp :total-steps="totalSteps" :redirect-page="redirectPage" :firstStepData="stepData.firstStep" :secondStepData="stepData.secondStep" :thirdStepData="stepData.thirdStep" @ring-reseted="initializeSteps"></header-steps-comp>
+
+    <sticky-bar-comp :sticky-items="pageStickyItems"></sticky-bar-comp>
+    <div class="pc_setting_listing pc-new_layout pc-mt-20 pc-mw-full pc-w-full pc-p-0">
+        <!-- loose diamond tab section -->
+        <!-- <div class="pc-loose-diamond-tab" >
+             <div class="pc-row">
+                <div class="pc-horizonatal_navigation">
+                    <div class="active">[[tabTitle]]</div>                    
+                </div>                
+            </div>
+        </div> -->
+        
+        <!-- diamond filter and table section -->
+        <div class="pc-filter_result_section pc-setting_filter_section" >
+            <!-- <div class="pc-mobile-filter-open-btn" @click="openFilterSection = true">Filters</div> -->
+                
+            <div class="pc-row">
+                <!-- Setting listing filter tab -->
+                <div class="container pc-dimond_setting_filter pc-flex pc-justify-center pc-my-10">  
+                    <div class="pc-filter_types pc-setting pc-flex pc-gap-x-10 pc-p-5 pc-w-full pc-justify-around pc-overflow-x-auto">
+                        <template v-for="settingTab in ['Setting Style','Metal','Shape','Price','View All']" :key="settingTab.diamondType">
+                            <button :class="{'pc-bg-transparent pc-text-04043F' : currentFilterTab != settingTab}" class="btn btn-theme btn--full " @click="addClassToFilterTab(settingTab)">[[$t(settingTab)]]</button>                    
+                        </template>
+                    </div>
+                </div>
+                <div class="pc-filter_result_section">
+                    <div class="container pc-col-4 pc-flex pc-flex-col pc-gap-y-30 pc-mt-10 pc-py-20 pc-row" :class="{'pc-mobile-show-filter-section' : openFilterSection}">
+                        <div class="pc-flex pc-filter-header pc-items-center pc-justify-between">
+                            <div class="alternate-pc-setting-filter pc-header-text pc-bold pc-font-24 pc-text-nowrap" :class="currentFilterTab.replaceAll(' ','-')">
+                                Engagement Ring Settings
+                            </div>
+                            <div class="pc-setting-filter pc-header-text pc-bold pc-fs-16 pc-text-nowrap pc-pointer" :class="currentFilterTab.replaceAll(' ','-')" @click="(getMetals.length && getSettingStyles.length) && openFilterSectionTab()">
+                                Filters
+                            </div>
+                            <div class="pc-w-full pc-middle-line-svg">
+                                <svg height="6" viewBox="0 0 984 6" fill="#04043F" xmlns="http://www.w3.org/2000/svg" class="pc-w-full">
+                                    <path opacity="0.4" d="M983.887 3L981 0.113249L978.113 3L981 5.88675L983.887 3ZM0.113281 3L3 5.88675L5.88678 3L3 0.113249L0.113281 3ZM981 2.5L3 2.5V3.5L981 3.5V2.5Z" fill="#04043F"/>
+                                </svg>
+                            </div>
+                            <div class="pc-w-1/4 btn btn-theme pc-flex pc-items-center pc-justify-center pc-gap-x-5" @click="resetFilters">
+                                {% comment %} <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#04043F" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+                                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+                                </svg> {% endcomment %}
+                                {% comment %} <span class="pc-reset-text">Reset</span> {% endcomment %}
+                                Reset
+                            </div>
+                        </div>
+                      
+                        <div class="pc-filter-grids" :class="{'pc-mobile-show-filter-section' : openFilterSection}">
+                        
+                            <div class="pc-main-section" :class="currentFilterTab.replaceAll(' ','-')"> 
+                                <div class="pc-mobile-show-results pc-w-full pc-flex pc-justify-center pc-px-10 pc-gap-x-10">
+                                    <button class="pc-show-results pc-pointer pc-w-auto pc-tt-commons" @click="openFilterSection = false, addFilterResultSectionClass = false,hideFilterSection()">
+                                        Show Results
+                                    </button>  
+                                    <button v-if="currentFilterTab=='View All' ? !!filters.initialFilters['settingStyles']?.length || !!filters.initialFilters['metals'].length || !!filters.initialFilters['shapes'].length || filters.initialFilters['price'].value[0] != filters['price'].min || filters.initialFilters['price'].value[1] != filters['price'].max : (currentFilterTab != 'Price' ? filters.initialFilters[currentFilterTab == 'Setting Styles' ? 'settingStyles' : currentFilterTab.toLowerCase()+'s']?.length : filters.initialFilters['price'].value[0] != filters['price'].min || filters.initialFilters['price'].value[1] != filters['price'].max )" class="pc-btn pc-pointer pc-w-auto pc-flex pc-items-center pc-justify-cnter pc-gap-x-5" @click="resetMobileFilters($event, currentFilterTab == 'View All' ? '' : 'frontreset')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                                            <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                                        </svg>
+                                        <span class="pc-reset-text pc-font-18 pc-tt-commons">RESET</span>
+                                    </button>               
+                                    <button v-else @click="openFilterSection = false, addFilterResultSectionClass = false" class="pc-btn pc-pointer pc-w-auto pc-flex pc-items-center pc-justify-cnter pc-gap-x-5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                                        </svg>
+                                        <span class="pc-reset-text pc-font-18 pc-tt-commons">CLOSE</span>
+                                    </button>
+                                </div>
+                                <div class="pc-listing_inner_filter pc-flex pc-flex-wrap pc-w-full pc-gap-y-30 pc-justify-center pc-px-20" v-if="getSettingStyles.length || getMetals.length || filters.initialFilters.shapes.length" :class="{'pc-listing_single_filter' : currentFilterTab != 'View All', 'pc-listing_filter_border' : currentFilterTab != ''}">
+                                    <!-- Setting Style -->
+                                    <div class="pc-setting-style-sections pc-setting_filter_parent pc-flex-col pc-gap-y-10" v-if="getSettingStyles.length" :class="{'pc-filter-type': currentFilterTab == 'View All', 'pc-w-1/2': currentFilterTab == 'View All','pc-w-8/10': currentFilterTab == 'Setting Style','pc-none':(currentFilterTab == 'Metal' || currentFilterTab == 'Shape' || currentFilterTab == 'Price'), 'pc-flex' : currentFilterTab == 'View All'}">
+
+                                   <!-- close filter button for mobile view -->
+                                   <div style="display: none;">
+                                   <button class="pc-filter-close-button-mobile pc-bg-transparent" @click="openFilterSection = false, addFilterResultSectionClass = false,hideFilterSection()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#04043F" class="bi bi-x-circle pc-bg-white pc-rounded" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg>
+                                    </button>   
+                                   </div>
+                                   <!-- close filter button for mobile view -->
+
+                                   
+                                    <div class="pc-filter-info-div" :class="{'pc-none' : currentFilterTab == 'Setting Style'}">
+                                            <span class="pc-filter-label pc-relative pc-flex pc-items-center pc-gap-x-4 pc-text-nowrap">[[$t("Setting Style")]]
+                                                <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                                                    <svg @click.prevent="openPopup($event,12)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                                                    </svg>
+                                                    <div class="setting-tooltip-text" :class="isTooltipVisible == 12 ? 'pc-block' : 'pc-none'">
+                                                        <div class="setting-tooltip-content pc-fs-16 pc-text-wrap">General design category of the ring that will hold the center diamond.</div>
+                                                    </div>
+                                                </div>
+                                            </span>                                
+                                        </div>
+      
+                                        <div class="pc-setting-style-section pc-flex pc-items-start pc-w-full pc-gap-x-10 pc-overflow-x-auto">
+                                            <template v-for="(styleJson, index) in getSettingStyles" :key="index">
+                                                <div :class="[{'selected' : filters?.initialFilters?.settingStyles?.includes(styleJson.slug)}, `pc-${styleJson.slug}`]" class="pc-pointer pc-setting-style pc-flex pc-flex-col pc-items-center pc-w-full pc-relative">
+                                                    <input type="checkbox" class="pc-absolute pc-visibility-hidden" :id="'pc-'+styleJson.slug" :value="styleJson.slug" v-model="filters.initialFilters.settingStyles" @change="applyFilters(styleJson.slug,'settingStyle')">
+                                                    <label class="pc-settingStyle-svg-container pc-p-5 pc-border-2 pc-border-solid pc-border-transparent pc-border-1/2 pc-flex pc-items-center pc-justify-center" :for="'pc-'+styleJson.slug">
+                                                        <div class="pc-filter-setting-svg pc-block pc-bg-contain pc-bg-no-repeat pc-bg-center pc-w-full"></div>
+                                                    </label>
+                                                    <span class="pc-select-none pc-text-center pc-setting-name pc-setting-label pc-text-04043F">[[styleJson.label]]</span>
+                                                </div>
+                                            </template>
+                                        </div>                           
+                                    </div>
+                                    <!-- setting style -->
+                                    
+                                    <!-- metals -->
+                                    <div class="pc-metals-section pc-setting_filter_parent pc-flex-col pc-gap-y-10" :class="{'pc-w-1/2': currentFilterTab == 'View All', 'pc-filter-type': currentFilterTab == 'View All','pc-w-8/10': currentFilterTab == 'Metal', 'pc-none' : (currentFilterTab == 'Setting Style' || currentFilterTab == 'Shape' || currentFilterTab == 'Price'), 'pc-flex' : currentFilterTab == 'View All'}" v-if="getMetals.length"> 
+                                        <div class="pc-filter-info-div" :class="{'pc-none': currentFilterTab == 'Metal'}">
+                                            <span class="pc-filter-label pc-relative pc-flex pc-items-center pc-gap-x-4">
+                                                [[$t("Metal")]]
+                                                <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                                                    <svg @click.prevent="openPopup($event,13)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                                                    </svg>
+                                                    <div class="setting-tooltip-text" :class="isTooltipVisible == 13 ? 'pc-block' : 'pc-none'">
+                                                        <div class="setting-tooltip-content pc-fs-16">What color and karat the setting will be crafted with.</div>
+                                                    </div>
+                                                </div>                                              
+                                            </span>                                
+                                        </div>
+                                      
+                                        <ul class="pc-m-0 pc-list-none pc-setting-style-section pc-flex pc-w-full pc-gap-x-10">
+                                            <template v-for="(metalJson, index) in getMetals" :key="index">
+                                                <li :class="[{'selected' : filters.initialFilters.metals == metalJson.slug}, `pc-${metalJson.slug}`]" class="pc-h-full pc-setting-metal pc-pointer pc-flex pc-flex-col pc-items-center pc-w-full pc-relative">
+                                                    <input class="pc-visibility-hidden pc-absolute" type="radio" v-model="filters.initialFilters.metals" :id="metalJson.slug" :value="metalJson.slug" @change="applyFilters">
+                                                    <label :for="metalJson.slug" class="pc-select-none pc-flex pc-flex-col pc-metal-label">
+                                                        <div :class="'pc-'+metalJson.slug.replaceAll('kt','k')" style="display: flex !important" class="pc-metal-svg pc-justify-center pc-items-center pc-border-1/2" v-html="metalJson.slug.toUpperCase().slice(0,3).replaceAll('PLA','PL')"></div>
+                                                        <span class="pc-select-none form-check-label pc-metal-name pc-text-04043F" :for="metalJson.slug" v-html="getMetalFormattedLabel(metalJson.label)">[[metalJson.label]]</span>
+                                                    </label>
+                                                </li>
+                                            </template>
+                                        </ul>                        
+                                    </div>
+                                    <!-- metals -->   
+        
+                                    <!-- diamond shapes -->
+                                    <div class="pc-ring-diamond-shape pc-setting_filter_parent pc-flex-col pc-gap-y-10" :class="{'pc-w-1/2': currentFilterTab == 'View All', 'pc-filter-type': currentFilterTab == 'View All','pc-w-full': currentFilterTab == 'Shape', 'pc-none' : (currentFilterTab == 'Setting Style' || currentFilterTab == 'Metal' || currentFilterTab == 'Price'),'pc-flex': currentFilterTab == 'View All'}" v-if="getShapes.length"> 
+                                        <div class="pc-filter-info-div" :class="{'pc-none': currentFilterTab == 'Shape'}">
+                                            <span class="pc-filter-label pc-relative pc-flex pc-items-center pc-gap-x-4">
+                                                [[$t("Shape")]]
+                                                <div class="setting-tooltip pc-flex pc-items-center pc-justify-center">
+                                                        <svg @click.prevent="openPopup($event,14)" width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path opacity="0.7" d="M9 18C4.03767 18 0 13.963 0 9C0 4.03767 4.03767 0 9 0C13.963 0 18 4.03702 18 9C18 13.963 13.963 18 9 18ZM9 1.29143C4.74925 1.29143 1.29143 4.74925 1.29143 9C1.29143 13.2501 4.74925 16.7086 9 16.7086C13.2501 16.7086 16.7086 13.2508 16.7086 9C16.7086 4.74925 13.2501 1.29143 9 1.29143ZM8.03143 4.80284C8.03143 5.05972 8.13347 5.30608 8.31511 5.48773C8.49676 5.66937 8.74312 5.77142 9 5.77142C9.25688 5.77142 9.50324 5.66937 9.68489 5.48773C9.86653 5.30608 9.96858 5.05972 9.96858 4.80284C9.96858 4.54596 9.86653 4.2996 9.68489 4.11796C9.50324 3.93631 9.25688 3.83427 9 3.83427C8.74312 3.83427 8.49676 3.93631 8.31511 4.11796C8.13347 4.2996 8.03143 4.54596 8.03143 4.80284ZM9 14.1657C8.64357 14.1657 8.35428 13.8771 8.35428 13.52V7.70857C8.35428 7.35213 8.64357 7.06285 9 7.06285C9.35644 7.06285 9.64572 7.35213 9.64572 7.70857V13.52C9.64572 13.8771 9.35644 14.1657 9 14.1657Z" fill="#04043F"/>
+                                                        </svg>
+                                                        <div class="setting-tooltip-text" :class="isTooltipVisible == 14 ? 'pc-block' : 'pc-none'">
+                                                            <div class="setting-tooltip-content pc-fs-16">This is the shape of your center diamond.</div>
+                                                        </div>
+                                                    </div> 
+                                            </span>                                
+                                        </div>
+                                        <div class="pc-filter-shape pc-flex pc-w-full">
+                                            <template v-for="(shapeJson, index) in getShapes" :key="index">
+                                                <div class="pc-flex pc-flex-col pc-items-center pc-w-full pc-relative pc-pointer" :id="'pc_'+shapeJson.slug+'_svg'" :title="filters.initialFilters.shapes" :class="[{'selected':filters.initialFilters.shapes == shapeJson.slug}, `pc-${shapeJson.label}`, `pc-${shapeJson.slug}`, {'disabled' : selectedDiamondShapes.length && !selectedDiamondShapes.includes(shapeJson.label)}]">
+                                                    <input type="radio" class="pc-shape-radio pc-visibility-hidden" :id="shapeJson.slug+'-input'" :value="shapeJson.slug" v-model="filters.initialFilters.shapes" @change="applyFilters">
+                                                    <label class="shape-svg-container pc-p-10 pc-border-2 pc-border-solid pc-border-transparent pc-border-1/2 pc-flex pc-justify-center pc-items-center" :for="shapeJson.slug+'-input'">
+                                                        <div class="pc-w-full pc-relative pc-filter-shape-svg pc-block pc-bg-contain pc-bg-no-repeat pc-bg-center"></div>
+                                                    </label>
+                                                    <span class="pc-select-none pc-shape-name pc-text-04043F">[[shapeJson.label]]</span>
+                                                </div>
+                                            </template>
+                                        </div>       
+                                    </div>                     
+                                    <!-- diamond shapes -->
+        
+                                    <!-- Price section -->
+                                        <div class="pc-slider-text price-section pc-setting_filter_parent pc-flex-col pc-gap-y-10" :class="{'pc-w-1/2': currentFilterTab == 'View All', 'pc-filter-type': currentFilterTab == 'View All','pc-w-full': currentFilterTab == 'Price', 'pc-none' : (currentFilterTab == 'Setting Style' || currentFilterTab == 'Metal' || currentFilterTab == 'Shape'),'pc-flex': (currentFilterTab == 'View All' || currentFilterTab == 'Price')}">
+                                            <div class="pc-filter-info-div" :class="{'pc-none': currentFilterTab == 'Price'}">
+                                                <span class="pc-filter-label">[[$t("Price")]]</span>                                
+                                            </div>
+                                            <div class="pc-w-full pc-flex pc-justify-center pc-items-center">
+                                                <div class="pc-w-99 pc-flex pc-justify-center">
+                                                    <div class="pc-flex pc-items-center pc-w-97">
+                                                        <slider v-model="filters.initialFilters.price.value" :step="filters.price.step" v-bind="filters.price" :min="filters.price.min" :max="filters.price.max" @change="applyFilters" :tooltips="false"></slider> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pc-w-full pc-flex pc-justify-center pc-items-center">
+                                                <div class="slider-text-input pc-flex pc-justify-between field form-group" :class="currentFilterTab == 'Price' ? 'pc-w-97' : 'pc-w-99'">
+                                                    <input type="text" class="pc-w-1/4 field__input form-control" :value="`${filters.price.symbol} ${filters.initialFilters.price.value[0].toLocaleString()}`" @keyup.enter="setSliderValues($event, 'price', 'min')" @focusout="setSliderValues($event, 'price', 'min')" @focusin="removeInpValue"/>
+                                                    <input type="text" class="pc-w-1/4 field__input form-control" :value="`${filters.price.symbol} ${filters.initialFilters.price.value[1].toLocaleString()}`" @keyup.enter="setSliderValues($event, 'price', 'max')" @focusout="setSliderValues($event, 'price', 'max')" @focusin="removeInpValue"/>               
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <!-- Price section -->    
+                
+                                </div>                        
+                            </div>       
+                            <!-- <div class="pc-mobile-show-results">
+                                <button class="pc-btn" @click="openFilterSection = false">[[$t("Show Results")]]</button>               
+                            </div> -->
+                        </div>                
+                    </div>                 
+                </div>
+                <div class="container pc-settings-sort-section pc-flex pc-w-full pc-flex-nowrap pc-gap-x-20 pc-mt-20 pc-py-20 pc-items-center">
+                    <div class="pc-settings-count pc-text-nowrap pc-text-04043F">
+                        [[$t("Settings Found")]] ([[diamondCount]])
+                    </div>
+                    <div class="pc-w-full pc-middle-line-svg pc-h-full pc-flex pc-justify-center pc-items-center">
+                        <svg height="6" viewBox="0 0 984 6" fill="#04043F" xmlns="http://www.w3.org/2000/svg" class="pc-w-full">
+                            <path opacity="0.4" d="M983.887 3L981 0.113249L978.113 3L981 5.88675L983.887 3ZM0.113281 3L3 5.88675L5.88678 3L3 0.113249L0.113281 3ZM981 2.5L3 2.5V3.5L981 3.5V2.5Z" fill="#04043F"/>
+                        </svg>
+                    </div>
+                    <div class="pc-sort-section pc-flex pc-flex-nowrap pc-items-center">
+                        <label class="pc-text-nowrap pc-text-04043F pc-font-tt-commons pc-m-0">[[$t("Sort By")]] : </label>
+                        <div class="pc-dropdown">
+                            <button class="pc-dropbtn pc-text-04043F pc-bg-transparent pc-flex pc-justify-between pc-items-center pc-text-nowrap" @click="openDropDown">
+                                [[filters.initialFilters.sortby == 'price_asc' ? 'Price - Low to High' : 'Price - High to Low']]
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+                                </svg>
+    
+                            </button>
+                            <div id="pc-myDropdown" class="pc-dropdown-content" :class="isDDOpen ? 'pc-block' : 'pc-none'">
+                                <div class="pc-font-16 pc-font-400 pc-text-04043F pc-pointer pc-p-10 pc-font-tt-commons" @click="applySort('price_asc')">[[$t("Price")]]- [[$t("Low to High")]]</div>
+                                <div class="pc-font-16 pc-font-400 pc-text-04043F pc-pointer pc-p-10 pc-font-tt-commons" @click="applySort('price_desc')">[[$t("Price")]]- [[$t("High to Low")]]</div>
+                                
+                            </div>
+                        </div>
+                        <!-- <select v-model="filters.initialFilters.sortby" @change="applySort" class="pc-text-04043F pc-p-0 pc-select pc-select-focus-none">
+                            <option class="pc-text-04043F" value="price_asc">[[$t("Price")]]- [[$t("Low to High")]]</option>
+                            <option class="pc-text-04043F" value="price_desc">[[$t("Price")]]- [[$t("High to Low")]]</option>
+                        </select> -->
+                    </div>                    
+                </div>
+    
+                <div class="container pc-col-8">
+                    <div class="pc-table-grid">  
+                        <!-- Applied Filters -->
+                        <div class="pc-applied-filters pc-py-10" v-if="filters.initialFilters.showAppliedFiltersSection && currentTab === 'diamond'">  
+                            <div class="pc-applied_filter_background">                      
+                            <!-- <span>[[$t("Applied Filters")]]</span> -->
+                                <div class="pc-applied_filter_result pc-flex pc-w-full pc-justify-between pc-flex-nowrap">
+                                    <ul class="pc-filter-applied-list pc-p-0 pc-list-none pc-flex pc-w-full pc-overflow-x-auto pc-text-nowrap pc-mr-10"> 
+
+                                        <!-- setting style filter -->                                
+                                        <span class="pc-flex pc-gap-x-10 pc-applied-filter" v-if="filters.initialFilters.settingStyles.length">
+                                            <span class="pc-applied-filter-label pc-fs-16 pc-text-04043F">[[$t("Setting Style")]]:</span>
+                                            <template v-for="(settingStyle, index) in [filters.initialFilters.settingStyles]" :key="index">
+                                                <li class="pc-filter-option-list pc-flex pc-gap-x-6 pc-items-center">
+                                                    <span class="pc-select-none pc-filter-option-txt pc-fs-16 pc-text-04043F pc-transform-capitalize">[[[settingStyle].join(', ')]]</span>
+                                                    <!-- <span class="pc-select-none pc-filter-option-txt pc-fs-16 pc-text-04043F pc-transform-capitalize">[[settingStyle?.replaceAll('-',' ').toLowerCase()]]</span> -->
+                                                    <span class="pc-filter-option-close pc-flex" @click="removeFilter($event, 'settingStyles', settingStyle)">
+                                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.98144 1.14787C9.17479 0.95071 9.48826 0.95071 9.6816 1.14787C9.87495 1.34503 9.87495 1.66469 9.6816 1.86186L6.20173 5.41043L9.8591 9.14001C10.0524 9.33717 10.0524 9.65683 9.8591 9.85399C9.66576 10.0512 9.35228 10.0512 9.15894 9.85399L5.50157 6.12441L1.84419 9.85399C1.65085 10.0512 1.33738 10.0512 1.14403 9.85399C0.950687 9.65683 0.950687 9.33717 1.14403 9.14001L4.80141 5.41043L1.32153 1.86186C1.12819 1.66469 1.12819 1.34503 1.32153 1.14787C1.51487 0.95071 1.82835 0.95071 2.02169 1.14787L5.50157 4.69644L8.98144 1.14787Z" fill="#04043F"/>
+                                                            <path d="M9.6816 1.14787L9.50311 1.32291L9.50311 1.32291L9.6816 1.14787ZM8.98144 1.14787L8.80295 0.97283V0.972831L8.98144 1.14787ZM9.6816 1.86186L9.50311 1.68681L9.50311 1.68681L9.6816 1.86186ZM6.20173 5.41043L6.02323 5.23539L5.85158 5.41043L6.02323 5.58547L6.20173 5.41043ZM9.8591 9.14001L10.0376 8.96496L9.8591 9.14001ZM9.8591 9.85399L10.0376 10.029L9.8591 9.85399ZM9.15894 9.85399L8.98044 10.029L9.15894 9.85399ZM5.50157 6.12441L5.68006 5.94937L5.50157 5.76735L5.32307 5.94937L5.50157 6.12441ZM1.84419 9.85399L2.02269 10.029H2.02269L1.84419 9.85399ZM1.14403 9.85399L0.965535 10.029H0.965536L1.14403 9.85399ZM1.14403 9.14001L0.965536 8.96496H0.965535L1.14403 9.14001ZM4.80141 5.41043L4.9799 5.58547L5.15155 5.41043L4.9799 5.23539L4.80141 5.41043ZM1.32153 1.86186L1.50003 1.68681L1.32153 1.86186ZM1.32153 1.14787L1.50003 1.32291L1.32153 1.14787ZM2.02169 1.14787L1.8432 1.32291L1.8432 1.32291L2.02169 1.14787ZM5.50157 4.69644L5.32307 4.87149L5.50157 5.0535L5.68006 4.87149L5.50157 4.69644ZM9.8601 0.972831C9.56874 0.675723 9.0943 0.675723 8.80295 0.97283L9.15994 1.32291C9.25527 1.2257 9.40777 1.2257 9.50311 1.32291L9.8601 0.972831ZM9.8601 2.0369C10.1488 1.74251 10.1488 1.26721 9.8601 0.97283L9.50311 1.32291C9.60111 1.42285 9.60111 1.58687 9.50311 1.68681L9.8601 2.0369ZM6.38023 5.58547L9.8601 2.0369L9.50311 1.68681L6.02323 5.23539L6.38023 5.58547ZM6.02323 5.58547L9.68061 9.31505L10.0376 8.96496L6.38023 5.23539L6.02323 5.58547ZM9.68061 9.31505C9.77861 9.41499 9.77861 9.57901 9.68061 9.67895L10.0376 10.029C10.3263 9.73465 10.3263 9.25935 10.0376 8.96496L9.68061 9.31505ZM9.68061 9.67895C9.58527 9.77616 9.43277 9.77616 9.33744 9.67895L8.98044 10.029C9.2718 10.3261 9.74624 10.3261 10.0376 10.029L9.68061 9.67895ZM9.33744 9.67895L5.68006 5.94937L5.32307 6.29945L8.98044 10.029L9.33744 9.67895ZM2.02269 10.029L5.68006 6.29945L5.32307 5.94937L1.6657 9.67895L2.02269 10.029ZM0.965536 10.029C1.25689 10.3261 1.73133 10.3261 2.02269 10.029L1.6657 9.67895C1.57036 9.77616 1.41786 9.77616 1.32253 9.67895L0.965536 10.029ZM0.965535 8.96496C0.676853 9.25935 0.676853 9.73465 0.965535 10.029L1.32253 9.67895C1.22452 9.57901 1.22452 9.41499 1.32253 9.31505L0.965535 8.96496ZM4.62291 5.23539L0.965536 8.96496L1.32253 9.31505L4.9799 5.58547L4.62291 5.23539ZM4.9799 5.23539L1.50003 1.68681L1.14303 2.0369L4.62291 5.58547L4.9799 5.23539ZM1.50003 1.68681C1.40202 1.58687 1.40202 1.42285 1.50003 1.32291L1.14303 0.972831C0.854351 1.26721 0.854351 1.74251 1.14303 2.0369L1.50003 1.68681ZM1.50003 1.32291C1.59536 1.2257 1.74786 1.2257 1.8432 1.32291L2.20019 0.972831C1.90883 0.675723 1.43439 0.675723 1.14303 0.972831L1.50003 1.32291ZM1.8432 1.32291L5.32307 4.87149L5.68006 4.5214L2.20019 0.972831L1.8432 1.32291ZM8.80295 0.972831L5.32307 4.5214L5.68006 4.87149L9.15994 1.32291L8.80295 0.972831Z" fill="#04043F"/>
+                                                        </svg>
+                                                    </span>
+                                                </li>
+                                            </template>
+                                        </span>
+
+                                        <!-- metal filter -->
+                                        <span class="pc-flex pc-gap-x-10 pc-applied-filter" v-if="filters.initialFilters.metals.length">
+                                            <span class="pc-applied-filter-label pc-fs-16 pc-text-04043F" v-show="filters.initialFilters.metals.length">[[$t("Metal")]]:</span>
+                                            <template v-for="(metal, index) in [filters.initialFilters.metals]" :key="index">
+                                                <li class="pc-filter-option-list pc-flex pc-gap-x-6 pc-items-center">
+                                                    <span class="pc-select-none pc-filter-option-txt pc-fs-16 pc-text-04043F pc-transform-capitalize" :title="metal">[[metal.includes('-') ? metal.split('-').join(' ') : [metal].flat().join('')]]</span>
+                                                    <!-- <span class="pc-select-none pc-filter-option-txt pc-fs-16 pc-text-04043F pc-transform-capitalize" :title="metal">[[metal.split('-').join(' ')]]</span> -->
+                                                    <span class="pc-filter-option-close pc-flex" @click="existFilter('metal')">
+                                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.98144 1.14787C9.17479 0.95071 9.48826 0.95071 9.6816 1.14787C9.87495 1.34503 9.87495 1.66469 9.6816 1.86186L6.20173 5.41043L9.8591 9.14001C10.0524 9.33717 10.0524 9.65683 9.8591 9.85399C9.66576 10.0512 9.35228 10.0512 9.15894 9.85399L5.50157 6.12441L1.84419 9.85399C1.65085 10.0512 1.33738 10.0512 1.14403 9.85399C0.950687 9.65683 0.950687 9.33717 1.14403 9.14001L4.80141 5.41043L1.32153 1.86186C1.12819 1.66469 1.12819 1.34503 1.32153 1.14787C1.51487 0.95071 1.82835 0.95071 2.02169 1.14787L5.50157 4.69644L8.98144 1.14787Z" fill="#04043F"/>
+                                                            <path d="M9.6816 1.14787L9.50311 1.32291L9.50311 1.32291L9.6816 1.14787ZM8.98144 1.14787L8.80295 0.97283V0.972831L8.98144 1.14787ZM9.6816 1.86186L9.50311 1.68681L9.50311 1.68681L9.6816 1.86186ZM6.20173 5.41043L6.02323 5.23539L5.85158 5.41043L6.02323 5.58547L6.20173 5.41043ZM9.8591 9.14001L10.0376 8.96496L9.8591 9.14001ZM9.8591 9.85399L10.0376 10.029L9.8591 9.85399ZM9.15894 9.85399L8.98044 10.029L9.15894 9.85399ZM5.50157 6.12441L5.68006 5.94937L5.50157 5.76735L5.32307 5.94937L5.50157 6.12441ZM1.84419 9.85399L2.02269 10.029H2.02269L1.84419 9.85399ZM1.14403 9.85399L0.965535 10.029H0.965536L1.14403 9.85399ZM1.14403 9.14001L0.965536 8.96496H0.965535L1.14403 9.14001ZM4.80141 5.41043L4.9799 5.58547L5.15155 5.41043L4.9799 5.23539L4.80141 5.41043ZM1.32153 1.86186L1.50003 1.68681L1.32153 1.86186ZM1.32153 1.14787L1.50003 1.32291L1.32153 1.14787ZM2.02169 1.14787L1.8432 1.32291L1.8432 1.32291L2.02169 1.14787ZM5.50157 4.69644L5.32307 4.87149L5.50157 5.0535L5.68006 4.87149L5.50157 4.69644ZM9.8601 0.972831C9.56874 0.675723 9.0943 0.675723 8.80295 0.97283L9.15994 1.32291C9.25527 1.2257 9.40777 1.2257 9.50311 1.32291L9.8601 0.972831ZM9.8601 2.0369C10.1488 1.74251 10.1488 1.26721 9.8601 0.97283L9.50311 1.32291C9.60111 1.42285 9.60111 1.58687 9.50311 1.68681L9.8601 2.0369ZM6.38023 5.58547L9.8601 2.0369L9.50311 1.68681L6.02323 5.23539L6.38023 5.58547ZM6.02323 5.58547L9.68061 9.31505L10.0376 8.96496L6.38023 5.23539L6.02323 5.58547ZM9.68061 9.31505C9.77861 9.41499 9.77861 9.57901 9.68061 9.67895L10.0376 10.029C10.3263 9.73465 10.3263 9.25935 10.0376 8.96496L9.68061 9.31505ZM9.68061 9.67895C9.58527 9.77616 9.43277 9.77616 9.33744 9.67895L8.98044 10.029C9.2718 10.3261 9.74624 10.3261 10.0376 10.029L9.68061 9.67895ZM9.33744 9.67895L5.68006 5.94937L5.32307 6.29945L8.98044 10.029L9.33744 9.67895ZM2.02269 10.029L5.68006 6.29945L5.32307 5.94937L1.6657 9.67895L2.02269 10.029ZM0.965536 10.029C1.25689 10.3261 1.73133 10.3261 2.02269 10.029L1.6657 9.67895C1.57036 9.77616 1.41786 9.77616 1.32253 9.67895L0.965536 10.029ZM0.965535 8.96496C0.676853 9.25935 0.676853 9.73465 0.965535 10.029L1.32253 9.67895C1.22452 9.57901 1.22452 9.41499 1.32253 9.31505L0.965535 8.96496ZM4.62291 5.23539L0.965536 8.96496L1.32253 9.31505L4.9799 5.58547L4.62291 5.23539ZM4.9799 5.23539L1.50003 1.68681L1.14303 2.0369L4.62291 5.58547L4.9799 5.23539ZM1.50003 1.68681C1.40202 1.58687 1.40202 1.42285 1.50003 1.32291L1.14303 0.972831C0.854351 1.26721 0.854351 1.74251 1.14303 2.0369L1.50003 1.68681ZM1.50003 1.32291C1.59536 1.2257 1.74786 1.2257 1.8432 1.32291L2.20019 0.972831C1.90883 0.675723 1.43439 0.675723 1.14303 0.972831L1.50003 1.32291ZM1.8432 1.32291L5.32307 4.87149L5.68006 4.5214L2.20019 0.972831L1.8432 1.32291ZM8.80295 0.972831L5.32307 4.5214L5.68006 4.87149L9.15994 1.32291L8.80295 0.972831Z" fill="#04043F"/>
+                                                        </svg>
+                                                    </span>
+                                                </li>
+                                            </template>
+                                        </span>
+                                        
+                                        <!-- shape filter -->
+                                        <span class="pc-flex pc-gap-x-10 pc-applied-filter" v-if="filters.initialFilters.shapes.length">
+                                            <span class="pc-applied-filter-label pc-fs-16 pc-text-04043F" :class="filters.initialFilters.shapes" v-show="filters.initialFilters.shapes.length">[[$t("Shape")]]:</span>
+                                            <template v-for="(shape, index) in [filters.initialFilters.shapes]" :key="index">
+                                                <li class="pc-filter-option-list pc-flex pc-gap-x-6 pc-items-center" :class="shape">
+                                                    <span class="pc-select-none pc-filter-option-txt pc-fs-16 pc-text-04043F pc-transform-capitalize">[[shape.includes('-') ? shape.split('-').join(' ') : [shape].flat().join('')]]</span>
+                                                    <span class="pc-filter-option-close pc-flex" @click="selectedDiamondShapes.length  ? existFilter('shape') : removeFilter($event, 'shapes', shape)">
+                                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.98144 1.14787C9.17479 0.95071 9.48826 0.95071 9.6816 1.14787C9.87495 1.34503 9.87495 1.66469 9.6816 1.86186L6.20173 5.41043L9.8591 9.14001C10.0524 9.33717 10.0524 9.65683 9.8591 9.85399C9.66576 10.0512 9.35228 10.0512 9.15894 9.85399L5.50157 6.12441L1.84419 9.85399C1.65085 10.0512 1.33738 10.0512 1.14403 9.85399C0.950687 9.65683 0.950687 9.33717 1.14403 9.14001L4.80141 5.41043L1.32153 1.86186C1.12819 1.66469 1.12819 1.34503 1.32153 1.14787C1.51487 0.95071 1.82835 0.95071 2.02169 1.14787L5.50157 4.69644L8.98144 1.14787Z" fill="#04043F"/>
+                                                            <path d="M9.6816 1.14787L9.50311 1.32291L9.50311 1.32291L9.6816 1.14787ZM8.98144 1.14787L8.80295 0.97283V0.972831L8.98144 1.14787ZM9.6816 1.86186L9.50311 1.68681L9.50311 1.68681L9.6816 1.86186ZM6.20173 5.41043L6.02323 5.23539L5.85158 5.41043L6.02323 5.58547L6.20173 5.41043ZM9.8591 9.14001L10.0376 8.96496L9.8591 9.14001ZM9.8591 9.85399L10.0376 10.029L9.8591 9.85399ZM9.15894 9.85399L8.98044 10.029L9.15894 9.85399ZM5.50157 6.12441L5.68006 5.94937L5.50157 5.76735L5.32307 5.94937L5.50157 6.12441ZM1.84419 9.85399L2.02269 10.029H2.02269L1.84419 9.85399ZM1.14403 9.85399L0.965535 10.029H0.965536L1.14403 9.85399ZM1.14403 9.14001L0.965536 8.96496H0.965535L1.14403 9.14001ZM4.80141 5.41043L4.9799 5.58547L5.15155 5.41043L4.9799 5.23539L4.80141 5.41043ZM1.32153 1.86186L1.50003 1.68681L1.32153 1.86186ZM1.32153 1.14787L1.50003 1.32291L1.32153 1.14787ZM2.02169 1.14787L1.8432 1.32291L1.8432 1.32291L2.02169 1.14787ZM5.50157 4.69644L5.32307 4.87149L5.50157 5.0535L5.68006 4.87149L5.50157 4.69644ZM9.8601 0.972831C9.56874 0.675723 9.0943 0.675723 8.80295 0.97283L9.15994 1.32291C9.25527 1.2257 9.40777 1.2257 9.50311 1.32291L9.8601 0.972831ZM9.8601 2.0369C10.1488 1.74251 10.1488 1.26721 9.8601 0.97283L9.50311 1.32291C9.60111 1.42285 9.60111 1.58687 9.50311 1.68681L9.8601 2.0369ZM6.38023 5.58547L9.8601 2.0369L9.50311 1.68681L6.02323 5.23539L6.38023 5.58547ZM6.02323 5.58547L9.68061 9.31505L10.0376 8.96496L6.38023 5.23539L6.02323 5.58547ZM9.68061 9.31505C9.77861 9.41499 9.77861 9.57901 9.68061 9.67895L10.0376 10.029C10.3263 9.73465 10.3263 9.25935 10.0376 8.96496L9.68061 9.31505ZM9.68061 9.67895C9.58527 9.77616 9.43277 9.77616 9.33744 9.67895L8.98044 10.029C9.2718 10.3261 9.74624 10.3261 10.0376 10.029L9.68061 9.67895ZM9.33744 9.67895L5.68006 5.94937L5.32307 6.29945L8.98044 10.029L9.33744 9.67895ZM2.02269 10.029L5.68006 6.29945L5.32307 5.94937L1.6657 9.67895L2.02269 10.029ZM0.965536 10.029C1.25689 10.3261 1.73133 10.3261 2.02269 10.029L1.6657 9.67895C1.57036 9.77616 1.41786 9.77616 1.32253 9.67895L0.965536 10.029ZM0.965535 8.96496C0.676853 9.25935 0.676853 9.73465 0.965535 10.029L1.32253 9.67895C1.22452 9.57901 1.22452 9.41499 1.32253 9.31505L0.965535 8.96496ZM4.62291 5.23539L0.965536 8.96496L1.32253 9.31505L4.9799 5.58547L4.62291 5.23539ZM4.9799 5.23539L1.50003 1.68681L1.14303 2.0369L4.62291 5.58547L4.9799 5.23539ZM1.50003 1.68681C1.40202 1.58687 1.40202 1.42285 1.50003 1.32291L1.14303 0.972831C0.854351 1.26721 0.854351 1.74251 1.14303 2.0369L1.50003 1.68681ZM1.50003 1.32291C1.59536 1.2257 1.74786 1.2257 1.8432 1.32291L2.20019 0.972831C1.90883 0.675723 1.43439 0.675723 1.14303 0.972831L1.50003 1.32291ZM1.8432 1.32291L5.32307 4.87149L5.68006 4.5214L2.20019 0.972831L1.8432 1.32291ZM8.80295 0.972831L5.32307 4.5214L5.68006 4.87149L9.15994 1.32291L8.80295 0.972831Z" fill="#04043F"/>
+                                                        </svg>
+                                                    </span>
+                                                </li>
+                                            </template>
+                                        </span>
+
+                                        <!-- price filter -->     
+                                        <template v-for="(sliderType, index) in $options.sliderOptions">
+                                            <span class="pc-applied-filter pc-flex pc-gap-x-10" v-if="filters.initialFilters[sliderType].value[0] != filters[sliderType].min || filters.initialFilters[sliderType].value[1] != filters[sliderType].max">
+                                                <span class="pc-applied-filter-label pc-fs-16 pc-text-04043F">[[$t(sliderType.charAt(0).toUpperCase() + sliderType.slice(1))]]:</span>
+                                                
+                                                <li class="pc-filter-option-list pc-flex pc-gap-x-6 pc-items-center" v-if="filters.initialFilters[sliderType].value[0] != filters[sliderType].min || filters.initialFilters[sliderType].value[1] != filters[sliderType].max">
+                                                    <span class="pc-filter-option-txt pc-fs-16 pc-text-04043F">[[sliderType == 'price' ? `${filters[sliderType].symbol} ${filters.initialFilters[sliderType].value.join('-')}`  : ` ${filters.initialFilters[sliderType].value.join('-')} ${filters[sliderType].symbol}`]]</span>
+                                                    <span class="pc-filter-option-close pc-flex" @click="removeFilter($event, sliderType)">
+                                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.98144 1.14787C9.17479 0.95071 9.48826 0.95071 9.6816 1.14787C9.87495 1.34503 9.87495 1.66469 9.6816 1.86186L6.20173 5.41043L9.8591 9.14001C10.0524 9.33717 10.0524 9.65683 9.8591 9.85399C9.66576 10.0512 9.35228 10.0512 9.15894 9.85399L5.50157 6.12441L1.84419 9.85399C1.65085 10.0512 1.33738 10.0512 1.14403 9.85399C0.950687 9.65683 0.950687 9.33717 1.14403 9.14001L4.80141 5.41043L1.32153 1.86186C1.12819 1.66469 1.12819 1.34503 1.32153 1.14787C1.51487 0.95071 1.82835 0.95071 2.02169 1.14787L5.50157 4.69644L8.98144 1.14787Z" fill="#04043F"/>
+                                                            <path d="M9.6816 1.14787L9.50311 1.32291L9.50311 1.32291L9.6816 1.14787ZM8.98144 1.14787L8.80295 0.97283V0.972831L8.98144 1.14787ZM9.6816 1.86186L9.50311 1.68681L9.50311 1.68681L9.6816 1.86186ZM6.20173 5.41043L6.02323 5.23539L5.85158 5.41043L6.02323 5.58547L6.20173 5.41043ZM9.8591 9.14001L10.0376 8.96496L9.8591 9.14001ZM9.8591 9.85399L10.0376 10.029L9.8591 9.85399ZM9.15894 9.85399L8.98044 10.029L9.15894 9.85399ZM5.50157 6.12441L5.68006 5.94937L5.50157 5.76735L5.32307 5.94937L5.50157 6.12441ZM1.84419 9.85399L2.02269 10.029H2.02269L1.84419 9.85399ZM1.14403 9.85399L0.965535 10.029H0.965536L1.14403 9.85399ZM1.14403 9.14001L0.965536 8.96496H0.965535L1.14403 9.14001ZM4.80141 5.41043L4.9799 5.58547L5.15155 5.41043L4.9799 5.23539L4.80141 5.41043ZM1.32153 1.86186L1.50003 1.68681L1.32153 1.86186ZM1.32153 1.14787L1.50003 1.32291L1.32153 1.14787ZM2.02169 1.14787L1.8432 1.32291L1.8432 1.32291L2.02169 1.14787ZM5.50157 4.69644L5.32307 4.87149L5.50157 5.0535L5.68006 4.87149L5.50157 4.69644ZM9.8601 0.972831C9.56874 0.675723 9.0943 0.675723 8.80295 0.97283L9.15994 1.32291C9.25527 1.2257 9.40777 1.2257 9.50311 1.32291L9.8601 0.972831ZM9.8601 2.0369C10.1488 1.74251 10.1488 1.26721 9.8601 0.97283L9.50311 1.32291C9.60111 1.42285 9.60111 1.58687 9.50311 1.68681L9.8601 2.0369ZM6.38023 5.58547L9.8601 2.0369L9.50311 1.68681L6.02323 5.23539L6.38023 5.58547ZM6.02323 5.58547L9.68061 9.31505L10.0376 8.96496L6.38023 5.23539L6.02323 5.58547ZM9.68061 9.31505C9.77861 9.41499 9.77861 9.57901 9.68061 9.67895L10.0376 10.029C10.3263 9.73465 10.3263 9.25935 10.0376 8.96496L9.68061 9.31505ZM9.68061 9.67895C9.58527 9.77616 9.43277 9.77616 9.33744 9.67895L8.98044 10.029C9.2718 10.3261 9.74624 10.3261 10.0376 10.029L9.68061 9.67895ZM9.33744 9.67895L5.68006 5.94937L5.32307 6.29945L8.98044 10.029L9.33744 9.67895ZM2.02269 10.029L5.68006 6.29945L5.32307 5.94937L1.6657 9.67895L2.02269 10.029ZM0.965536 10.029C1.25689 10.3261 1.73133 10.3261 2.02269 10.029L1.6657 9.67895C1.57036 9.77616 1.41786 9.77616 1.32253 9.67895L0.965536 10.029ZM0.965535 8.96496C0.676853 9.25935 0.676853 9.73465 0.965535 10.029L1.32253 9.67895C1.22452 9.57901 1.22452 9.41499 1.32253 9.31505L0.965535 8.96496ZM4.62291 5.23539L0.965536 8.96496L1.32253 9.31505L4.9799 5.58547L4.62291 5.23539ZM4.9799 5.23539L1.50003 1.68681L1.14303 2.0369L4.62291 5.58547L4.9799 5.23539ZM1.50003 1.68681C1.40202 1.58687 1.40202 1.42285 1.50003 1.32291L1.14303 0.972831C0.854351 1.26721 0.854351 1.74251 1.14303 2.0369L1.50003 1.68681ZM1.50003 1.32291C1.59536 1.2257 1.74786 1.2257 1.8432 1.32291L2.20019 0.972831C1.90883 0.675723 1.43439 0.675723 1.14303 0.972831L1.50003 1.32291ZM1.8432 1.32291L5.32307 4.87149L5.68006 4.5214L2.20019 0.972831L1.8432 1.32291ZM8.80295 0.972831L5.32307 4.5214L5.68006 4.87149L9.15994 1.32291L8.80295 0.972831Z" fill="#04043F"/>
+                                                        </svg>
+                                                    </span>
+                                                </li>
+                                            </span>
+                                        </template>              
+                                    </ul>      
+
+                                    <div class="pc-clear-all-btn pc-text-nowrap pc-select-none pc-pointer" @click="resetFilters">[[$t("Clear All")]]</div>
+                                </div>                  
+                            </div>
+                        </div>
+                        <!-- Applied Filters -->
+
+                        <!-- Data not found component for settings -->
+                        <settings-data-not-found-comp :isLoading="loading" v-if="dataNotFound"></settings-data-not-found-comp>
+
+                        <div class="list-group-wrapper" :class="{'pc-list-view-grid' : filters.initialFilters.isListView}" v-if="currentTab === 'diamond' && !dataNotFound">
+                            
+                            <!-- Grid view-->
+                            <settings-grid-view-comp :isLoading="loading" :page-limit="$options.resultLimit" :diamond-count="diamondCount" :current-page="page" @p-compare-diamonds="compareDiamonds" @p-handle-tooltip="handleReactiveTooltip" @add-to-wishlist-parent="addToWishlist" :wishlist-items="filters.initialFilters.wishlistItems" :items="items" v-if="!filters.initialFilters.isListView" @image-error="setNewImage"></settings-grid-view-comp>
+                            <!-- Grid view-->                        
+                        </div>
+ 
+                        <div v-if="isLoadMoreBtnActive" class="pc-flex pc-items-center pc-justify-center pc-mt-20">
+                            <div @click="handleLoadMoreButtonClick" class="pc-w-1/4 btn btn-theme pc-flex pc-items-center pc-justify-center pc-gap-x-5">
+                                Load More
+                            </div>
+                        </div>
+                        <div v-else class="choose-setting-footer">
+                            <!-- This empty footer acts as the scroll trigger for auto-loading -->
+                        </div>
+                          
+
+                        <div class="pc-tooltip-message" v-show="showTooltip" :class="tooltipClass">
+                            <span>[[tooltipText]]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <teleport to="#popup-container">
+        <wishlist-popup-comp :wishlist-content="WishlistPopupContent" :item-name="wishlistItemName" :open-popup="showWishlistPopup" @close-wishlist-msg="showWishlistPopup = !showWishlistPopup"></wishlist-popup-comp>
+    </teleport>
+</script>
+<!-- CHOOSE SETTINGS END FILTER PAGE -->
+
+<!-- CHOOSE SETTINGS GRID VIEW RESULT -->
+<script
+  type="text/x-template"
+  id="settings-grid-view-result"
+>
+    <ul class="pc-ml-0 pc-mt-20 pc-new-grid pc-grid pc-w-full pc-gap-20 pc-list-none pc-pt-10 pc-my-10 pc-bg-transparent pc-justify-around pc-px-10 choose-setting" :class="items.length ? 'pc-bg-rgba-248-240-229-6' : 'pc-bg-transparent'" id="infinite-list" v-if="newlayout && items.length">
+        <template v-for="(item, index) in items" :key="index">
+            <div
+                class="product-card js-product-card product-card--style1 info-true pc-pointer"
+                data-price="41456"
+                :class="`setting-detail-${item.id}`"
+                @click="showPage($event, item.handle,item.id)"
+              >
+                <div class="product-card__image-wr">
+                  <div
+                    class="product-card__image js image-content__image-wrapper square"
+                    style="padding-top: 100%"
+                    data-image-id="59744028492140"
+                  >
+                    <img
+                      :srcset="item.image"
+                      :src="item.image"
+                      @error="$emit('imageError', $event.target, item.diamondShape)"
+                      sizes="309px"
+                      :alt="item.name"
+                      class="scale-in first-image hover__hide-image lazyautosizes ls-is-cached lazyloaded"
+                      data-sizes="auto"
+                      data-aspectratio="1.0"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                    />
+              
+                    <img
+                      :srcset="item.image"
+                      :src="item.image"
+                      @error="$emit('imageError', $event.target, item.diamondShape)"
+                      sizes="309px"
+                      :alt="item.name"
+                      class="transition second-image lazyautosizes ls-is-cached lazyloaded"
+                      data-sizes="auto"
+                      data-aspectratio="1.0"
+                      loading="lazy"
+                      width="600"
+                      height="600"
+                    />
+                  </div>
+                </div>
+                <div class="product-card__info  ">
+                  {% comment %} <a
+                    class="mb-1 product-card__type d-inline-block"
+                    >[[  item.sku]]</a
+                  >  {% endcomment %}
+                  <a
+                    href="/collections/all/products/engagement-ring-846671-7"
+                    title="Engagement Ring"
+                    class="d-block product-card__name text-uppercase"
+                    >[[item.name]]</a
+                  >
+              
+                  <div
+                    style=""
+                    class="jdgm-widget jdgm-preview-badge py-1 small"
+                    data-id="14673024647532"
+                    data-auto-install="false"
+                  ></div>
+              
+                  <div class="pc-font-18 pc-bold product-card__price">[[ getFormattedPrice(item) ]]</div>
+                </div>
+              </div>
+            <div  class="pc-grid pc-justify-center pc-banner column-4-banner "  v-if="1!=1 && bannerFourIndex.includes(index)">
+                <li class="pc-relative pc-dia-grid-item pc-gap-y-10 pc-grid-box-shadow pc-rounded-16 pc-p-1 pc-product-banner"> 
+                    <div>
+                        <!-- banner -->
+                        <img :src="getbannerPath(index,'four')" />
+                    </div>
+                </li>
+            </div>
+            <!-- <div class="pc-grid pc-justify-center pc-banner column-3-banner"  v-if="bannerThreeIndex.includes(index)"> -->
+            <div class="pc-grid pc-justify-center pc-banner column-3-banner" v-if=" 1!=1 &&  bannerThreeIndex.includes(index)">
+                <li class="pc-relative pc-dia-grid-item pc-gap-y-10 pc-grid-box-shadow pc-rounded-16 pc-p-1 pc-product-banner"> 
+                    <div>
+                        <!-- banner -->
+                        <img :src="getbannerPath(index,'three')" />
+                    </div>
+                </li>
+            </div>
+        </template>
+    </ul>  
+    <!-- Loader -->    
+    <spinner-comp v-if="isLoading" list-view-type="grid"></spinner-comp>
+    <!-- Loader -->
+</script>
+<!-- CHOOSE SETTINGS END GRID VIEW RESULT -->
+
+<!-- SETTINGS DATA NOT FOUND COMPONENT -->
+<script type="text/x-template" id="settings-data-not-found">
+  <div class="pc-flex pc-w-full pc-flex-col pc-items-center pc-justify-center pc-gap-y-10 pc-my-20" v-if="!isLoading">
+      <div class="pc-setting-details_title pc-text-04043F pc-transform-none">[[$t("No Settings Found")]]</div>
+      <div class="pc-setting-details_subtitle pc-text-04043F pc-transform-none">[[$t("Change your criteria using filter options")]]</div>
+  </div>
+  <div class="list-group-wrapper" v-if="isLoading">
+      <spinner-comp list-view-type="grid"></spinner-comp>
+  </div>
+</script>
+<!-- SETTINGS DATA NOT FOUND COMPONENT -->

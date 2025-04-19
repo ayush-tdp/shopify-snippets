@@ -1,0 +1,34 @@
+{% if request.path contains '/products/' %}
+    <script>
+      (function () {
+        var pathname = window.location.pathname;
+  
+        if (pathname.includes("/products/")) {
+          var handle = pathname.split("/products/")[1];
+  
+          var diamondType = "";
+          var typePattern = "";
+  
+          if (handle.includes("shape-lab-grown-diamond")) {
+            diamondType = "lab-diamonds";
+            typePattern = "shape-lab-grown-diamond";
+          } else if (handle.includes("shape-natural-diamond")) {
+            diamondType = "natural-diamonds";
+            typePattern = "shape-natural-diamond";
+          }
+  
+          if (diamondType && typePattern) {
+            // Extract shape before the diamond type pattern
+            var shape = handle.split("-" + typePattern)[0];
+            var shapeParts = shape.split("-");
+            var finalShape = shapeParts[shapeParts.length - 1]; // last word before "shape"
+  
+            if (finalShape) {
+              var redirectURL = "/collections/" + diamondType + "/" + finalShape;
+              window.location.replace(redirectURL);
+            }
+          }
+        }
+      })();
+    </script>
+  {% endif %}

@@ -1,0 +1,39 @@
+<div id="video-container" class="custom-video-container pc-border-1-f2f2f2">
+  <!-- Loader -->
+  <div class="pc-w-full pc-h-full skeleton-box" id="video-loader">
+    {% comment %} {% render 'spinner-loader' %} {% endcomment %}
+  </div>
+
+    <!-- Loader -->
+    <div class="pc-w-full pc-h-full pc-justify-center pc-items-center" style="display:none;" id="video-not-found">
+      
+      Video Not Found!
+    </div>
+
+  <div id="video-360-icon" class="video-360-loader-wrapper" style="display:none;">
+    <img
+      src="https://cdn.shopify.com/s/files/1/0900/1870/9868/files/360-icon.webp?v=1739769364"
+      width="150px"
+      height="100px"
+      alt="360-logo"
+    >
+  </div>
+
+  <!-- Video Element -->
+  <video
+    id="product-video"
+    width="100%"
+    height="100%"
+    muted
+    playsinline
+    autoplay
+    loop
+    controls="false"
+    class="hidden-controls "
+    preload="auto"
+  >
+    <source src="">
+    Your browser does not support the video tag.
+  </video>
+</div>
+

@@ -1,0 +1,20 @@
+{% comment %} {% if product_video_url != blank and product_video_url contains 'http' %} {% endcomment %}
+{%  if product.type == "Engagement Rings" %}
+<div class="pc-setting-shown-carat pc-summary-text pc-w-full pc-text-04043F pc-text-center pc-lh-20 pc-font-tt-commons pc-my-10">All Setting images shown with a 1.25ct.</div>
+{% endif %}
+<div id="product-gallery" class="photos-thumb-grid">
+
+      <!-- Loader -->
+      <div class="pc-w-full pc-h-full pc-justify-center pc-items-center product-single__photo lazyload pc-border-1-f2f2f2" style="display:none;" id="image-not-found">
+      
+        Images Not Found!
+      </div>
+  <!-- Images will be dynamically inserted here -->
+</div>
+
+{% comment %} {% endif %} {% endcomment %}
+
+
+
+<!-- JavaScript to handle video loading -->
+

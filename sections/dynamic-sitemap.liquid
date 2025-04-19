@@ -1,0 +1,272 @@
+{% schema %}
+{
+  "name": "Dynamic Sitemap",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show Products",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collections",
+      "label": "Show Collections",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pages",
+      "label": "Show Pages",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_blogs",
+      "label": "Show Blogs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_educations",
+      "label": "Show Educations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Sitemap",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="container">
+  <h2 class="site-map-title text-center">Site Map</h2>
+
+  <div class="sitemap-section" id="accordion-sitemap">
+    {% if section.settings.show_products %}
+      <div class="sitemap-category card-faqs">
+        <h3 class="mb-0">
+          <span class="accordion-toggle" data-toggle="collapse" data-target="#productsList" aria-expanded="true">
+            Products <span class="faq-icon">
+              <i class="icon-plus"></i>
+            </span>
+          </span>
+        </h3>
+        <div id="productsList" class="collapse show">
+          <ul id="sitemapProducts"></ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_collections %}
+      <div class="sitemap-category card-faqs">
+        <h3 class="mb-0">
+          <span class="accordion-toggle" data-toggle="collapse" data-target="#collectionsList" aria-expanded="true">
+            Collections <span class="faq-icon">
+              <i class="icon-plus"></i></span>
+          </span>
+        </h3>
+        <div id="collectionsList" class="collapse show">
+          <ul id="sitemapCollections"></ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_pages %}
+      <div class="sitemap-category card-faqs">
+        <h3 class="mb-0">
+          <span class="accordion-toggle" data-toggle="collapse" data-target="#pagesList" aria-expanded="true">
+            Pages <span class="faq-icon">
+              <i class="icon-plus"></i>
+            </span>
+          </span>
+        </h3>
+        <div id="pagesList" class="collapse show">
+          <ul id="sitemapPages"></ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_blogs %}
+      <div class="sitemap-category card-faqs">
+        <h3 class="mb-0">
+          <span class="accordion-toggle" data-toggle="collapse" data-target="#blogsList" aria-expanded="true">
+            Blogs <span class="faq-icon">
+              <i class="icon-plus"></i>
+            </span>
+          </span>
+        </h3>
+        <div id="blogsList" class="collapse show">
+          <ul id="sitemapBlogs"></ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_educations %}
+      <div class="sitemap-category card-faqs">
+        <h3 class="mb-0">
+          <span class="accordion-toggle" data-toggle="collapse" data-target="#educationsList" aria-expanded="true">
+            Educations <span class="faq-icon">
+              <i class="icon-plus"></i></span>
+          </span>
+        </h3>
+        <div id="educationsList" class="collapse show">
+          <ul id="sitemapEducations"></ul>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% style %}
+
+#sitemapProducts, #sitemapCollections, #sitemapPages, #sitemapBlogs, #sitemapEducations{
+  margin-top: 20px;
+}
+.mb-0 {
+    margin-bottom: 0;
+  }
+  .card-faqs {
+    border-bottom: 1px solid #ebebeb;
+    padding: ;
+  }
+  .card-faqs:first-child {
+    border-top: 1px solid #ebebeb;
+  }
+
+  .card-faqs .card-body {
+    padding-top: 0;
+    padding-bottom: 1.5rem;
+  }
+  .site-map-title {
+    margin: 40px 0;
+  }
+  .sitemap-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+  }
+  .sitemap-category {
+    background: white;
+    padding: 15px;
+  }
+  .sitemap-category h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .sitemap-category ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .sitemap-category li {
+    margin-bottom: 5px;
+  }
+  .sitemap-category a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: color 0.3s;
+  }
+  .sitemap-category a:hover {
+    text-decoration: underline;
+    color: #333;
+    font-weight: bold;
+  }
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .accordion-toggle i {
+    transition: transform 0.3s ease;
+  }
+  .collapse.show .accordion-toggle i {
+    transform: rotate(45deg);
+  }
+{% endstyle %}
+
+<script>
+
+  const educationsList = [
+    { url: '/pages/difference-between-lab-and-natural-diamond', title: 'Difference between Lab and Natural Diamond' },
+    { url: '/pages/how-to-clean-your-jewellery', title: 'How to Clean your Jewellery' },
+    { url: '/pages/know-about-4cs', title: 'Know About 4C’s' },
+    { url: '/pages/ring-size-guide', title: 'Ring Size Guide' },
+  ]
+  document.addEventListener('DOMContentLoaded', function () {
+    const sitemapURL = '{{ shop.url }}/sitemap.xml';
+
+    fetch(sitemapURL)
+      .then((response) => response.text())
+      .then((str) => new window.DOMParser().parseFromString(str, 'text/xml'))
+      .then((data) => {
+        const sitemaps = data.getElementsByTagName('sitemap');
+        const sitemapLinks = { products: '', collections: '', pages: '', blogs: '' };
+
+        for (let sitemap of sitemaps) {
+          const loc = sitemap.getElementsByTagName('loc')[0].textContent;
+          if (loc.includes('sitemap_products')) sitemapLinks.products = loc;
+          if (loc.includes('sitemap_pages')) sitemapLinks.pages = loc;
+          if (loc.includes('sitemap_collections')) sitemapLinks.collections = loc;
+          if (loc.includes('sitemap_blogs')) sitemapLinks.blogs = loc;
+        }
+
+        return Promise.all([
+          fetch(sitemapLinks.products).then((res) => res.text()),
+          fetch(sitemapLinks.collections).then((res) => res.text()),
+          fetch(sitemapLinks.pages).then((res) => res.text()),
+          fetch(sitemapLinks.blogs).then((res) => res.text()),
+        ]);
+      })
+      .then((results) => {
+        const categories = ['Products', 'Collections', 'Pages', 'Blogs'];
+        const elements = ['sitemapProducts', 'sitemapCollections', 'sitemapPages', 'sitemapBlogs'];
+
+        results.forEach((xmlString, index) => {
+          if (!xmlString) return;
+
+          const parsedXML = new window.DOMParser().parseFromString(xmlString, 'text/xml');
+          const urlElements = parsedXML.getElementsByTagName('url');
+          const listContainer = document.getElementById(elements[index]);
+
+          for (let urlElement of urlElements) {
+            let loc = urlElement.getElementsByTagName('loc')[0].textContent;
+
+            // Remove locale prefix and get clean text
+            let urlPath = new URL(loc).pathname;
+            // Remove trailing slash and split into segments
+            urlPath = urlPath.replace("/ja/", '/');
+            const cleanedText = urlPath
+            .split('/')
+            .pop()
+            .replace(/-/g, ' ') // Remove dashes
+            .replace(/\b\w/g, (char) => char.toUpperCase()); // Convert first letter of each word to uppercase
+          
+
+            if (!cleanedText) continue; // Skip empty names
+
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<a href="${urlPath}" target="_blank">${cleanedText}</a>`;
+            listContainer.appendChild(listItem);
+          }
+        });
+      })
+      .catch((error) => console.error('Error loading sitemap:', error));
+
+
+    {% comment %} set educations  {% endcomment %}
+    const educationsListContainer = document.getElementById('sitemapEducations');
+    educationsList?.forEach((item) => {
+      const listItem = document.createElement('li');
+      listItem.innerHTML = `<a href="${item.url}" target="_blank">${item.title}</a>`;
+      educationsListContainer.appendChild(listItem);
+    });
+  });
+</script>

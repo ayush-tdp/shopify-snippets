@@ -1,0 +1,686 @@
+<div class="set-ring-size-container">
+  <div class="selector-wrapper js product-form__item d-flex justify-content-between gap-2">
+    <div class="d-flex gap-2">
+      <div class="d-flex justify-content-between">
+        <label class="d-flex justify-content-center align-items-center mb-0" for="ring-size-selector">
+          Ring Size:
+          <span id="selected-ring-size-display" class="ml-1 d-none">Select Ring Size</span>
+        </label>
+      </div>
+      <div class="responsive-min-w-250px">
+        <select
+          class="single-option-selector product-form__input"
+          id="ring-size-selector"
+          data-name="Shape"
+          data-index="option2"
+        ></select>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <!-- productSizeGuide.liquid -->
+      <a href="/pages/ring-size-guide" target="_blank" class="open-sizeguide link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.343 16.812H3.219v-4.415h14.124" stroke="currentColor" stroke-width=".987" stroke-miterlimit="10"></path>
+          <path d="M11.903 16.705v-2.369M6.438 16.705v-2.369M9.17 16.705v-1.51M14.635 16.705v-1.51M17.368 16.705v-2.369" stroke="currentColor" stroke-width=".934" stroke-miterlimit="10"></path>
+          <path d="M17.343 16.812a2.882 2.882 0 0 0 2.882-2.882V9.515" stroke="currentColor" stroke-width=".987" stroke-miterlimit="10"></path>
+          <path d="M8.816 12.397a2.882 2.882 0 1 1 0-5.764h8.527a2.882 2.882 0 1 1 0 5.764" stroke="currentColor" stroke-width=".987" stroke-miterlimit="10"></path>
+          <path d="M8.81 9.515h8.54" stroke="currentColor" stroke-width=".934" stroke-miterlimit="10"></path>
+        </svg>
+        Size Guide
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="choose-setting-button-container">
+  <button
+    type="button"
+    name="choose-setting"
+    id="choose-setting-button"
+    class="btn btn--full product-form__cart-submit product-form__cart-submit--outline btn-theme"
+  >
+    <div class="product-choose-setting-loader" role="status" style="display: none;">Loading...</div>
+    <span id="product-choose-setting-txt">Choose this Setting</span>
+  </button>
+  <!-- Add to Cart Button -->
+  {% comment %} <button type="button" id="setting-add-to-cart-button" class="btn btn--full product-form__cart-submit btn-theme">
+    <div class="product-choose-setting-loader" role="status" style="display: none;">Loading...</div>
+    <span id="product-add-to-cart-setting-txt">Add To Cart</span>
+  </button> {% endcomment %}
+</div>
+
+<div class="product-choose-setting-popup" style="display: none;">.</div>
+
+<style>
+   .gr-btnjs,
+  .product-form__quantity-submit {
+    margin-top:0 !important;
+    padding-top:0 !important;
+  }
+  .product-choose-setting-popup{
+    position: fixed;
+    top: 50%;
+    margin: .5rem 0;
+    background: #04043f;
+    color: #fff;
+    padding: 15px 30px;
+    box-shadow: 0 0 1rem #0000007f;
+    filter: opacity(95%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 767px) {
+    .responsive-min-w-250px {
+      min-width: 100px !important;
+    }
+  }
+
+  .responsive-min-w-250px{
+    min-width: 250px;
+    {% comment %} width: 100%; {% endcomment %}
+  }
+  #setting-add-to-cart-button{
+    margin-top: 10px;
+  }
+  {% comment %} .set-ring-size-container {
+    margin-bottom: 7px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  } {% endcomment %}
+</style>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("initial-page-loader").style.display = "none";
+    const popup = document.querySelector('.product-choose-setting-popup')
+    // Set the estimated shipping date into the span
+    const shippingDateElement = document.getElementById(
+      "free-shipping-estimated-date"
+    );
+    if (shippingDateElement) {
+      shippingDateElement.textContent = ` by ${getDiaShippingDays()}`;
+    }
+  });
+
+  // Ring sizes array
+  const ringSizes = [
+    "Select Ring Size","E", "E 1/2", "F", "F 1/2", "G", "G 1/2", "H", "H 1/2", "I", "I 1/2",
+    "J", "J 1/2", "K", "K 1/2", "L", "L 1/2", "M", "M 1/2", "N", "N 1/2",
+    "O", "O 1/2", "P", "P 1/2", "Q", "Q 1/2", "R", "R 1/2", "S", "S 1/2",
+    "T", "T 1/2", "U", "U 1/2", "V", "V 1/2", "W", "W 1/2", "X", "X 1/2",
+    "Y", "Y 1/2", "Z", "Z 1/2",
+  ];
+
+  const ringSizeSelector = document.getElementById("ring-size-selector");
+  const selectedRingSizeDisplay = document.getElementById(
+    "selected-ring-size-display"
+  );
+
+  // Fetch existing settings from sessionStorage
+  const selectedSettingOptions =
+    JSON.parse(sessionStorage.getItem("selectedSettingOptions")) || {};
+  const savedRingSize = selectedSettingOptions.settingSize || "Select Ring Size";
+
+  // Populate the dropdown and set the initial value
+  ringSizes.forEach((size) => {
+    ringSizeSelector.innerHTML += `<option value="${size}" ${
+      size === savedRingSize ? "selected" : ""
+    }>${size}</option>`;
+  });
+
+  // Update display value
+  selectedRingSizeDisplay.textContent = savedRingSize;
+
+  // Update sessionStorage and display on change
+  ringSizeSelector.addEventListener("change", () => {
+    ringSizeSelector.style.border = 'none';
+    const selectedSize = ringSizeSelector.value;
+    selectedRingSizeDisplay.textContent = selectedSize;
+
+    const updatedSettings = {
+      ...selectedSettingOptions,
+      settingSize: selectedSize,
+    };
+
+    sessionStorage.setItem(
+      "selectedSettingOptions",
+      JSON.stringify(updatedSettings)
+    );
+  });
+
+  function isRingSizeSelected(){
+    const popup = document.querySelector('.product-choose-setting-popup')
+    const ringSizeSelector = document.getElementById("ring-size-selector");
+    const result = ringSizeSelector.value !== "Select Ring Size";
+    if(!result){
+      popup.style.display = 'block';
+      ringSizeSelector.style.border = '2px solid red';
+      ringSizeSelector.focus();
+      popup.innerHTML = "Please select a ring size.";
+      setTimeout(() => {
+        popup.style.display = 'none';
+        popup.innerHTML = "";
+      }, 2000);
+      return false;
+    }
+    return true;
+  }
+ 
+  function getConvertedStepPrice(step) {
+    if (step.hasOwnProperty("price")) {
+      step = getCurrencyWiseStep(step);
+    }
+    return step;
+  }
+
+  function rbGetCurrencyWiseStickyItem(stickyItem) {
+    try {
+      const currencyField = `finalPrice${toCamelCase(currencyCode)}`;
+      const priceValue = stickyItem[currencyField];
+      stickyItem.price = priceValue
+        ? `${currencySymbol}${parseFloat(priceValue).toLocaleString()}`
+        : stickyItem.price;
+
+      return stickyItem;
+    } catch (error) {
+      console.error("Error in rbGetCurrencyWiseStickyItem:", error);
+      return stickyItem;
+    }
+  }
+
+  function handleStickyBarItems(setting = "",selectedSettingConfig = {}) {
+    var sessionStickyBarItems = [];
+    if (sessionStorage.getItem("stickyBarItems")) {
+      sessionStickyBarItems = JSON.parse(
+        sessionStorage.getItem("stickyBarItems")
+      );
+    }
+    if (setting) {
+      var settingData = {
+        title:
+          setting.name.slice(0, 32) +
+          (setting.name.length > 33 ? "..." : ""),
+        page: "setting",
+        imgUrl: setting.main_image,
+        handle: setting.handle,
+        placeholder: setting.main_image,
+        price: `${setting.currency}${parseFloat(setting.price).toLocaleString(
+          "en-US",
+          { minimumFractionDigits: 2 }
+        )}`,
+        id: setting.id,
+        metal: selectedSettingConfig.settingMetal,
+        size: selectedSettingConfig.settingSize,
+        sku: setting.sku,
+        style: setting.attributes.Engagement_Ring_Style,
+      };
+      settingData = appendCurrenciesToStickyBarItems(settingData, setting);
+      if (!sessionStickyBarItems.length) {
+        sessionStickyBarItems.push(settingData);
+      } else if (
+        sessionStickyBarItems.length < 2 &&
+        sessionStickyBarItems.length > 0
+      ) {
+        for (var index in sessionStickyBarItems) {
+          if (sessionStickyBarItems[index].page != "setting") {
+            sessionStickyBarItems.push(settingData);
+          } else {
+            sessionStickyBarItems[index] = settingData;
+          }
+        }
+      } else {
+        for (var index in sessionStickyBarItems) {
+          if (sessionStickyBarItems[index].page == "setting") {
+            sessionStickyBarItems[index] = settingData;
+          }
+        }
+      }
+      sessionStorage.setItem(
+        "stickyBarItems",
+        JSON.stringify(sessionStickyBarItems)
+      );
+    }
+  }
+
+  function handleThirdStep(setting, stepData) {
+    const diamond = safelyParseJSON(sessionStorage.getItem("selectedDiamond"));
+    if (diamond) {
+      const stepTitle = `${setting.name} With ${getDiamondTitle(diamond)}`;
+      stepData.thirdStep = {
+        ...stepData.thirdStep,
+        title: stepTitle.slice(0, 32) + (stepTitle.length > 33 ? "..." : ""),
+        price: `${diamond.currencySymbol}${(
+          parseFloat(diamond.finalPrice) + parseFloat(setting.price)
+        ).toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+        isReset: true,
+        isView: true,
+        id: "",
+        page: "ring",
+        diamondId: diamond.diamondId,
+        diamondType: diamond.diamondType,
+        settingId: setting.id,
+        imgUrl: setting.main_image,
+        ...appendCurrenciesToFinalSteps({}, diamond, setting),
+      };
+    } else {
+      stepData.thirdStep.headerTitle = "Ring";
+    }
+    return stepData;
+  }
+
+  function handleStepData(setting = "") {
+    const firstPage = sessionStorage.getItem("firstPage");
+    let stepData = safelyParseJSON(sessionStorage.getItem("stepData")) || {
+      firstStep: { headerTitle: "SETTING" },
+      secondStep: { headerTitle: "DIAMOND" },
+      thirdStep: { headerTitle: "Ring" },
+    };
+
+    if (firstPage === "settingPage") {
+      stepData.firstStep = getConvertedStepPrice(stepData.firstStep);
+      stepData.secondStep = getConvertedStepPrice(stepData.secondStep);
+    } else if (firstPage === "diamondPage") {
+      stepData.firstStep = getConvertedStepPrice(stepData.firstStep);
+      stepData.secondStep = getConvertedStepPrice(stepData.secondStep);
+    }
+
+    stepData.thirdStep = getConvertedStepPrice(stepData.thirdStep);
+
+    if (setting) {
+      const stepToUpdate = firstPage === "diamondPage" ? "secondStep" : "firstStep";
+      stepData[stepToUpdate] = {
+        ...stepData[stepToUpdate],
+        title: setting.name.slice(0, 32) + (setting.name.length > 33 ? "..." : ""),
+        price: `${setting.currency}${parseFloat(setting.price).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+        })}`,
+        handle: setting.handle || "",
+        isView: true,
+        isChange: true,
+        id: setting.id,
+        page: "setting",
+        imgUrl: setting.main_image,
+        placeholder: setting.main_image,
+        ...appendCurrenciesToSteps({}, setting),
+      };
+      stepData = handleThirdStep(setting, stepData);
+      sessionStorage.setItem("stepData", JSON.stringify(stepData));
+    }
+  }
+
+  function getUniqueOptionsValues(variants, option) {
+    const uniqueOption1Values = [];
+    variants.forEach((variant) => {
+      if (!uniqueOption1Values.includes(variant[option])) {
+        uniqueOption1Values.push(variant[option]);
+      }
+    });
+    return uniqueOption1Values;
+  }
+
+  function safelyParseJSON(data){
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      console.error("Invalid JSON:", data);
+      return null; // Return null if parsing fails
+    }
+  };
+
+  {% comment %} choose setting  {% endcomment %}
+  document.getElementById('choose-setting-button').addEventListener('click', function () {
+    if(!isRingSizeSelected()){
+      return;
+    }
+    // Button and loader handling
+    const button = this;
+    const loader = button.querySelector('.product-choose-setting-loader');
+    const buttonText = button.querySelector('#product-choose-setting-txt');
+    button.disabled = true;
+    loader.style.display = 'inline-block';
+    buttonText.style.display = 'none';
+
+    // Convert the product data to a JSON string and store it in a JavaScript variable
+    var productData = {{ product | json }};
+
+    // Get the current URL
+    const currentUrl = window.location.href;
+
+    // Create a URL object to parse query parameters
+    const urlParams = new URL(currentUrl).searchParams;
+
+    // Get the 'variant' parameter value
+    const variant = urlParams.get('variant');
+
+
+    let selectedVariant ;
+
+    if (!!variant) {
+      selectedVariant = variant
+    }else{
+          selectedVariant = productData.variants[0].id
+    }
+
+    productData.selectedVariant = selectedVariant;
+  
+  
+    const result = productData?.variants?.find(
+    (item) => item.id == selectedVariant && item.option2
+    );
+
+
+    let selectedVariantData = {};
+
+    // Check if the selected variant has an option2
+    if (!!result) {
+      selectedVariantData = result;
+    }else{
+      selectedVariantData = productData.variants[0];
+    }
+
+
+    const optimizedProductVariantData = {} ;
+    optimizedProductVariantData.id = selectedVariantData?.id;
+    optimizedProductVariantData.parent_product_id = productData.id;
+    optimizedProductVariantData.handle = productData.handle;
+    optimizedProductVariantData.sku = selectedVariantData?.sku;
+    optimizedProductVariantData.name = selectedVariantData?.name;
+    optimizedProductVariantData.slug = productData.id;
+    optimizedProductVariantData.status = selectedVariantData?.available;
+    optimizedProductVariantData.short_description = productData.content;
+    optimizedProductVariantData.description = productData.description;
+    optimizedProductVariantData.price = selectedVariantData?.price/100;
+    optimizedProductVariantData.basePrice = selectedVariantData?.compare_at_price/100;
+    optimizedProductVariantData.currency = "$";
+    optimizedProductVariantData.stock_quantity = selectedVariantData?.available;
+    optimizedProductVariantData.stock_status = selectedVariantData?.available;
+    optimizedProductVariantData.selectedDiamondShape = selectedVariantData?.option2;
+    optimizedProductVariantData.categories = false;
+    optimizedProductVariantData.matching_band = [];
+    optimizedProductVariantData.finalPriceUSD = selectedVariantData?.price;
+    optimizedProductVariantData.finalPriceEUR = selectedVariantData?.price;
+    optimizedProductVariantData.finalPriceGBP = selectedVariantData?.price;
+    optimizedProductVariantData.main_image = selectedVariantData?.featured_image?.src;
+    optimizedProductVariantData.current_url = window.location.href;
+    optimizedProductVariantData.image_gallery = 
+      {
+            "full": selectedVariantData?.featured_image?.src,
+            "name": 'setting',
+            "popupUrl": "",
+            "url":  selectedVariantData?.featured_image?.src,
+            "alt": "",
+            "thumbnail":  selectedVariantData?.featured_image?.id,
+      };
+    optimizedProductVariantData.attributes = {
+        "Engagement_Ring_Metal_Type": getUniqueOptionsValues(productData?.variants,"option1").length ? getUniqueOptionsValues(productData?.variants,"option1") : [],
+        "This_Ring_Can_Be_Set_With": getUniqueOptionsValues(productData?.variants,"option2").length ? getUniqueOptionsValues(productData?.variants,"option2") : [],
+        "Engagement_Ring_Style": [],
+        "Product_Video": [],
+        "Matching_Id": "",
+        "Shipping_Day": "22"
+    },
+
+   
+    sessionStorage.setItem('selectedSetting', JSON.stringify(optimizedProductVariantData));
+
+
+    const settingId = selectedVariantData?.id;
+    const settingMetal = selectedVariantData?.option1;
+    const settingDiamondShape = selectedVariantData?.option2;
+
+    const selectedSettingOptions = sessionStorage.getItem('selectedSettingOptions');
+
+    const settingSelectedConfig = {
+      settingId,
+      settingMetal,
+      settingSize: ringSizeSelector?.value,
+      settingCountry: "AUD",
+      settingDiamondShape,
+    };
+
+    sessionStorage.setItem('selectedSettingOptions', JSON.stringify(settingSelectedConfig));
+
+    handleStepData(optimizedProductVariantData);
+    handleStickyBarItems(optimizedProductVariantData,settingSelectedConfig);
+
+    
+
+    // Retrieve and validate data from sessionStorage
+    const selectedDiamondRaw = sessionStorage.getItem('selectedDiamond');
+    {% comment %} const selectedSettingRaw = sessionStorage.getItem('selectedSetting'); {% endcomment %}
+
+    const selectedDiamond = safelyParseJSON(selectedDiamondRaw);
+    {% comment %} const selectedSetting = safelyParseJSON(selectedSettingRaw); {% endcomment %}
+
+    // Log the parsed data
+    if (!selectedDiamond) {
+      console.warn("No valid data found for 'selectedDiamond'");
+    }
+
+    // Redirect based on the condition
+    if (!!selectedDiamond?.diamondId && !!productData?.selectedVariant) {
+      window.location.href = `/pages/final-ring?settingId=${productData.selectedVariant}&diamondId=${selectedDiamond?.diamondId}&diamondType=${selectedDiamond?.diamondType}`;
+    } 
+    else {
+      if(!selectedDiamond?.id){
+        window.location.href = '/collections/lab-diamonds';
+      }else if(!!selectedSetting?.id){
+        window.location.href = '/collections/engagement-rings';
+      }
+    }
+  });
+
+  {% comment %} add to cart  {% endcomment %}
+   // Add to Cart Functionality
+  {% comment %} document.getElementById('setting-add-to-cart-button').addEventListener('click', function () {
+    const button = this;
+    const loader = button.querySelector('.product-choose-setting-loader');
+    const buttonText = button.querySelector('#product-add-to-cart-setting-txt');
+
+    // Start loading state
+    button.disabled = true;
+    loader.style.display = 'inline-block';
+    buttonText.style.display = 'none';
+
+    var productData = {{ product | json }};
+
+    // Get the current URL
+    const currentUrl = window.location.href;
+
+    // Create a URL object to parse query parameters
+    const urlParams = new URL(currentUrl).searchParams;
+
+    // Get the 'variant' parameter value
+    const variant = urlParams.get('variant');
+
+    let selectedVariant ;
+
+    if (!!variant) {
+      selectedVariant = variant
+    }else{
+          selectedVariant = productData.variants[0].id
+    }
+
+    productData.selectedVariant = selectedVariant;
+  
+  
+    const result = productData?.variants?.find(
+    (item) => item.id == selectedVariant && item.option2
+    );
+
+
+    let selectedVariantData = {};
+
+    // Check if the selected variant has an option2
+    if (!!result) {
+      selectedVariantData = result;
+    }else{
+      selectedVariantData = productData.variants[0];
+    }
+    
+    if (!selectedVariantData) {
+        console.error("No setting found in sessionStorage");
+        return;
+    }
+
+    const shopifyProduct = {
+        id: selectedVariantData.id,
+        quantity: 1,
+        properties: {
+            ring_size: ringSizeSelector.value || "Default",
+            setting_id: selectedVariantData.id,
+            setting_sku: selectedVariantData.sku
+        }
+    };
+
+    fetch(window.Shopify.routes.root + "cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(shopifyProduct)
+    })
+    .then(response => response.json())
+    .then(response => {
+        buttonText.innerText = "Added to Cart!";
+        setTimeout(() => window.location.href = "/cart", 500);
+    })
+    .catch(error => {
+        console.error("Add to Cart Error:", error);
+        buttonText.innerText = "Add to Cart";
+    })
+    .finally(() => {
+        loader.style.display = 'none';
+        buttonText.style.display = 'block';
+        button.disabled = false;
+    });
+  }); {% endcomment %}
+
+  function getDiaShippingDays() {
+    var week = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    var month = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let date = new Date(
+      new Date(new Date()).setDate(new Date(new Date()).getDate() + 25)
+    );
+    return `${week[date.getDay()]}, ${
+      month[date.getMonth()]
+    } ${date.getDate()}`;
+  }
+
+  document.getElementById('setting-add-to-cart-button').addEventListener('click', function () {
+    if(!isRingSizeSelected()){
+      return;
+    }
+    const button = this;
+    const loader = button.querySelector('.product-choose-setting-loader');
+    const popup = document.querySelector('.product-choose-setting-popup');
+    const buttonText = button.querySelector('#product-add-to-cart-setting-txt');
+
+    // Start loading state
+    button.disabled = true;
+    loader.style.display = 'inline-block';
+    buttonText.style.display = 'none';
+
+    var productData = {{ product | json }};
+
+    // Get the current URL
+    const currentUrl = window.location.href;
+    const urlParams = new URL(currentUrl).searchParams;
+    const variant = urlParams.get('variant');
+
+    let selectedVariant = variant ? variant : productData.variants[0].id;
+    productData.selectedVariant = selectedVariant;
+
+    const result = productData?.variants?.find(item => item.id == selectedVariant && item.option2);
+    let selectedVariantData = result ? result : productData.variants[0];
+
+    if (!selectedVariantData) {
+        console.error("No setting found in sessionStorage");
+        return;
+    }
+
+    // Fetch the cart to check for an engagement ring
+    fetch(window.Shopify.routes.root + "cart.js")
+        .then(response => response.json())
+        .then(cart => {
+            const hasEngagementRing = cart.items.some(item => item.product_type === "Engagement Rings");
+
+            if (hasEngagementRing) {
+                popup.style.display = 'block';
+                popup.innerHTML = "Setting already exists in the cart.";
+                loader.style.display = 'none';
+                buttonText.style.display = 'block';
+                button.disabled = false;
+
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    popup.innerHTML = "";
+                }, 3000);
+                return;
+            }
+
+
+            // Proceed to add the setting to the cart
+            const shopifyProduct = {
+                id: selectedVariantData.id,
+                quantity: 1,
+                properties: {
+                    ring_size: ringSizeSelector.value || "Default",
+                    setting_id: selectedVariantData.id,
+                    setting_sku: selectedVariantData.sku
+                }
+            };
+
+            fetch(window.Shopify.routes.root + "cart/add.js", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(shopifyProduct)
+            })
+            .then(response => response.json())
+            .then(response => {
+                buttonText.innerText = "Added to Cart!";
+                setTimeout(() => window.location.href = "/cart", 500);
+            })
+            .catch(error => {
+                console.error("Add to Cart Error:", error);
+                buttonText.innerText = "Add to Cart";
+            })
+            .finally(() => {
+                loader.style.display = 'none';
+                buttonText.style.display = 'block';
+                button.disabled = false;
+            });
+
+        })
+        .catch(error => {
+            console.error("Cart Fetch Error:", error);
+            loader.style.display = 'none';
+            buttonText.style.display = 'block';
+            button.disabled = false;
+        });
+  });
+</script>

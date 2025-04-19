@@ -1,0 +1,118 @@
+{% schema %}
+{
+  "name": "PDF Canvas Viewer",
+  "settings": [
+    {
+      "type": "url",
+      "id": "pdf_url",
+      "label": "PDF Link",
+      "info": "Upload or provide a PDF URL"
+    },
+    {
+      "type": "text",
+      "id": "pdf_width",
+      "label": "Canvas Width",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "pdf_height",
+      "label": "Canvas Height",
+      "default": "600px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_download",
+      "label": "Show Download Button",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDF Canvas Viewer",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="pdf-canvas-container">
+  {% if section.settings.pdf_url != blank %}
+
+    {% if section.settings.show_download %}
+      <div class="text-center" style="margin: 20px 0;">
+        <a href="{{ section.settings.pdf_url }}" download="PDF-Guide.pdf" class="button btn btn-theme">
+          Download
+        </a>
+      </div>
+    {% endif %}
+    
+    <canvas id="pdfCanvas" width="100%"></canvas>
+    <p class="loading-text">Loading PDF...</p>
+
+    {% if section.settings.show_download %}
+      <div class="text-center" style="margin: 20px 0;">
+        <a href="{{ section.settings.pdf_url }}" download="PDF-Guide.pdf" class="button btn btn-theme">
+          Download
+        </a>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <p class="text-center">Please set a PDF URL in the section settings.</p>
+  {% endif %}
+</div>
+
+{% style %}
+  .pdf-canvas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  canvas {
+    width: {{ section.settings.pdf_width }};
+    height: {{ section.settings.pdf_height }};
+    border: 1px solid #ddd;
+  }
+  .loading-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #666;
+  }
+{% endstyle %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js" defer ></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pdfUrl = "{{ section.settings.pdf_url }}";
+    const canvas = document.getElementById("pdfCanvas");
+    const ctx = canvas.getContext("2d");
+
+    if (pdfUrl) {
+      pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+        return pdf.getPage(1);
+      }).then(page => {
+        const viewport = page.getViewport({ scale: 2 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+
+        page.render(renderContext).promise.then(() => {
+          document.querySelector(".loading-text").style.display = "none";
+        });
+      }).catch(error => {
+        console.error("Error loading PDF:", error);
+        document.querySelector(".loading-text").innerText = "Failed to load PDF.";
+      });
+    }
+  });
+</script>
