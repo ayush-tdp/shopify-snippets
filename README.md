@@ -1,6 +1,3 @@
-Great! Here's a fully working `README.md` file with example folder structure, code snippets, and inline setup instructions. You can copy and paste this directly into your GitHub repo.
-
----
 
 ```markdown
 # 🛍️ Shopify Snippets & Functionalities Showcase
